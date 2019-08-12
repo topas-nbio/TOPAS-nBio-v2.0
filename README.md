@@ -15,7 +15,7 @@ We encourage contribution of user-developed extensions that fit within the TOPAS
 
 0) Pre-requisites:
 
-TOPAS installed with recommended `OS system, c++ and cmake versions`, see 
+   TOPAS installed with recommended `OS system, c++ and cmake versions`, see 
    topas https://topas.readthedocs.io/en/latest/getting-started/install.htm
 
 1) We recommend having a global directory for extensions named topas_extension and move in TOPAS-nBio there 
@@ -28,32 +28,32 @@ TOPAS installed with recommended `OS system, c++ and cmake versions`, see
 
 2) Unzip TOPAS-nBio directory in topas_extensions and navigate to the topas directory
 
-  Linux:
+   Linux:
         cd ~/topas
-  Mac:
+   Mac:
         cd /Applications/topas
 
 3) Unzip the Geant4Headers.zip
 
-  Linux:
+   Linux:
         unzip -e Geant4Headers.zip
-  Mac:
+   Mac:
         unzip -e Geant4Headers.zip
         
 4) Build the extensions
 
-  Linux:
+   Linux:
         cmake ./ -DTOPAS_EXTENSIONS_DIR=~/topas_extensions/TOPAS-nBio
         make -j4
-  Mac:
+   Mac:
         cmake ./ -DTOPAS_EXTENSIONS_DIR=/Applications/topas_extensions/TOPAS-nBio
         make -j4
  
 5) Run the demos. For some demos, a pause before quit is enabled, then, write `exit` at the terminal prompt.
 
-  Linux:
+   Linux:
         source rundemos.csh
 
-  Mac:
+   Mac:
         source rundemos.csh
 
