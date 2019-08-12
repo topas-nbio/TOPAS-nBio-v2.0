@@ -1,0 +1,73 @@
+i:Ts/NumberOfThreads = 4
+Tf/NumberOfSequentialTimes = 1
+b:Ts/PauseBeforeQuit = "t"
+b:Ts/DumpParameters = "f"
+i:Ts/Seed = 1238
+
+includeFile = Parameters_Geometry.txt
+#includeFile = Parameters_Physics.txt
+#includeFile = Parameters_Beam.txt
+includeFile = Parameters_Scorer.txt
+#includeFile = Parameters_Vis.txt
+
+
+## ---------------- Geometry ----------------  ##
+Ge/World/Type = "TsBox"
+Ge/World/HLX = 40. nm
+Ge/World/HLY = 40. nm
+Ge/World/HLZ = 120. nm
+s:Ge/World/Material = "G4_WATER"
+b:Ge/World/Invisible = "t"
+b:Ge/CheckForOverlaps = "False"
+
+
+
+## ---------------- Physics ----------------  ##
+sv:Ph/Default/Modules = 1 "g4em-dna"
+d:Ph/Default/CutForAllParticles = 1.0 nm
+
+
+
+## ---------------- Beam ----------------  ##
+#position
+s:Ge/BeamPosition/Parent="World"
+d:Ge/BeamPosition/TransX= 0.0 nm
+d:Ge/BeamPosition/TransY= 0.0 nm
+d:Ge/BeamPosition/TransZ= -79.0 nm
+d:Ge/BeamPosition/RotX=0. deg
+d:Ge/BeamPosition/RotY=0. deg
+d:Ge/BeamPosition/RotZ=0. deg
+
+#details
+s:So/Demo/Type = "Beam"
+s:So/Demo/Component = "BeamPosition"
+s:So/Demo/BeamParticle = BeamParticle
+d:So/Demo/BeamEnergy = 1.0 MeV
+u:So/Demo/BeamEnergySpread = BeamEnergySpread
+
+s:So/Demo/BeamPositionDistribution = "Gaussian"
+d:So/Demo/BeamPositionSpreadX = 5. nm # distribution (if Gaussian)
+d:So/Demo/BeamPositionSpreadY = 5. nm # distribution (if Gaussian)
+
+s:So/Demo/BeamAngularDistribution = "None"
+d:So/Demo/BeamAngularSpreadX=0. deg
+d:So/Demo/BeamAngularSpreadY=0. deg
+i:So/Demo/NumberOfHistoriesInRun = 100
+
+d:So/Demo/BeamPositionCutoffX = 5. mm
+d:So/Demo/BeamPositionCutoffY = 5. mm
+#d:So/Demo/BeamPositionCutoffZ = 5. mm
+
+
+
+## ---------------- Visualisation ----------------  ##
+s:Gr/MyOGL/Type        = "OpenGL"
+i:Gr/MyOGL/WindowSizeX = 1200
+i:Gr/MyOGL/WindowSizeY = 1200
+i:Gr/MyOGL/WindowPosX  = 0
+i:Gr/MyOGL/WindowPosY  = 0
+d:Gr/MyOGL/Theta       = 360. deg
+d:Gr/MyOGL/Phi         = 0. deg
+#d:Gr/MyOGL/Theta       = 90. deg
+#d:Gr/MyOGL/Phi         = 0. deg
+u:Gr/MyOGL/Zoom        = 2

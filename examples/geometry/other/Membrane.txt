@@ -1,0 +1,71 @@
+# TOPAS-nBio example: membrane
+# 
+# 
+# Membranes can be formed in a ring or into a layer. Layers may also include ion channels.
+
+
+d:Ge/World/HLX=50. um
+d:Ge/World/HLY=50. um
+d:Ge/World/HLZ=50. um
+b:Ge/World/Invisible="true"
+
+#Example of a ring geometry configuration:
+#s:Ge/MyCell/Type="TsMembraneRing"
+#s:Ge/MyCell/Material="G4_WATER"
+#s:Ge/MyCell/Parent="World"
+#i:Ge/MyCell/NumberOfLipids=50
+
+#Example of a layer geometry configuration
+#s:Ge/MyCell/Type="TsMembraneLayer"
+#s:Ge/MyCell/Material="G4_WATER"
+#s:Ge/MyCell/Parent="World"
+#i:Ge/MyCell/NumberOfRows=20
+#i:Ge/MyCell/NumberOfCols=30
+
+#Example of a layer with complex protein geometry configuration
+#s:Ge/MyCell/Type="TsIonChannel"
+#s:Ge/MyCell/Material="G4_WATER"
+#s:Ge/MyCell/Parent="World"
+#i:Ge/MyCell/NumberOfRows=20
+#i:Ge/MyCell/NumberOfCols=30
+
+#Example of a layer with simple protein
+s:Ge/MyCell/Type="TsChannel"
+s:Ge/MyCell/Material="G4_WATER"
+s:Ge/MyCell/Parent="World"
+i:Ge/MyCell/NumberOfRows=20
+i:Ge/MyCell/NumberOfCols=30
+d:Ge/MyCell/ChannelRmax = 10 nm
+d:Ge/MyCell/ChannelRmin = 2 nm
+d:Ge/MyCell/ChannelHalfLength = 20 nm
+
+#Lipid bilayer parameters
+d:Ge/MyCell/LipidHeadRadius=1. nm
+d:Ge/MyCell/LipidTailHalfLength=3. nm
+d:Ge/MyCell/LipidTailRadius=0.5 nm
+
+s:Ge/MyCell/Lipidhead1/Material = "G4_WATER"
+s:Ge/MyCell/Lipidhead2/Material = "G4_WATER"
+s:Ge/MyCell/Lipidtail/Material = "G4_WATER"
+
+s:Ge/MyCell/Channel/Material = "G4_WATER"
+s:Ge/MyCell/IonBox/Material = "G4_WATER"
+
+s:Ge/MyCell/Lipidhead1/Color="blue"
+s:Ge/MyCell/Lipidhead2/Color="blue"
+s:Ge/MyCell/Lipidtail/Color="yellow"
+s:Ge/MyCell/Lipidhead1/DrawingStyle="solid"
+s:Ge/MyCell/Lipidhead2/DrawingStyle="solid"
+s:Ge/MyCell/Lipidtail/DrawingStyle="solid"
+
+s:Ge/MyCell/Channel/Color="red"
+s:Ge/MyCell/Channel/DrawingStyle="solid"
+
+Ph/Default/Modules = 1 "g4em-dna"
+
+s:Gr/ViewA/Type = "OpenGL"
+#i:Gr/ViewA/WindowSizeX = 1024
+#i:Gr/ViewA/WindowSizeY = 768
+#u:Gr/ViewA/Zoom = 2.
+
+Ts/PauseBeforeQuit = "True"

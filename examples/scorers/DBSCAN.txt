@@ -1,0 +1,49 @@
+# This example shows how to setup the DBSCAN for 
+# scoring SSB and DSB. The output is a tuple with 
+# SSB, DBS Complex SB and SSB's cluster size distribution
+#  
+i:Ts/Seed = 1
+i:Ts/NumberOfThreads = 1
+
+b:Ts/ShowCPUTime = "True"
+
+sv:Ph/Default/Modules = 1 "g4em-dna"
+
+s:So/Demo/BeamParticle = "Proton"
+d:So/Demo/BeamEnergy   = 1 MeV
+u:So/Demo/BeamEnergySpread = 0
+s:So/Demo/BeamPositionDistribution = "None"
+s:So/Demo/BeamAngularDistribution = "None"
+i:So/Demo/NumberOfHistoriesInRun = 50
+i:Ts/ShowHistoryCountAtInterval = 5
+
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ um
+d:Ge/BeamPosition/RotX = 0 deg
+
+Ge/World/HLX = 1 um 
+Ge/World/HLY = 1 um 
+Ge/World/HLZ = 1 um 
+Ge/World/Material = "G4_WATER"
+
+s:Ge/Detector/Parent = "World"
+s:Ge/Detector/Type   = "TsBox"
+s:Ge/Detector/Material = "G4_WATER"
+d:Ge/Detector/HLX = 0.5 um 
+d:Ge/Detector/HLY = 0.5 um 
+d:Ge/Detector/HLZ = 0.25 um 
+
+s:Sc/RootFileName = "DBSCAN"
+
+s:Sc/DBSCAN/Quantity = "dbscan"
+s:Sc/DBSCAN/Component  = "Detector"
+s:Sc/DBSCAN/OutputFile = "DBSCAN"
+s:Sc/DBSCAN/OutputType = "Root"
+b:Sc/DBSCAN/OutputToConsole = "True"
+s:Sc/DBSCAN/IfOutputFileAlreadyExists = "overwrite"
+# DBSCAN configuration parameters
+d:Sc/DBSCAN/MinimumDistanceForDSB       = 3.2 nm  # Distance betwen SSB to form a DSB ~10 bp
+u:Sc/DBSCAN/SampleHitsWithProbability   = 0.16    # Hits are scorer with 16% probability 
+d:Sc/DBSCAN/LowerEnergyForSamplingSSB   = 5.0 eV  # Hits are sampled from a ramp distribution between
+d:Sc/DBSCAN/UpperEnergyForSamplingSSB   = 37.5 eV # these two values: 5.0 eV -> 0.0; 37.5 eV -> 1.0
+i:Sc/DBSCAN/MinimumNumberofSSBtoFormDSB = 2       # Minimum number of SSB to form a DSB
+

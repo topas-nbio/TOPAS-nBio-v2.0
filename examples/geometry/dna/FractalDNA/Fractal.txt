@@ -1,0 +1,49 @@
+# TOPAS-nBio example : nuclear DNA (fractal DNA model).
+# An ellipsoid nucleus containing the full genomes ~ 6 billion BPs
+# Chromatin fibers are arranged in a fractal pattern using a Hilbert space filling curve.
+# Option to fill fibers with DNA, this will slow down the simulations significantly.
+
+b:Ge/QuitIfOverlapDetected="true"
+
+#File containing fiber positions, 3D Hilbert space filling curve
+s:Ge/MyDNA/FileName="FullGenome.dat"
+
+d:Ge/World/HLX=40 um
+d:Ge/World/HLY=40 um
+d:Ge/World/HLZ=40 um
+b:Ge/World/Invisible="true"
+
+s:Ge/MyDNA/Type="TsFractalDNA"
+s:Ge/MyDNA/Parent="World"
+s:Ge/MyDNA/Material="G4_WATER"
+s:Ge/MyDNA/Color = "white"
+
+#Set flag to simulate full DNA fibers, this will slow down the simulation significantly.
+b:Ge/MyDNA/BuildBases = "false"
+
+sv:Ph/Default/Modules = 1 "g4em-dna"
+
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" #gamma
+d:So/Disk/BeamEnergy = 2 MeV 
+u:So/Disk/BeamEnergySpread = 0
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 1 um
+d:So/Disk/BeamPositionCutoffY = 1 um
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=1
+
+s:Gr/ViewA/Type = "OpenGL"
+d:Gr/ViewA/Theta = 55 deg
+d:Gr/ViewA/Phi = 20 deg
+
+Ts/PauseBeforeQuit = "True"
+
+

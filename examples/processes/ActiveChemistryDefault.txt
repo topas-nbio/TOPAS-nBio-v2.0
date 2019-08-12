@@ -1,0 +1,56 @@
+#
+# This example display the track of chemistry species.
+# The tracks can be accesed by the scorer manager
+#
+Ph/Default/Modules = 2 "g4em-dna" "g4em-dna-chemistry"
+
+d:Ge/World/HLX= 15 nm
+d:Ge/World/HLY= 15 nm
+d:Ge/World/HLZ= 81 nm
+s:Ge/World/Material ="G4_WATER"
+b:Ge/World/Invisible = "True"
+
+s:Ge/Segment/Parent = "World"
+s:Ge/Segment/Type   = "TsCylinder"
+s:Ge/Segment/Material = "G4_WATER"
+s:Ge/Segment/Color    = "magenta"
+d:Ge/Segment/HL       = 80.5 nm
+d:Ge/Segment/RMax     = 15.0 nm
+
+# This gives access of the hits with the scoring manager
+b:Ch/Default/ChemicalStageTransportActive = "True"
+# Chemical stage will finish at 100 ns
+d:Ch/Default/ChemicalStageTimeEnd = 100 ns
+
+# Visualization
+s:Gr/view/Type = "OpenGl"
+s:Gr/view/ColorBy = "ParticleType"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 700 
+d:Gr/view/Theta = 45 deg
+d:Gr/view/Phi = 30 deg
+u:Gr/view/Zoom = 1.5
+b:Gr/view/UseSmoothTrajectories = "False"
+# Color per chemical specie. Use full name of the molecules
+sv:Gr/view/ColorByParticleTypeNames = 8 "e-" "proton" "alpha" "Hydroxil" "SolvatedElectron" "HydrogenPeroxide" "Hydrogen" "DiHydrogen" 
+sv:Gr/view/ColorByParticleTypeColors = 8 "red" "green" "green" "magenta" "yellow" "blue" "green" "white" 
+
+# Source
+So/Demo/BeamEnergy = 1 MeV
+So/Demo/BeamEnergySpread = 0
+So/Demo/BeamParticle = "proton"
+So/Demo/BeamPositionDistribution = "None"
+So/Demo/NumberOfHistoriesInRun = 1
+
+Ge/BeamPosition/TransZ = -1.0 * Ge/Segment/HL nm 
+Ge/BeamPosition/RotX = 0 deg
+
+
+i:Ts/ChemistryVerbosity = 1
+
+i:Ts/ShowHistoryCountAtInterval = 1 
+i:Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"
+b:Ts/PauseBeforeQuit = "True"
+i:Ts/Seed = 1
+

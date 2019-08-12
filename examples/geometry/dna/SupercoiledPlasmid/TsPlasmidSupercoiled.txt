@@ -1,0 +1,39 @@
+#
+sv:Ph/Default/Modules = 1 "g4em-dna" 
+
+Ge/World/HLX = 0.5 um
+Ge/World/HLY = 0.5 um
+Ge/World/HLZ = 0.5 um
+Ge/World/Material = "G4_WATER"
+b:Ge/World/Invisible = "True"
+
+s:Ge/plasmid/Parent = "World"
+s:Ge/plasmid/Type   = "TsPlasmidSupercoiled"
+s:Ge/plasmid/Material = "G4_WATER"
+s:Ge/plasmid/Color = "lightblue"
+s:Ge/plasmid/DrawingStyle = "Solid"
+s:Ge/plasmid/deoxyribose1/Material = "G4_WATER"
+s:Ge/plasmid/deoxyribose1/Color    = "grass"
+s:Ge/plasmid/deoxyribose1/DrawingStyle = "Solid"
+s:Ge/plasmid/deoxyribose2/Material = "G4_WATER"
+s:Ge/plasmid/deoxyribose2/Color    = "yellow"
+s:Ge/plasmid/deoxyribose2/DrawingStyle = "Solid"
+
+s:Ge/plasmid/base1/Material = "G4_WATER"
+s:Ge/plasmid/base1/Color    = "red"
+s:Ge/plasmid/base1/DrawingStyle = "Solid"
+s:Ge/plasmid/base2/Material = "G4_WATER"
+s:Ge/plasmid/base2/Color    = "blue"
+s:Ge/plasmid/base2/DrawingStyle = "Solid"
+
+s:Ge/plasmid/FileName =  "pBR322_a.xyz"
+s:Ge/plasmid/DNA_Model = "QuartCyl" #"Sphere" "HalfCyl" 
+b:Ge/plasmid/SegmentPlasmidPath = "True"
+
+b:Gr/Enable = "True"
+s:Gr/view/Type = "OpenGl"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 600
+Ts/PauseBeforeQuit = Gr/Enable 
+
+

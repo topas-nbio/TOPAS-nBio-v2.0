@@ -1,0 +1,72 @@
+# TOPAS-nBio example : Simple DNA cylinders 
+# 
+# Size of cylinders is set, but may be edited by the user.
+# DNA strand: Length = 2 nm and diameter = 2 nm
+# Nucleosome: Length = 10 nm and diameter = 5 nm
+# Chromatin Fiber: Length = 25 nm and diameter = 25 nm 
+#
+# Sizes are from Nikjoo H et al. (1991) Int. J. Radiat. Biol. 60(5), 739–756
+
+
+b:Ge/QuitIfOverlapDetected="false"
+
+d:Ge/World/HLX=200 nm
+d:Ge/World/HLY=200 nm
+d:Ge/World/HLZ=200 nm
+b:Ge/World/Invisible = "True"
+
+s:Ge/MyDNA/Type="TsCylindericalDNA"
+s:Ge/MyDNA/Parent="World"
+s:Ge/MyDNA/Material="G4_WATER"
+s:Ge/MyDNA/DrawingStyle = "Solid"
+s:Ge/MyDNA/Color = "grass"
+#d:Ge/MyDNA/DNAHalfLength=20 nm
+#d:Ge/MyDNA/DNARadius= 10 nm
+
+s:Ge/MyNucleosome/Type="TsCylindericalNucleosome"
+s:Ge/MyNucleosome/Parent="World"
+s:Ge/MyNucleosome/Material="G4_WATER"
+d:Ge/MyNucleosome/TransX=50 nm
+s:Ge/MyNucleosome/DrawingStyle = "Solid"
+s:Ge/MyNucleosome/Color = "red"
+
+s:Ge/MyChromatinFiber/Type="TsCylindericalChromatin"
+s:Ge/MyChromatinFiber/Parent="World"
+s:Ge/MyChromatinFiber/Material="G4_WATER"
+d:Ge/MyChromatinFiber/TransX=100 nm
+s:Ge/MyChromatinFiber/DrawingStyle = "Solid"
+s:Ge/MyChromatinFiber/Color = "orange"
+
+Ph/Default/Modules = 1 "g4em-dna"
+
+#Score dose to DNA volume
+s:Sc/DNAScorer/Quantity = "DoseToMedium"
+s:Sc/DNAScorer/Component = "MyDNA"
+b:Sc/DNAScorer/OutputToConsole = "TRUE"
+b:Sc/DNAScorer/PropagateToChildren = "true"
+s:Sc/DNAScorer/IfOutputFileAlreadyExists = "overwrite"
+
+#Score dose to Nucleosome
+s:Sc/NucleosomeScorer/Quantity = "DoseToMedium"
+s:Sc/NucleosomeScorer/Component = "MyNucleosome"
+b:Sc/NucleosomeScorer/OutputToConsole = "TRUE"
+b:Sc/NucleosomeScorer/PropagateToChildren = "true"
+s:Sc/NucleosomeScorer/IfOutputFileAlreadyExists = "overwrite"
+
+#Score dose to Chromatin Fiber
+s:Sc/ChromatinScorer/Quantity = "DoseToMedium"
+s:Sc/ChromatinScorer/Component = "MyChromatinFiber"
+b:Sc/ChromatinScorer/OutputToConsole = "TRUE"
+b:Sc/ChromatinScorer/PropagateToChildren = "true"
+s:Sc/ChromatinScorer/IfOutputFileAlreadyExists = "overwrite"
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 900
+i:Gr/ViewA/WindowSizeY = 700
+d:Gr/ViewA/Theta = 55 deg
+d:Gr/ViewA/Phi = 20 deg
+d:Gr/ViewA/PerspectiveAngle = 30 deg
+
+Ts/PauseBeforeQuit = "True"
+
+

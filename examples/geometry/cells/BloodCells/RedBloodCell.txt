@@ -1,0 +1,50 @@
+# TOPAS-nBio example: red blood cell
+# 
+# RBCs do not contain a nucleus.
+
+b:Ge/QuitIfOverlapDetected="true"
+
+d:Ge/World/HLX=20. um
+d:Ge/World/HLY=20. um
+d:Ge/World/HLZ=20. um
+
+
+#Red blood cells have a diameter of 6-8 um and a width at the widest part of ~2 um. 
+
+s:Ge/MyCell/Type="TsRedBloodCell"
+s:Ge/MyCell/Material="G4_WATER"
+s:Ge/MyCell/Parent="World"
+d:Ge/MyCell/RBCRadius=3.75 um
+d:Ge/MyCell/RBCWidth=1 um
+s:Ge/MyCell/Color="red"
+s:Ge/MyCell/DrawingStyle = "Solid"
+
+Ph/Default/Modules = 1 "g4em-dna"
+
+# Set a source
+s:So/Example/Type                     = "Beam"
+s:So/Example/Component                = "BeamPosition"
+s:So/Example/BeamParticle             = "proton"
+d:So/Example/BeamEnergy               = 5 MeV
+u:So/Example/BeamEnergySpread         = 0.757504
+s:So/Example/BeamPositionDistribution = "None"
+s:So/Example/BeamAngularDistribution  = "Gaussian"
+d:So/Example/BeamAngularCutoffX       = 90. deg
+d:So/Example/BeamAngularCutoffY       = 90. deg
+d:So/Example/BeamAngularSpreadX       = 0.0032 rad
+d:So/Example/BeamAngularSpreadY       = 0.0032 rad
+i:So/Example/NumberOfHistoriesInRun   = 10
+
+#Score in the Cell
+s:Sc/CellScorer/Quantity = "DoseToMedium"
+s:Sc/CellScorer/Component = "MyCell"
+b:Sc/CellScorer/OutputToConsole = "TRUE"
+b:Sc/CellScorer/PropagateToChildren = "true"
+s:Sc/CellScorer/IfOutputFileAlreadyExists = "overwrite"
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 1024
+i:Gr/ViewA/WindowSizeY = 768
+u:Gr/ViewA/Zoom = 2.
+
+Ts/PauseBeforeQuit = "True"

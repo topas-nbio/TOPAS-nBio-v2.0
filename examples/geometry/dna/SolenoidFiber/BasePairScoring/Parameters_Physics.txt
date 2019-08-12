@@ -1,0 +1,4 @@
+
+## ---------------- Physics ----------------  ##
+sv:Ph/Default/Modules = 1 "g4em-dna"
+d:Ph/Default/CutForAllParticles = 1.0 nm

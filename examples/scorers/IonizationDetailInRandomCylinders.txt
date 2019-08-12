@@ -1,0 +1,75 @@
+# 
+# Set physics and chemistry processes
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics" 
+s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+
+# Geometry
+d:Ge/World/HLX= 150 nm  
+d:Ge/World/HLY= 150 nm  
+d:Ge/World/HLZ= 150 nm  
+s:Ge/World/Material ="G4_WATER"
+b:Ge/World/Invisible = "True"
+
+# Spherical envelope
+s:Ge/SphericalEnvelope/Parent            = "World"
+s:Ge/SphericalEnvelope/Type              = "TsRandomCylindersInComponent"
+s:Ge/SphericalEnvelope/Material          = "G4_WATER"
+s:Ge/SphericalEnvelope/Color             = "blue"
+s:Ge/SphericalEnvelope/EnvelopeShape     = "TsSphere"
+d:Ge/SphericalEnvelope/RMax              = 80 nm
+b:Ge/SphericalEnvelope/GenerateCylinders = "False"
+s:Ge/SphericalEnvelope/InputFile        = "randomCylinders_position_nm_rotation_deg.xyz"
+# Dimensions for random cylinders
+d:Ge/SphericalEnvelope/Cylinders/RMax    = 1.15 nm
+d:Ge/SphericalEnvelope/Cylinders/HL      = 1.70 nm
+s:Ge/SphericalEnvelope/Cylinders/Material = "G4_WATER"
+s:Ge/SphericalEnvelope/Cylinders/Color    = "grass"
+s:Ge/SphericalEnvelope/Cylinders/DrawingStyle = "Solid"
+
+# Particle source
+d:Ge/BeamPosition/TransZ = -1.2 * Ge/SphericalEnvelope/RMax um
+d:Ge/BeamPosition/RotX   = 0.0 deg
+ 
+s:So/Demo/BeamPositionDistribution = "None"
+s:So/Demo/BeamAngularDistribution  = "None"
+s:So/Demo/BeamParticle = "proton"
+d:So/Demo/BeamEnergy   = 5 MeV 
+u:So/Demo/BeamEnergySpread = 0 
+i:So/Demo/NumberOfHistoriesInRun = 10
+
+# Tuple scorer. By default includes physical and chemical track.
+
+s:Sc/pTuple/Quantity = "Tuple"
+s:Sc/pTuple/Component = "SphericalEnvelope"
+s:Sc/pTuple/OutputType = "ASCII"
+b:Sc/pTuple/OutputToConsole = "True"
+s:Sc/pTuple/IfOutputFileAlreadyExists = "Overwrite"
+d:Sc/pTuple/TimeCut = 10.0 ns
+b:Sc/pTuple/PropagateToChildren = "true"
+
+# For scoring hits in cylinders, the relevant information can be retrieved
+b:Sc/pTuple/IncludeChemicalTrack = "False"
+b:Sc/pTuple/IncludeParticleName = "False"
+b:Sc/pTuple/IncludeKineticEnergy = "False"
+b:Sc/pTuple/IncludeVolumeName = "False"
+
+b:Sc/pTuple/IncludeVolumeCopyNumber = "True"
+b:Sc/pTuple/IncludeEventID = "True"
+b:Sc/pTuple/IncludeEnergyDeposited = "True"
+b:Sc/pTuple/IncludeStepNumber = "True"
+b:Sc/pTuple/IncludePhysicalProcessName  = "True"
+
+# Visualization
+s:Gr/view/Type = "OpenGl"
+s:Gr/view/ColorBy = "ParticleType"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 700 
+u:Gr/view/Zoom  = 1.5
+d:Gr/view/Theta = 45 deg
+d:Gr/view/Phi = 45 deg
+b:Gr/view/IncludeStepPoints = "True"
+
+Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1 
+

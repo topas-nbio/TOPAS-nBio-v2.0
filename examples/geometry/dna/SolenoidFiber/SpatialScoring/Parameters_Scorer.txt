@@ -1,0 +1,49 @@
+
+## ---------------- Scoring ----------------  ##
+s:Sc/MyScorer/Quantity = "NtupleForSpatial"
+b:Sc/MyScorer/Active = "True"
+s:Sc/MyScorer/Component = SensitiveVolumeName
+s:Sc/MyScorer/OutputFile = "OutputFile"
+s:Sc/MyScorer/OutputType = "ASCII"
+s:Sc/MyScorer/IfOutputFileAlreadyExists = "Overwrite"
+#b:Sc/MyScorer/OutputAfterRun = "true"  # Code forces output so it can be read in for clustering
+
+
+b:WriteSSB = "false"                #Always writes DSBs, select if SSB
+
+b:WriteHeader = "true"              #Turn off STD format header for distributed run (Default = true)
+
+s:SensitiveVolumeName = "Nucleus"   #Set to volume name to track in (Default = "Nucleus")
+u:SensitiveFraction = 0.15          #Fraction of volume that is sensitive
+#s:ProgramName = "HenSpatial"        #The name of the code
+
+b:EventByEvent = "false"            #Evt-by-evt clustering or on exposure (Default = exposure)
+
+# Target size
+d:HLX = 2.5 um
+d:HLY = 2.5 um
+d:HLZ = 2.5 um
+i:Shape = 0                         #0=ellipse, 1=box
+
+s:DamageMode = "Range"              #"Range"=energy range, "Threshold"=energy threshold, "Ionisation"=ionisations
+d:MinEneRange = 5.0 eV              #Min energy for damage range (Default = 5 eV)
+d:MaxEneRange = 37.5 eV             #Max energy for damage range (Default = 37.5 eV)
+d:MinEneThresh = 17.5 eV            #Min energy for damage threshold (Default = 17.5 eV)
+
+#Beam details (also used by "Parameters_Beam.txt")
+s:BeamParticle = "proton"
+u:BeamEnergySpread = 0.0
+s:BeamEnergyDistribution = "Gaussian"
+
+b:StoreDamagesInMemory = "false"  #Set to true to store damages ready to pass to further models
+
+b:AddChromosomeDomains = "true"   #Build and assign chromosome domains to damages
+
+
+#s:Sc/DoseScorer/Component = SensitiveVolumeName
+#s:Sc/DoseScorer/Quantity = "DoseToMedium"
+#b:Sc/DoseScorer/OutputToConsole = "true"
+#b:Sc/DoseScorer/OutputAfterRun = "true"
+#s:Sc/DoseScorer/IfOutputFileAlreadyExists = "Increment"
+#s:Sc/DoseScorer/OutputFile = "Dose"
+#s:Sc/DoseScorer/OutputType = "CSV"

@@ -1,0 +1,36 @@
+#
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+
+s:Ph/Default/Electron/SetElasticScatteringModel   = "CPA100"     # UeharaScreenedRutherford,  Champion, ScreenedRutherford
+s:Ph/Default/Electron/SetExcitationModel          = "emfietzoglou" # Born, CPA100
+s:Ph/Default/Electron/SetIonisationModel          = "emfietzoglou" # Born, CPA100
+b:Ph/Default/Electron/ActiveVibExcitation         = "True"
+b:Ph/Default/Electron/ActiveAttachment            = "True"
+
+s:Ph/Default/Proton/SetElasticScatteringModel     = "default" # WentzelVI
+
+Ge/World/HLX= 1 um  
+Ge/World/HLY= 1 um  
+Ge/World/HLZ= 2 um  
+Ge/World/Material ="G4_WATER"
+
+Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ um  
+Ge/BeamPosition/RotX = 0 deg 
+
+So/Demo/BeamPositionDistribution = "None"
+So/Demo/BeamEnergySpread = 0 
+So/Demo/BeamParticle = "proton"
+So/Demo/BeamEnergy = 1 MeV 
+So/Demo/NumberOfHistoriesInRun = 10
+
+s:Gr/view/Type = "OpenGl"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 700
+u:Gr/view/Zoom = 4
+b:Ts/PauseBeforeQuit = "True"
+
+Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1 
+
+

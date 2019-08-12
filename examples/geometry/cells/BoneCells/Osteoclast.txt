@@ -1,0 +1,69 @@
+# TOPAS-nBio example.
+# An osteoclast geometry (bone cell).
+# Cells are multi-nucleated. Define both the number and size of nuclei.
+#
+# Since nuclei are arranged randomly, this check should be switched off, overlap checking is still done 
+# and when an overlap is detected the overlapping components are rearranged. 
+b:Ge/QuitIfOverlapDetected="false"
+
+d:Ge/World/HLX=55. um
+d:Ge/World/HLY=55. um
+d:Ge/World/HLZ=55. um
+b:Ge/World/Invisible="true"
+
+#average size is 50 - 120 um
+s:Ge/MyCell/Type="TsOsteoclast"
+s:Ge/MyCell/Material="G4_WATER"
+s:Ge/MyCell/Parent="World"
+d:Ge/MyCell/CellRadius=50. um
+
+s:Ge/MyCell/Osteoclast/Material = "G4_WATER"
+s:Ge/MyCell/Osteoclast/Color="white"
+
+#Nuclei
+d:Ge/MyCell/Nucleus/NucleusRadius=5. um
+i:Ge/MyCell/Nucleus/NumberOfNuclei=5
+s:Ge/MyCell/Nuclei/Material="G4_WATER"
+s:Ge/MyCell/Nuclei/Color="red"
+s:Ge/MyCell/Nuclei/DrawingStyle="solid"
+
+
+Ph/Default/Modules = 1 "g4em-livermore"
+
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" #gamma
+d:So/Disk/BeamEnergy = 5 MeV 
+u:So/Disk/BeamEnergySpread = 0
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 10 um
+d:So/Disk/BeamPositionCutoffY = 10 um
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=100
+
+#Score in the Cell
+s:Sc/CellScorer/Quantity = "DoseToMedium"
+s:Sc/CellScorer/Component = "MyCell"
+b:Sc/CellScorer/OutputToConsole = "True"
+b:Sc/CellScorer/PropagateToChildren = "true"
+s:Sc/CellScorer/IfOutputFileAlreadyExists = "overwrite"
+
+#Score energy deposited in Cell components
+s:Sc/OrganelleScorer/Quantity = "TsNtupleForCell"
+s:Sc/OrganelleScorer/Component = "MyCell"
+s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
+s:Sc/OrganelleScorer/OutputType = "ASCII" 
+s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 1024
+i:Gr/ViewA/WindowSizeY = 768
+
+
+Ts/PauseBeforeQuit = "True"

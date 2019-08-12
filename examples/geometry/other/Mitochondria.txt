@@ -1,0 +1,62 @@
+# TOPAS-nBio example: mitochondria
+# 
+# 
+# Mitochondria with DNA example
+
+d:Ge/World/HLX=2. um
+d:Ge/World/HLY=2. um
+d:Ge/World/HLZ=2. um
+b:Ge/World/Invisible="true"
+
+#Example of a ring geometry configuration:
+s:Ge/MyMito/Type="G4Ellipsoid"
+d:Ge/MyMito/HLX=0.5 um
+d:Ge/MyMito/HLY=0.1 um
+d:Ge/MyMito/HLZ=0.2 um
+s:Ge/MyMito/Material="G4_WATER"
+s:Ge/MyMito/Parent="World"
+s:Ge/MyMito/Color = "green"
+
+#Add a circular DNA
+s:Ge/MyDNA/Type="TsCircularPlasmid"
+s:Ge/MyDNA/Material="G4_WATER"
+s:Ge/MyDNA/Parent="MyMito"
+i:Ge/MyDNA/NumberOfBasePairs=1000
+
+s:Ge/MyDNA/Base/SetInvisible="true"
+s:Ge/MyDNA/BasePair/Material="G4_WATER"
+s:Ge/MyDNA/BasePair/Color="yellow"
+s:Ge/MyDNA/BasePair/DrawingStyle="solid"
+s:Ge/MyDNA/Sugar1/Material="G4_WATER"
+s:Ge/MyDNA/Sugar1/Color="green"
+s:Ge/MyDNA/Sugar1/DrawingStyle="solid"
+s:Ge/MyDNA/Sugar2/Material="G4_WATER"
+s:Ge/MyDNA/Sugar2/Color="blue"
+s:Ge/MyDNA/Sugar2/DrawingStyle="solid"
+
+sv:Ph/Default/Modules = 1 "g4em-dna"
+
+#Define a beam type
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" 
+d:So/Disk/BeamEnergy = 10 MeV 
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 15 nm
+d:So/Disk/BeamPositionCutoffY = 15 nm
+u:So/Disk/BeamEnergySpread = 0 
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=2
+
+s:Gr/ViewA/Type = "OpenGL"
+#i:Gr/ViewA/WindowSizeX = 1024
+#i:Gr/ViewA/WindowSizeY = 768
+#u:Gr/ViewA/Zoom = 2.
+
+Ts/PauseBeforeQuit = "True"

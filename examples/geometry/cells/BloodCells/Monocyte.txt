@@ -1,0 +1,60 @@
+# TOPAS-nBio example.
+#
+# White blood cell: Monocyte
+# 
+# Cell has a single large kidney-shaped nucleus.
+
+b:Ge/QuitIfOverlapDetected="true"
+
+d:Ge/World/HLX=30. um
+d:Ge/World/HLY=30. um
+d:Ge/World/HLZ=30. um
+b:Ge/World/invisible = "true" 
+
+s:Ge/MyCell/Type="TsMonocyte"
+s:Ge/MyCell/Material="G4_WATER"
+s:Ge/MyCell/Parent="World"
+d:Ge/MyCell/MonocyteRadius=10.0 um
+
+s:Ge/MyCell/Nucleus/Material="G4_WATER"
+s:Ge/MyCell/Nucleus/Color="purple"
+s:Ge/MyCell/Nucleus/DrawingStyle = "Solid"
+
+Ph/Default/Modules = 1 "g4em-dna"
+
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" #gamma
+d:So/Disk/BeamEnergy = 2 MeV 
+u:So/Disk/BeamEnergySpread = 0
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 10 um
+d:So/Disk/BeamPositionCutoffY = 10 um
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=10
+
+#Score in the Cell
+s:Sc/CellScorer/Quantity = "DoseToMedium"
+s:Sc/CellScorer/Component = "MyCell"
+b:Sc/CellScorer/OutputToConsole = "True"
+b:Sc/CellScorer/PropagateToChildren = "true"
+s:Sc/CellScorer/IfOutputFileAlreadyExists = "overwrite"
+
+#Score energy deposited in Cell components
+s:Sc/OrganelleScorer/Quantity = "TsNtupleForCell"
+s:Sc/OrganelleScorer/Component = "MyCell"
+s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
+s:Sc/OrganelleScorer/OutputType = "ASCII" 
+s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 1024
+i:Gr/ViewA/WindowSizeY = 768
+
+Ts/PauseBeforeQuit = "True"

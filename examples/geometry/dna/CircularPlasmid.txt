@@ -1,0 +1,74 @@
+# TOPAS-nBio example : Circular DNA Plasmid
+# DNA plasmid is placed in a box and irradiated by protons.
+# ntuple scorer is used to score energy deposition in the DNA segment
+# Geant4-DNA processes are only activated within the DNA plasmid ring
+
+
+b:Ge/QuitIfOverlapDetected="true"
+
+#World volume
+d:Ge/World/HLX=150 nm
+d:Ge/World/HLY=150 nm
+d:Ge/World/HLZ=150 nm
+b:Ge/World/SetInvisible="true"
+s:Ge/World/Material="G4_WATER"
+
+#Circular DNA plasmid
+s:Ge/MyDNA/Type="tscircularplasmid"
+s:Ge/MyDNA/Parent="World"
+s:Ge/MyDNA/Material="G4_WATER"
+
+#Define the number of base pairs in the ring
+i:Ge/MyDNA/NumberOfBasePairs=200
+
+s:Ge/MyDNA/Base/Material="G4_WATER"
+s:Ge/MyDNA/BasePair/Material="G4_WATER"
+s:Ge/MyDNA/BasePair/Color="yellow"
+s:Ge/MyDNA/BasePair/DrawingStyle="solid"
+s:Ge/MyDNA/Sugar1/Material="G4_WATER"
+s:Ge/MyDNA/Sugar1/Color="green"
+s:Ge/MyDNA/Sugar1/DrawingStyle="solid"
+s:Ge/MyDNA/Sugar2/Material="G4_WATER"
+s:Ge/MyDNA/Sugar2/Color="blue"
+s:Ge/MyDNA/Sugar2/DrawingStyle="solid"
+
+sv:Ph/Default/Modules = 1 "g4em-dna"
+
+#Define a beam type
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" #gamma
+d:So/Disk/BeamEnergy = 10 MeV 
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 15 nm
+d:So/Disk/BeamPositionCutoffY = 15 nm
+u:So/Disk/BeamEnergySpread = 0 
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=500
+
+#Score energy deposition events in the geometry 
+#(please see example parameter in scorer section for scoring ssb and dsb in plasmids)
+s:Sc/BreakScorer/Quantity = "tsntupleforplasmid"
+s:Sc/BreakScorer/Component = "MyDNA"
+s:Sc/BreakScorer/IfOutputFileAlreadyExists = "Overwrite"  
+s:Sc/BreakScorer/OutputType = "ASCII" 
+s:Sc/BreakScorer/OutputFile = "HitsInPlasmid"
+
+#Visualization
+s:Gr/ViewA/Type="OpenGL"
+i:Gr/ViewA/WindowSizeX = 1500
+i:Gr/ViewA/WindowSizeY = 1500
+d:Gr/ViewA/Theta = 55 deg
+d:Gr/ViewA/Phi = 20 deg
+d:Gr/ViewA/PerspectiveAngle = 30 deg
+u:Gr/ViewA/Zoom = 6.
+
+Ts/PauseBeforeQuit = "true"
+
+

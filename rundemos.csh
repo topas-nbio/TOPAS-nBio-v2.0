@@ -1,0 +1,36 @@
+#!/bin/csh -f
+cd examples/geometry
+../../../topas/topas CharltonDNA.txt
+../../../topas/topas DNA.txt
+../../../topas/topas EllipsoidCell.txt
+../../../topas/topas FibroblastCell.txt
+../../../topas/topas NikjooCylinders.txt
+../../../topas/topas generateRandomCylinders.txt
+../../../topas/topas Plasmid.txt
+../../../topas/topas SphericalCell.txt
+../../../topas/topas readBackRandomCylindres.txt
+rm *.xyz
+cd ../../
+cd examples/processes
+../../../topas/topas ActiveChemistryDefault.txt
+../../../topas/topas ActiveChemistryExtended.txt
+../../../topas/topas ActiveChemistryRevised.txt
+../../../topas/topas ActiveCustomizablePhysics.txt
+../../../topas/topas G4DNAModelPerRegion.txt
+../../../topas/topas RemoveChemicalSpeciesInVolume.txt
+cd ../../
+cd examples/scorers
+../../../topas/topas DBSCAN.txt
+../../../topas/topas DBSCAN_VRT.txt
+../../../topas/topas PDB4DNA.txt
+../../../topas/topas PDB4DNA_VRT.txt
+../../../topas/topas particleTuple.txt
+../../../topas/topas IonizationDetailInRandomCylinders.txt
+#topas simpleSSBandDSBInPlasmid.txt
+#topas simpleSSBandDSBInPlasmidWithDBSCAN.txt
+../../../topas/topas NumberOfChemicalSpeciesAtTime.txt
+../../../topas/topas GvalueG4DNADefault.txt
+../../../topas/topas GvalueRevisedPhysicsChemistry.txt
+rm *.root *.phsp *.header *csv
+cd ../../
+

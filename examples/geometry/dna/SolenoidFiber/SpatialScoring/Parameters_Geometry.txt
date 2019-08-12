@@ -1,0 +1,18 @@
+
+s:Ge/Nucleus/Type = "TsSphere"
+s:Ge/Nucleus/Parent = "World"
+s:Ge/Nucleus/Material = "G4_WATER"
+d:Ge/Nucleus/TransX = 0. nm
+d:Ge/Nucleus/TransY = 0. nm
+d:Ge/Nucleus/TransZ = 0. nm
+d:Ge/Nucleus/RotX = 0. deg
+d:Ge/Nucleus/RotY = 0. deg
+d:Ge/Nucleus/RotZ = 0. deg
+d:Ge/Nucleus/RMin = 0. nm
+d:Ge/Nucleus/RMax = 2.5 um
+d:Ge/Nucleus/SPhi = 0 deg
+d:Ge/Nucleus/DPhi = 360 deg
+d:Ge/Nucleus/STheta = 0 deg
+d:Ge/Nucleus/DTheta  = 180 deg
+s:Ge/Nucleus/DrawingStyle = "Solid"
+s:Ge/Nucleus/Color = "blue"

@@ -1,0 +1,61 @@
+# TOPAS-nBio example: simple cell culture of spherical cells
+# 
+# Volume should be square or rectangular and should be big enough to hold all cells.
+
+# Since cells are arranged randomly, this check should be switched off to allow the randomize algorithm to work.
+b:Ge/QuitIfOverlapDetected="false"
+
+d:Ge/World/HLX=500. um
+d:Ge/World/HLY=500. um
+d:Ge/World/HLZ=500. um
+
+s:Ge/MyCulture/Type="TsCellCulture"
+s:Ge/MyCulture/Material="G4_WATER"
+s:Ge/MyCulture/Parent="World"
+d:Ge/MyCulture/Container_HLX= 100 um
+d:Ge/MyCulture/Container_HLY= 100 um
+d:Ge/MyCulture/Container_HLZ= 20 um
+i:Ge/MyCulture/NumberOfCells = 20
+d:Ge/MyCulture/CellRadius=10 um
+d:Ge/MyCulture/NucleusRadius= 6 um
+s:Ge/MyCulture/Nucleus/Material= "G4_WATER"
+
+s:Ge/MyCulture/Color="green"
+s:Ge/MyCulture/Nucleus/color = "purple"
+s:Ge/MyCulture/Nucleus/DrawingStyle = "solid"
+
+Ph/Default/Modules = 1 "g4em-penelope"
+
+# Set a source
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" #gamma
+d:So/Disk/BeamEnergy = 2 MeV 
+u:So/Disk/BeamEnergySpread = 0
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 100 um
+d:So/Disk/BeamPositionCutoffY = 100 um
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=100
+
+
+#Score energy deposited in Cells
+s:Sc/CultureScorer/Quantity = "TsNtupleForCulture"
+s:Sc/CultureScorer/Component = "MyCulture"
+s:Sc/CultureScorer/IfOutputFileAlreadyExists = "Overwrite"  
+s:Sc/CultureScorer/OutputType = "ASCII" 
+s:Sc/CultureScorer/OutputFile = "EdepToCulture"
+
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 1024
+i:Gr/ViewA/WindowSizeY = 768
+u:Gr/ViewA/Zoom = 2.
+
+Ts/PauseBeforeQuit = "True"

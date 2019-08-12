@@ -1,0 +1,83 @@
+# TOPAS-nBio example : Charlton DNA model
+# Charlton DNA segment is placed in a box, specify the number of base-pairs to be simulated.
+#
+# Simple single and double strand breaks are scored.
+
+b:Ge/QuitIfOverlapDetected="true"
+Ts/ShowHistoryCountAtInterval = 100
+
+d:Ge/World/HLX=100 nm
+d:Ge/World/HLY=100 nm
+d:Ge/World/HLZ=100 nm
+b:Ge/World/Invisible = "True"
+
+s:Ge/MyDNA/Type="TsCharltonDNA"
+s:Ge/MyDNA/Parent="world"
+s:Ge/MyDNA/Material="G4_WATER"
+i:Ge/MyDNA/NumberOfBasePairs = 10
+
+# Material for volumes in strand 1
+s:Ma/G4_WATER_MODIFIED_1/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED_1/CloneWithDensity  = 1.0 g/cm3
+
+# Auxiliar material for volumes in strand 2
+s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
+d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
+
+#Modified water material is needed for scoring strand breaks:
+s:Ge/MyDNA/BasePair/Material="G4_WATER"
+s:Ge/MyDNA/Sugar1/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Sugar2/Material="G4_WATER_MODIFIED_2"
+
+s:Ge/MyDNA/BasePair/DrawingStyle="solid"
+s:Ge/MyDNA/Sugar1/Color="red"
+s:Ge/MyDNA/Sugar1/DrawingStyle="solid"
+s:Ge/MyDNA/Sugar2/Color="blue"
+s:Ge/MyDNA/Sugar2/DrawingStyle="solid"
+
+sv:Ph/Default/Modules = 1 "g4em-dna"
+
+#Score SSB and DSB in DNA
+
+s:Sc/StrandBreak/Quantity                             = "SimpleSSBandDSB"
+s:Sc/StrandBreak/Component                            = "MyDNA"
+s:Sc/StrandBreak/OutputType                           = "ASCII"
+s:Sc/StrandBreak/OutputFile                           = "StrandBreaks"
+b:Sc/StrandBreak/OutputToConsole                      = "True"
+s:Sc/StrandBreak/IfOutputFileAlreadyExists            = "Overwrite"
+# Parameters to define a strand break and a double strand break
+i:Sc/StrandBreak/BasePairDistanceForDefiningDSB       = 10
+d:Sc/StrandBreak/EnergyThresholdForHavingSSB          = 0 eV #17.5 eV
+# The sensitive detector is inherit to the children geometries (sugar1, sugar2)
+b:Sc/StrandBreak/PropagateToChildren = "True"
+# For this example, the sugars and base are replica volumes 
+i:Sc/StrandBreak/BasePairPositionAtGeometricHierarchy = 0   # the sugars and base are in position 0.
+# To let the scorer differentiate between strand 1 (sugar1) and strand 2 (sugar2)
+s:Sc/StrandBreak/Strand1MaterialName                  = "G4_WATER_MODIFIED_1"
+s:Sc/StrandBreak/Strand2MaterialName                  = "G4_WATER_MODIFIED_2"
+# Only hits in sugar's volume
+sv:Sc/StrandBreak/OnlyIncludeIfInMaterial = 2 "G4_WATER_MODIFIED_1" "G4_WATER_MODIFIED_2"
+
+
+# Set a source
+s:So/Example/Type                     = "Beam"
+s:So/Example/Component                = "BeamPosition"
+s:So/Example/BeamParticle             = "proton"
+d:So/Example/BeamEnergy               = 5 MeV
+u:So/Example/BeamEnergySpread         = 0.757504
+s:So/Example/BeamPositionDistribution = "None"
+s:So/Example/BeamAngularDistribution  = "Gaussian"
+d:So/Example/BeamAngularCutoffX       = 90. deg
+d:So/Example/BeamAngularCutoffY       = 90. deg
+d:So/Example/BeamAngularSpreadX       = 0.0032 rad
+d:So/Example/BeamAngularSpreadY       = 0.0032 rad
+i:So/Example/NumberOfHistoriesInRun   = 10
+
+s:Gr/ViewA/Type = "OpenGL"
+d:Gr/ViewA/Theta = 45 deg
+d:Gr/ViewA/Phi   = 45 deg
+i:Gr/ViewA/WindowSizeX = 900
+i:Gr/ViewA/WindowSizeY = 700
+
+Ts/PauseBeforeQuit = "True"
+

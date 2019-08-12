@@ -1,0 +1,130 @@
+i:Ts/NumberOfThreads = 4
+Tf/NumberOfSequentialTimes = 1
+b:Ts/PauseBeforeQuit = "t"
+b:Ts/DumpParameters = "f"
+i:Ts/Seed = 1
+
+
+## ---------------- Choose physics ----------------  ##
+sv:Ph/Default/Modules = 1 "g4em-dna"
+d:Ph/Default/CutForAllParticles = 1.0 nm
+
+## ---------------- Visualisation ----------------  ##
+s:Gr/MyOGL/Type        = "OpenGL"
+i:Gr/MyOGL/WindowSizeX = 1200
+i:Gr/MyOGL/WindowSizeY = 1200
+i:Gr/MyOGL/WindowPosX  = 0
+i:Gr/MyOGL/WindowPosY  = 0
+d:Gr/MyOGL/Theta       = 360. deg
+d:Gr/MyOGL/Phi         = 0. deg
+#d:Gr/MyOGL/Theta       = 90. deg
+#d:Gr/MyOGL/Phi         = 0. deg
+u:Gr/MyOGL/Zoom        = 2
+
+
+## ---------------- World ----------------  ##
+Ge/World/Type = "TsBox"
+Ge/World/HLX = 40. nm
+Ge/World/HLY = 40. nm
+Ge/World/HLZ = 120. nm
+s:Ge/World/Material = "Vacuum"
+b:Ge/World/Invisible = "t"
+
+
+
+## ---------------- Geometry Param ----------------  ##
+s:Ge/Fiber/Type = "TsSolenoidFiber"
+s:Ge/Fiber/Material = "G4_WATER"
+s:Ge/Fiber/Parent = "World"
+
+s:Ge/Fiber/Histone/Material = "G4_WATER"
+
+s:Ge/Fiber/base1/Material = "G4_WATER"
+s:Ge/Fiber/base2/Material = "G4_WATER"
+s:Ge/Fiber/back1/Material = "G4_WATER"
+s:Ge/Fiber/back2/Material = "G4_WATER"
+
+b:Ge/CheckForOverlaps = "False"
+
+#Set Fiber dimensions
+d:Ge/Fiber/FiberHalfLength = 80.0 nm
+d:Ge/Fiber/FiberRadius = 18.5 nm
+
+#Choose the DNA Geometry Model
+s:Ge/Fiber/DNA_Model = "QuarterCylinder"   # or "HalfCylinder" or "Sphere"
+
+#i:Ge/TsSolenoidFiber/NumberOfHistonesPerTurn = 6		#default=6, not mandatory
+
+
+## ---------------- Beam ----------------  ##
+#position
+s:BeamParticle = "proton"
+u:BeamEnergySpread = 0.0
+s:BeamEnergyDistribution = "Gaussian"
+
+s:Ge/BeamPosition/Parent="World"
+#s:Ge/BeamPosition/Type = "Group"
+d:Ge/BeamPosition/TransX= 0.0 nm
+d:Ge/BeamPosition/TransY= 0.0 nm
+d:Ge/BeamPosition/TransZ= -110.0 nm
+d:Ge/BeamPosition/RotX=0. deg
+d:Ge/BeamPosition/RotY=0. deg
+d:Ge/BeamPosition/RotZ=0. deg
+
+#details
+s:So/Demo/Type = "Beam"
+s:So/Demo/Component = "BeamPosition"
+s:So/Demo/BeamParticle = BeamParticle
+d:So/Demo/BeamEnergy = 1.0 MeV
+u:So/Demo/BeamEnergySpread = BeamEnergySpread
+
+s:So/Demo/BeamPositionDistribution = "Gaussian"
+d:So/Demo/BeamPositionSpreadX = 5. nm # distribution (if Gaussian)
+d:So/Demo/BeamPositionSpreadY = 5. nm # distribution (if Gaussian)
+
+s:So/Demo/BeamAngularDistribution = "None"
+d:So/Demo/BeamAngularSpreadX=0. deg
+d:So/Demo/BeamAngularSpreadY=0. deg
+i:So/Demo/NumberOfHistoriesInRun = 4
+
+d:So/Demo/BeamPositionCutoffX = 5. mm
+d:So/Demo/BeamPositionCutoffY = 5. mm
+#d:So/Demo/BeamPositionCutoffZ = 5. mm
+
+
+## ---------------- Scoring ----------------  ##
+s:Sc/MyScorer/Quantity = "NtupleForBasePair"
+b:Sc/MyScorer/Active = "True"
+s:Sc/MyScorer/Component = "Fiber"
+#s:Sc/MyScorer/Component = "World"
+s:Sc/MyScorer/OutputFile = "OutputFile"
+s:Sc/MyScorer/OutputType = "ASCII"
+s:Sc/MyScorer/IfOutputFileAlreadyExists = "Overwrite"
+#b:Sc/MyScorer/OutputAfterRun = "true"  # Code forces output so it can be read in for clustering
+
+#Pass some parameter from the run to the scorer
+b:EventByEvent = "false"  #Evt-by-evt clustering
+s:DamageMode = "Range"  #"Range"=energy range, "Threshold"=energy threshold, "Ionisation"=ionisations
+
+d:MinEneRange = 5.0 eV
+d:MaxEneRange = 37.5 eV
+d:MinEneThresh = 17.5 eV
+
+b:WriteHeader = "true"
+
+
+s:Sc/MyScorer/BeamParticle = So/Demo/BeamParticle
+u:Sc/MyScorer/BeamEnergySpread = So/Demo/BeamEnergySpread
+d:Sc/MyScorer/BeamEnergy = So/Demo/BeamEnergy MeV
+d:Sc/MyScorer/RMax = Ge/World/HLX nm
+s:Sc/MyScorer/Shape = Ge/World/Type
+
+
+s:Sc/MyScorer/Target = "Fiber"
+#s:Sc/MyScorer/Target = "World"
+s:Sc/MyScorer/Grouping = "Single" #Cluster and write hits by track (Single) or cumulative (Exposure)
+
+#Set the energy ranges for damage induction (range, or threshold)
+u:Sc/MyScorer/MinEneRange = 5.0  #Min energy deposited to cause damage (eV)
+u:Sc/MyScorer/MaxEneRange = 37.5 #Max energy deposited to cause damage (eV)
+u:Sc/MyScorer/MinEneThresh = 17.5 #Min threshold energy for damage (eV)

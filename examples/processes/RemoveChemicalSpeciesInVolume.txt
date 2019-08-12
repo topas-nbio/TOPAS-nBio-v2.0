@@ -1,0 +1,51 @@
+# 
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+
+s:Ch/ChemistryName = "TOPASChemistry" 
+includeFile = TOPASChemistry.txt
+
+b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 1.0 us
+dv:Ch/TOPASChemistry/ChemicalStageTimeStep           = 6 1.0  3.0   10.0   100.0  1000.0  1000000.0  ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepResolution = 6 0.1  1.0   10.0   100.0  1000.0  100000.0 ps 
+
+s:Ch/TOPASChemistry/RemoveInMaterial = "G4_WATER_MODIFIED"
+sv:Ch/TOPASChemistry/RemoveInMaterialTheseMolecules = 7 "solvatedelectron" "hydroxyl" "hydrogenperoxide" "hydrogen"  "hydronium" "dyhydrogen" "hydroxide" 
+
+Ge/World/HLX= 1 um  
+Ge/World/HLY= 1 um  
+Ge/World/HLZ= 2 um  
+Ge/World/Material ="G4_WATER"
+
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity  = 1.0 g/cm3
+
+iv:Gr/Color/TransparentYellow = 4 255 255 0 50
+
+s:Ge/removeRegion/Parent = "World"
+s:Ge/removeRegion/Type   = "G4Orb"
+s:Ge/removeRegion/Material = "G4_WATER_MODIFIED"
+s:Ge/removeRegion/Color    = "TransparentYellow"
+s:Ge/removeRegion/DrawingStyle = "Solid"
+d:Ge/removeRegion/R        = 0.3 um
+#d:Ge/removeRegion/TransY   = 0.3 um 
+
+Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ um  
+Ge/BeamPosition/RotX = 0 deg 
+
+So/Demo/BeamPositionDistribution = "None"
+So/Demo/BeamEnergySpread = 0 
+So/Demo/BeamParticle = "proton"
+So/Demo/BeamEnergy = 300 MeV 
+So/Demo/NumberOfHistoriesInRun = 10
+
+s:Gr/view/Type = "OpenGl"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 700
+u:Gr/view/Zoom = 4
+b:Ts/PauseBeforeQuit = "True"
+
+Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1 
+

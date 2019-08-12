@@ -1,0 +1,86 @@
+# TOPAS-nBio example - Neuron
+# Example of how to read in an SWC file from the www.NeuroMorpho.org database
+# 
+# Entire cell is composed of water and run with DNA physics module. 
+
+b:Ge/QuitIfOverlapDetected="true"
+
+d:Ge/World/HLX=0.03 cm
+d:Ge/World/HLY=0.08 cm
+d:Ge/World/HLZ=0.03 cm
+b:Ge/World/Invisible="false"
+
+#Parallel world box for scoring
+s:Ge/MyBox/Type = "TsBox"
+s:Ge/MyBox/Parent = "World"
+d:Ge/MyBox/HLX = 0.03 cm
+d:Ge/MyBox/HLY = 0.08 cm
+d:Ge/MyBox/HLZ = 0.03 cm
+b:Ge/MyBox/IsParallel = "true"
+  
+s:Ge/Neuron/Type="TsNeuroMorpho"
+s:Ge/Neuron/Parent="World"
+s:Ge/Neuron/Material="G4_WATER"
+s:Ge/Neuron/NeuroMorphoFileName="NMO_00228.swc"
+d:Ge/Neuron/HLX = 0.025 cm
+d:Ge/Neuron/HLY = 0.075 cm
+d:Ge/Neuron/HLZ = 0.025 cm
+
+#Materials
+s:Ge/Neuron/Soma/Material="G4_WATER"
+s:Ge/Neuron/Soma/Color = "green"
+s:Ge/Neuron/Soma/DrawingStyle="Solid"
+s:Ge/Neuron/SomaUnion/Material="G4_WATER"
+s:Ge/Neuron/SomaUnion/Color="green"
+s:Ge/Neuron/SomaUnion/DrawingStyle="Solid"
+
+s:Ge/Neuron/Axon/Material="G4_WATER"
+s:Ge/Neuron/Axon/Color = "orange"
+s:Ge/Neuron/BasalDendrite/Material="G4_WATER"
+s:Ge/Neuron/BasalDendrite/Color = "white"
+s:Ge/Neuron/ApicalDendrite/Material="G4_WATER"
+s:Ge/Neuron/ApicalDendrite/Color = "blue"
+
+Ph/Default/Modules = 1 "g4em-dna"
+
+#Example of a beam 
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" 
+d:So/Disk/BeamEnergy = 12 MeV 
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 0.025 cm
+d:So/Disk/BeamPositionCutoffY = 0.075 cm
+u:So/Disk/BeamEnergySpread = 0 
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+
+i:So/Disk/NumberOfHistoriesInRun=2
+
+#Scoring using an ntuple
+s:Sc/MyScorer/Quantity    = "TsNtupleForNeuron"
+s:Sc/MyScorer/Component   = "Neuron"
+s:Sc/MyScorer/IfOutputFileAlreadyExists = "Overwrite"  
+s:Sc/MyScorer/OutputType = "ASCII" # "binary", "Root"
+s:Sc/MyScorer/OutputFile = "EdepInNeuron"
+
+s:Sc/Edep/Quantity = "EnergyDeposit"
+s:Sc/Edep/Component = "MyBox"
+s:Sc/Edep/IfOutputFileAlreadyExists="Overwrite"
+
+s:Sc/Dose/Quantity                  = "DoseToMedium"
+s:Sc/Dose/Component                 = "MyBox"
+b:Sc/Dose/OutputToConSsole          = "TRUE"
+s:Sc/Dose/IfOutputFileAlreadyExists = "Overwrite"
+
+s:Gr/ViewA/Type = "OpenGL"
+d:Gr/ViewA/Theta = 0 deg
+d:Gr/ViewA/Phi = 0 deg
+
+Ts/PauseBeforeQuit = "true"
+

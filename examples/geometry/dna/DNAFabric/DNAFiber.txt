@@ -1,0 +1,26 @@
+# TOPAS-nBio DNA fiber example.
+# Courtesy of Carmen Villagrasa et al.
+
+b:Ge/QuitIfOverlapDetected="false"
+
+d:Ge/World/HLX=100. nm
+d:Ge/World/HLY=100. nm
+d:Ge/World/HLZ=100. nm
+
+s:Ge/MyDNA/Type="tsfiber"
+s:Ge/MyDNA/Parent="World"
+s:Ge/MyDNA/Material="G4_WATER"
+
+Ph/Default/Modules = 1 "g4em-standard_opt0"
+
+s:Gr/ViewA/Type = "OpenGL"
+#b:Gr/ViewA/IncludeAxes = "True"
+#d:Gr/ViewA/Theta = 55 deg
+#d:Gr/ViewA/Phi = 20 deg
+#s:Gr/ViewA/Projection = "Perspective"
+d:Gr/ViewA/PerspectiveAngle = 30 deg
+#u:Gr/ViewA/Zoom = 2.
+
+Ts/PauseBeforeQuit = "True"
+
+

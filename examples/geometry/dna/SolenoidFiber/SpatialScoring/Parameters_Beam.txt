@@ -1,0 +1,30 @@
+
+## ---------------- Beam ----------------  ##
+#position
+s:Ge/BeamPosition/Parent="World"
+#s:Ge/BeamPosition/Type = "Group"
+d:Ge/BeamPosition/TransX= 0.0 nm
+d:Ge/BeamPosition/TransY= 0.0 nm
+d:Ge/BeamPosition/TransZ= -6.0 um
+d:Ge/BeamPosition/RotX=0. deg
+d:Ge/BeamPosition/RotY=0. deg
+d:Ge/BeamPosition/RotZ=0. deg
+
+#details
+d:BeamEnergy=10.25 MeV
+s:So/Demo/Type = "Beam"
+s:So/Demo/Component = "BeamPosition"
+s:So/Demo/BeamParticle = BeamParticle
+d:So/Demo/BeamEnergy = BeamEnergy MeV
+u:So/Demo/BeamEnergySpread = BeamEnergySpread
+
+s:So/Demo/BeamPositionDistribution = "Flat"
+
+s:So/Demo/BeamAngularDistribution = "None"
+d:So/Demo/BeamAngularSpreadX=0. deg
+d:So/Demo/BeamAngularSpreadY=0. deg
+i:So/Demo/NumberOfHistoriesInRun = 4
+
+s:So/Demo/BeamPositionCutoffShape = "Ellipse"
+d:So/Demo/BeamPositionCutoffX = 5.015 um
+d:So/Demo/BeamPositionCutoffY = 5.015 um

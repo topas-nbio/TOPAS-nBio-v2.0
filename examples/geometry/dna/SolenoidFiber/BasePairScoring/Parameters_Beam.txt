@@ -1,0 +1,35 @@
+
+## ---------------- Beam ----------------  ##
+#position
+s:BeamParticle = "proton"
+u:BeamEnergySpread = 0.0
+s:BeamEnergyDistribution = "Gaussian"
+
+s:Ge/BeamPosition/Parent="World"
+#s:Ge/BeamPosition/Type = "Group"
+d:Ge/BeamPosition/TransX= 0.0 nm
+d:Ge/BeamPosition/TransY= 0.0 nm
+d:Ge/BeamPosition/TransZ= -110.0 nm
+d:Ge/BeamPosition/RotX=0. deg
+d:Ge/BeamPosition/RotY=0. deg
+d:Ge/BeamPosition/RotZ=0. deg
+
+#details
+s:So/Demo/Type = "Beam"
+s:So/Demo/Component = "BeamPosition"
+s:So/Demo/BeamParticle = BeamParticle
+d:So/Demo/BeamEnergy = 1.0 MeV
+u:So/Demo/BeamEnergySpread = BeamEnergySpread
+
+s:So/Demo/BeamPositionDistribution = "Gaussian"
+d:So/Demo/BeamPositionSpreadX = 5. nm # distribution (if Gaussian)
+d:So/Demo/BeamPositionSpreadY = 5. nm # distribution (if Gaussian)
+
+s:So/Demo/BeamAngularDistribution = "None"
+d:So/Demo/BeamAngularSpreadX=0. deg
+d:So/Demo/BeamAngularSpreadY=0. deg
+i:So/Demo/NumberOfHistoriesInRun = 1
+
+d:So/Demo/BeamPositionCutoffX = 5. mm
+d:So/Demo/BeamPositionCutoffY = 5. mm
+#d:So/Demo/BeamPositionCutoffZ = 5. mm

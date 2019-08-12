@@ -1,0 +1,11 @@
+## ---------------- Visualisation ----------------  ##
+s:Gr/MyOGL/Type        = "OpenGL"
+i:Gr/MyOGL/WindowSizeX = 1200
+i:Gr/MyOGL/WindowSizeY = 1200
+i:Gr/MyOGL/WindowPosX  = 0
+i:Gr/MyOGL/WindowPosY  = 0
+d:Gr/MyOGL/Theta       = 360. deg
+d:Gr/MyOGL/Phi         = 0. deg
+#d:Gr/MyOGL/Theta       = 90. deg
+#d:Gr/MyOGL/Phi         = 0. deg
+u:Gr/MyOGL/Zoom        = 2

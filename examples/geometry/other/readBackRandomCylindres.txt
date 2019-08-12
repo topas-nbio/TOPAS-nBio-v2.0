@@ -1,0 +1,84 @@
+# 
+# Geometry
+d:Ge/World/HLX= 900 nm  
+d:Ge/World/HLY= 900 nm  
+d:Ge/World/HLZ= 900 nm  
+s:Ge/World/Material ="G4_WATER"
+b:Ge/World/Invisible = "True"
+
+# Cylindrical envelope
+s:Ge/CylindricalEnvelope/Parent            = "World"
+s:Ge/CylindricalEnvelope/Type              = "TsRandomCylindersInComponent"
+s:Ge/CylindricalEnvelope/Material          = "G4_WATER"
+s:Ge/CylindricalEnvelope/EnvelopeShape     = "TsCylinder"
+d:Ge/CylindricalEnvelope/HL                = 80 nm 
+d:Ge/CylindricalEnvelope/RMax              = 40 nm
+# An ascii file containing six columns will be generated. 
+# The first 3 columns contain position in x, y, z axis in nm. 
+# The last 3 columns contain rotation angles in degrees
+b:Ge/CylindricalEnvelope/GenerateCylinders = "False"
+i:Ge/CylindricalEnvelope/NumberOfCylinders = 500
+s:Ge/CylindricalEnvelope/InputFile        = "randomCylinders_inCylinder_position_nm_rotation_deg.xyz"
+# Dimensions for random cylinders
+d:Ge/CylindricalEnvelope/Cylinders/RMax    = 1.15 nm
+d:Ge/CylindricalEnvelope/Cylinders/HL      = 1.70 nm
+s:Ge/CylindricalEnvelope/Cylinders/Material = "G4_WATER"
+s:Ge/CylindricalEnvelope/Cylinders/Color    = "grass"
+s:Ge/CylindricalEnvelope/Cylinders/DrawingStyle = "Solid"
+s:Ge/CylindricalEnvelope/Color    = "blue"
+d:Ge/CylindricalEnvelope/TransZ   = 280 nm
+
+# Spherical envelope
+s:Ge/SphericalEnvelope/Parent            = "World"
+s:Ge/SphericalEnvelope/Type              = "TsRandomCylindersInComponent"
+s:Ge/SphericalEnvelope/Material          = "G4_WATER"
+s:Ge/SphericalEnvelope/EnvelopeShape     = "TsSphere"
+d:Ge/SphericalEnvelope/RMax              = 80 nm
+# An ascii file containing six columns will be generated. 
+# The first 3 columns contain position in x, y, z axis in nm. 
+# The last 3 columns contain rotation angles in degrees
+b:Ge/SphericalEnvelope/GenerateCylinders = "False"
+s:Ge/SphericalEnvelope/InputFile        = "randomCylinders_inSphere_position_nm_rotation_deg.xyz"
+# Dimensions for random cylinders
+d:Ge/SphericalEnvelope/Cylinders/RMax    = 1.15 nm
+d:Ge/SphericalEnvelope/Cylinders/HL      = 1.70 nm
+s:Ge/SphericalEnvelope/Cylinders/Material = "G4_WATER"
+s:Ge/SphericalEnvelope/Cylinders/Color    = "orange"
+s:Ge/SphericalEnvelope/Cylinders/DrawingStyle = "Solid"
+s:Ge/SphericalEnvelope/Color    = "red"
+
+# Box envelope
+s:Ge/BoxEnvelope/Parent            = "World"
+s:Ge/BoxEnvelope/Type              = "TsRandomCylindersInComponent"
+s:Ge/BoxEnvelope/Material          = "G4_WATER"
+s:Ge/BoxEnvelope/EnvelopeShape     = "TsBox"
+d:Ge/BoxEnvelope/HLX               = 40 nm
+d:Ge/BoxEnvelope/HLY               = 40 nm
+d:Ge/BoxEnvelope/HLZ               = 80 nm
+# An ascii file containing six columns will be generated. 
+# The first 3 columns contain position in x, y, z axis in nm. 
+# The last 3 columns contain rotation angles in degrees
+b:Ge/BoxEnvelope/GenerateCylinders = "False"
+s:Ge/BoxEnvelope/InputFile        = "randomCylinders_inBox_position_nm_rotation_deg.xyz"
+# Dimensions for random cylinders
+d:Ge/BoxEnvelope/Cylinders/RMax    = 1.15 nm
+d:Ge/BoxEnvelope/Cylinders/HL      = 1.70 nm
+s:Ge/BoxEnvelope/Cylinders/Material = "G4_WATER"
+s:Ge/BoxEnvelope/Cylinders/Color    = "yellow"
+s:Ge/BoxEnvelope/Cylinders/DrawingStyle = "Solid"
+s:Ge/BoxEnvelope/Color    = "magenta"
+d:Ge/BoxEnvelope/TransZ   = -280 nm
+
+
+s:Gr/view/Type = "OpenGl"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 700
+d:Gr/view/Theta = 45 deg
+d:Gr/view/Phi   = 15 deg
+u:Gr/view/Zoom  = 1.5
+
+b:Ts/PauseBeforeQuit = "True"
+i:Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1 
+

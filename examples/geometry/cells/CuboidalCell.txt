@@ -1,0 +1,78 @@
+# TOPAS-nBio example - Cuboidal cell
+# To include a nucleus at the center of the cell, specify the nucleus radius. 
+# To include mitochondria, randomly positioned in the cytoplasm, specify the number of mito.
+# 
+# A spherical cell using EM physics.
+
+# Since mitochondria are arranged randomly, this check should be switched off to allow the randomize algorithm to work.
+b:Ge/QuitIfOverlapDetected="false"
+
+d:Ge/World/HLX=50. um
+d:Ge/World/HLY=50. um
+d:Ge/World/HLZ=50. um
+b:Ge/World/Invisible="true"
+
+s:Ge/MyCell/Type="TsCuboidalCell"
+s:Ge/MyCell/Material="G4_WATER"
+s:Ge/MyCell/Parent="World"
+d:Ge/MyCell/Cell_HLX=10 um
+d:Ge/MyCell/Cell_HLY=20 um
+d:Ge/MyCell/Cell_HLZ=10 um
+s:Ge/MyCell/Color="white"
+
+#Nucleus
+d:Ge/MyCell/Nucleus/NucleusRadius=5. um
+s:Ge/MyCell/Nucleus/Material="G4_WATER"
+s:Ge/MyCell/Nucleus/Color="red"
+s:Ge/MyCell/Nucleus/DrawingStyle="solid"
+
+#Mitochondria
+i:Ge/MyCell/Mitochondria/NumberOfMitochondria=10
+d:Ge/MyCell/Mitochondria/a=0.5 um
+d:Ge/MyCell/Mitochondria/b=0.3 um
+d:Ge/MyCell/Mitochondria/c=0.9 um
+s:Ge/MyCell/Mitochondria/Material="G4_WATER"
+s:Ge/MyCell/Mitochondria/Color="grass"
+s:Ge/MyCell/Mitochondria/DrawingStyle="solid"
+
+Ph/Default/Modules = 1 "g4em-livermore"
+
+# Set a source
+s:So/Example/Type                     = "Beam"
+s:So/Example/Component                = "BeamPosition"
+s:So/Example/BeamParticle             = "proton"
+d:So/Example/BeamEnergy               = 20 MeV
+s:So/Example/BeamShape		      = "Rectangle"
+s:So/Example/BeamPositionDistribution = "Flat"
+u:So/Example/BeamEnergySpread         = 0.757504
+s:So/Example/BeamAngularDistribution  = "Gaussian"
+d:So/Example/BeamAngularCutoffX       = 10. deg
+d:So/Example/BeamAngularCutoffY       = 10. deg
+s:So/Example/BeamPositionCutoffShape  = "Rectangle"
+d:So/Example/BeamPositionCutoffX      = 20 um
+d:So/Example/BeamPositionCutoffY      = 20 um
+d:So/Example/BeamAngularSpreadX       = 0.0032 rad
+d:So/Example/BeamAngularSpreadY       = 0.0032 rad
+i:So/Example/NumberOfHistoriesInRun   = 200
+
+
+#Score dose to the cell
+s:Sc/CellScorer/Quantity = "DoseToMedium"
+s:Sc/CellScorer/Component = "MyCell"
+b:Sc/CellScorer/OutputToConsole = "True"
+b:Sc/CellScorer/PropagateToChildren = "true"
+s:Sc/CellScorer/IfOutputFileAlreadyExists = "overwrite"
+
+#Score energy deposited in Cell components
+s:Sc/OrganelleScorer/Quantity = "TsNtupleForCell"
+s:Sc/OrganelleScorer/Component = "MyCell"
+s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
+s:Sc/OrganelleScorer/OutputType = "ASCII" 
+s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 1000
+i:Gr/ViewA/WindowSizeY = 800
+
+
+Ts/PauseBeforeQuit = "True"

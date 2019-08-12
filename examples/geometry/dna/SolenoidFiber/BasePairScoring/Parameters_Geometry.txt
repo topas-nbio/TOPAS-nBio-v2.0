@@ -1,0 +1,23 @@
+s:Ge/Fiber/Type = "TsSolenoidFiber"
+s:Ge/Fiber/Material = "G4_WATER"
+s:Ge/Fiber/Parent = "World"
+
+s:Ge/Fiber/Histone/Material = "G4_WATER"
+
+s:Ge/Fiber/base1/Material = "G4_WATER"
+s:Ge/Fiber/base2/Material = "G4_WATER"
+s:Ge/Fiber/back1/Material = "G4_WATER"
+s:Ge/Fiber/back2/Material = "G4_WATER"
+
+
+
+b:Ge/CheckForOverlaps = "False"
+
+#Set Fiber dimensions
+d:Ge/Fiber/FiberHalfLength = 80.0 nm
+d:Ge/Fiber/FiberRadius = 18.5 nm
+
+#Choose the DNA Geometry Model
+s:Ge/Fiber/DNA_Model = "QuarterCylinder"   # or "HalfCylinder" or "Sphere"
+
+#i:Ge/TsSolenoidFiber/NumberOfHistonesPerTurn = 6		#default=6, not mandatory

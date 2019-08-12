@@ -1,0 +1,51 @@
+# TOPAS-nBio example : DNA (Geant4-DNA wholeNuclearDNA).
+# The Geant4 DNA example implemented into TOPAS-nBio.
+
+b:Ge/QuitIfOverlapDetected="false"
+
+d:Ge/World/HLX=0.015 mm
+d:Ge/World/HLY=0.015 mm
+d:Ge/World/HLZ=0.015 mm
+b:Ge/World/Invisible = "True"
+
+s:Ge/MyCell/Type="tsdna"
+s:Ge/MyCell/Parent="World"
+s:Ge/MyCell/Material="G4_WATER"
+
+s:Ge/MyCell/Nucleus/Material="G4_WATER"
+s:Ge/MyCell/Nucleus/Color="white"
+
+s:Ge/MyCell/ChromoTerr/Material="G4_WATER"
+
+s:Ge/MyCell/flower/Material="G4_WATER"
+s:Ge/MyCell/flower/Color="pink"
+b:Ge/MyCell/flower/Invisible="false"
+
+#Note building the following components with visualization switched on will significantly slow down simulations:
+
+b:Ge/MyCell/BuildChromatinFiber="true"
+b:Ge/MyCell/BuildBases="false"
+s:Ge/MyCell/chromatinFiber/Material="G4_WATER"
+s:Ge/MyCell/chromatinFiber/Color="green"
+b:Ge/MyCell/chromatinFiber/Invisible="true"
+
+s:Ge/MyCell/histone/Material="G4_WATER"
+s:Ge/MyCell/histone/Color="blue"
+s:Ge/MyCell/BasePair1/Material="G4_WATER"
+s:Ge/MyCell/BasePair1/Color="red"
+s:Ge/MyCell/lSugar2/Material="G4_WATER"
+s:Ge/MyCell/lSugar2/Color="yellow"
+s:Ge/MyCell/lSugar4/Material="G4_WATER"
+s:Ge/MyCell/lSugar4/Color="white"
+
+Ph/Default/Modules = 1 "g4em-standard_opt0"
+
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 900
+i:Gr/ViewA/WindowSizeY = 700
+d:Gr/ViewA/Theta = 45 deg
+d:Gr/ViewA/Phi = 45 deg
+
+Ts/PauseBeforeQuit = "true"
+
+
