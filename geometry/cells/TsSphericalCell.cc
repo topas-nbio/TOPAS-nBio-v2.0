@@ -80,8 +80,8 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
         G4String name1 = GetFullParmName("Nucleus/translateX");
         if (fPm -> ParameterExists(name1)){
             transNucX = fPm->GetDoubleParameter(name1, "Length");
-            if (transNucX > NuclRadius) {
-                G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
+	    if ((sqrt(transNucX*transNucX)+(transNucY*transNucY)+(transNucZ*transNucZ)) > (CellRadius-NuclRadius)){
+		G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
                 exit(1);
             }
@@ -90,7 +90,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
         name1 = GetFullParmName("Nucleus/translateY");
         if (fPm -> ParameterExists(name1)){
             transNucY = fPm->GetDoubleParameter(name1, "Length");
-            if (transNucY > NuclRadius) {
+            if ((sqrt(transNucX*transNucX)+(transNucY*transNucY)+(transNucZ*transNucZ)) > (CellRadius-NuclRadius)){
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
                 exit(1);
@@ -100,7 +100,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
         name1 = GetFullParmName("Nucleus/translateZ");
         if (fPm -> ParameterExists(name1)){
             transNucZ = fPm->GetDoubleParameter(name1, "Length");
-            if (transNucZ > NuclRadius) {
+            if ((sqrt(transNucX*transNucX)+(transNucY*transNucY)+(transNucZ*transNucZ)) > (CellRadius-NuclRadius)){
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
                 exit(1);
