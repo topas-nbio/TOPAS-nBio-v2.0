@@ -16,6 +16,7 @@
 
 #include "TsParameterManager.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4PhysicalVolumeStore.hh"
 
 #include "G4Box.hh"
 #include "G4Orb.hh"
@@ -173,7 +174,7 @@ G4VPhysicalVolume* TsCuboidalCell::Construct()
                 
                 if (OverlapCheck == false){break;}
                 if (OverlapCheck == true){
-                    pMito = NULL;
+                    G4PhysicalVolumeStore::DeRegister(pMito);
                     G4cout << "**** Finding new position for volume " << subComponentName2 << ":" << j <<  " ****" << G4endl;
                 }
             }
