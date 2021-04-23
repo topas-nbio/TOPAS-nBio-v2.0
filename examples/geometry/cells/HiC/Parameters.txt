@@ -1,0 +1,76 @@
+i:Ts/NumberOfThreads = 4
+Tf/NumberOfSequentialTimes = 10
+b:Ts/PauseBeforeQuit = "f"
+b:Ts/DumpParameters = "f"
+i:Ts/Seed = 1234
+
+
+## ---------------- Geometry ----------------  ##
+d:Ge/World/HLX=50. um
+d:Ge/World/HLY=50. um
+d:Ge/World/HLZ=50. um
+b:Ge/World/Invisible="true"
+
+s:Ge/HiC/Type = "TsHiC"
+s:Ge/HiC/Parent = "World"
+s:Ge/HiC/Material = "Vacuum"
+s:Ge/HiC/Color = "white"
+
+d:Ge/HiC/Cytoplasm/transX = 0.0 um
+d:Ge/HiC/Cytoplasm/transY = 0.0 um
+d:Ge/HiC/Cytoplasm/transZ = 0.0 um
+d:Ge/HiC/Cytoplasm/ExtraSpacing = 5.0 um
+s:Ge/HiC/Cytoplasm/Material = "G4_WATER"
+s:Ge/HiC/Cytoplasm/Color = "white"
+s:Ge/HiC/Cytoplasm/DrawingStyle = "Wireframe"
+#b:Ge/HiC/Cytoplasm/Invisible="true"
+
+s:Ge/HiC/Nucleus/Material = "G4_WATER"
+s:Ge/HiC/Nucleus/Color = "blue"
+s:Ge/HiC/Nucleus/DrawingStyle = "Wireframe"
+#b:Ge/HiC/Nucleus/Invisible="true"
+
+s:Ge/HiC/VerticesFile="HiC_Vertices/4umIMR90_noLADs.vert.txt"
+
+## ---------------- Scoring ----------------  ##
+s:Sc/HiCScorer/Quantity = "NtupleForHiC"
+b:Sc/HiCScorer/Active = "True"
+s:Sc/HiCScorer/Component = "HiC"
+s:Sc/HiCScorer/OutputFile = "Output"
+s:Sc/HiCScorer/OutputType = "ASCII"
+s:Sc/HiCScorer/IfOutputFileAlreadyExists = "Overwrite"
+u:Sc/HiCScorer/SensitiveFraction = 0.141328949  #default=0.141328949
+d:Sc/HiCScorer/MinEneRange = 5.0 eV #default=5eV
+d:Sc/HiCScorer/MaxEneRange = 37.5 eV  #default=37.5eV
+b:Sc/HiCScorer/WriteSSB = "false" #default=false
+s:Sc/HiCScorer/SDDOutputFile = "Output.sdd" #output filename (default=Output.sdd)
+b:Sc/HiCScorer/OverwiteSDD = "True" #Overwrite SDD if exsts (default=true)
+
+
+## ---------------- Physics ----------------  ##
+sv:Ph/Default/Modules = 1 "g4em-dna"
+d:Ph/Default/CutForAllParticles = 1.0 nm
+
+
+
+## ---------------- Beam ----------------  ##
+#details
+s:So/Beam/Type = "Beam"
+s:So/Beam/Component = "BeamPosition"
+s:So/Beam/BeamParticle = "proton"
+d:So/Beam/BeamEnergy = 10.0 MeV
+u:So/Beam/BeamEnergySpread = 0.0
+
+s:So/Beam/BeamPositionDistribution = "Flat"
+s:So/Beam/BeamPositionCutoffShape  = "Ellipse"
+d:So/Beam/BeamPositionCutoffX = 15.0937547 um
+d:So/Beam/BeamPositionCutoffY = 15.0937547 um
+s:So/Beam/BeamAngularDistribution = "None"
+
+i:So/Beam/NumberOfHistoriesInRun = 1000
+
+
+## ---------------- Visualisation ----------------  ##
+#s:Gr/ViewA/Type = "OpenGL"
+#i:Gr/ViewA/WindowSizeX = 1000
+#i:Gr/ViewA/WindowSizeY = 800

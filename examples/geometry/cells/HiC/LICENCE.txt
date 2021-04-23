@@ -1,0 +1,36 @@
+Hi-C Cell Geometry
+********************************************************************************
+* Software: HiC(nBio) v1.0						                                         *
+* Contact: Dr. Nicholas Henthorn					                                     *
+* Contact email: nicholas.henthorn@manchester.ac.uk               	           *
+* Initial Date: 22/09/2020                                          	         *
+* Last Updated: 22/09/2020                                          	         *
+*                                                                  	           *
+* PRECISE (Proton Research at the Christie & Division of Cancer Sciences)      *
+* Division of Cancer Sciences						                                       *
+* School of Medical Sciences						                                       *
+* Faculty of Biology, Medicine and Health				                               *
+* University of Manchester						                                         *
+* UK                          						                                     *
+* Website: www.bmh.manchester.ac.uk/research/domains/cancer/proton/	           *
+*									                                                             *
+* This  code  implementation is the result of  the  scientific and technical   *
+* work of the PRECISE Group in the Division of Cancer Sciences at the 	       *
+* University of Manchester. By using,  copying,  modifying or  distributing    *
+* the software (or any work based  on the software)  you  agree  to 	         *
+* acknowledge its use  in resulting  scientific  publications. To acknowledge  *
+* this work please cite the following publications:			                       *
+*									                                                             *
+* DOI: 10.1371/journal.pcbi.1008476                                            *
+*									                                                             *
+* This work is Co-funded by the Manchester Biomedical Research Centre, EPSRC   *
+* Proton Therapy Network EP/N027167, BioProton EPS0243444, and EP/J500094.     *
+* STFC Advanced radiotherapy Network and EU Integrating Activity INSPIRE       *
+* (Grant No. 730983)							                                             *
+*									                                                             *
+* Solved geometry inputs can be found at:                                      *
+* https://data.mendeley.com/datasets/kzycj3n2mm/1                              *
+*                                                                              *
+* The Hi-C "G-Nome" solver software is available at:                           *
+* https://gitlab.com/PRECISE-RT/releases/g-nome                                *
+********************************************************************************
