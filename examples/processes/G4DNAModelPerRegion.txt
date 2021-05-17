@@ -30,8 +30,6 @@ s:Ge/MyCell/Nucleus/Material="G4_WATER"
 s:Ge/MyCell/Nucleus/Color="red"
 s:Ge/MyCell/Nucleus/DrawingStyle="solid"
 d:Ge/MyCell/Nucleus/transNucZ = -5. um
-# Assign this component to world's region
-s:Ge/MyCell/Nucleus/AssignToRegionNamed = "DefaultRegionForTheWorld"
 
 #Mitochondria
 i:Ge/MyCell/Mitochondria/NbOfMito=10
@@ -46,7 +44,7 @@ s:Ge/MyCell/Mitochondria/DrawingStyle="solid"
 # Define condensed-history em model anywhere
 sv:Ph/Default/Modules = 1 "g4em-livermore"
 # But geant4-dna in the G4DNA region. 
-s:Ph/Default/ForRegion/G4DNA/ActiveG4EmModelNamed = "g4em-dna"
+s:Ph/Default/ForRegion/G4DNA/ActiveG4EmModelFromModule = "g4em-dna"
 
 # Shoot few particles
 d:So/Demo/BeamEnergy = 100 MeV
