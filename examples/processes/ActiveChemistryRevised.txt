@@ -53,6 +53,6 @@ i:Ts/ChemistryVerbosity = 1
 i:Ts/ShowHistoryCountAtInterval = 1 
 i:Ts/NumberOfThreads = 1
 b:Ts/ShowCPUTime = "True"
-b:Ts/PauseBeforeQuit = "True"
+b:Ts/PauseBeforeQuit = "False"
 i:Ts/Seed = 1
 

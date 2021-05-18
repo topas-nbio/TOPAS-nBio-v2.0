@@ -1,7 +1,7 @@
 
 # Diffusion coefficients
 sv:Ch/TOPASChemistry/DiffusionCoefficients/Molecules = 11 "SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide" "Oxygen" "SuperoxideAnion" "Hydroperoxy" "Dioxidanide"
-dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 11  4.90022052437e9 2.2e9 7e9 9.4601846875e9 4.8e9 5.3032890625e9 2.3e9 2.1e9 2.1e9 2.0e9 2.0e9 nm2/s
+dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 11  4.90022052437e9 2.2e9 7e9 9.4601846875e9 4.8e9 5.3032890625e9 2.3e9 2.1e-9 2.1e-9 2.0e-9 2.0e-9 nm2/s
 
 b:Ch/TOPASChemistry/SetWaterMolecularConfiguration = "False"
 

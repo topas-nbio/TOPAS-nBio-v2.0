@@ -1,0 +1,37 @@
+
+# Diffusion coefficients
+sv:Ch/TOPAS/DiffusionCoefficients/Molecules = 7 "SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide"
+uv:Ch/TOPAS/DiffusionCoefficients/Values    = 7  4.90022052437e-09 2.2e-09 7e-09 9.4601846875e-09 4.8e-09 5.3032890625e-09 2.3e-09 
+
+b:Ch/TOPAS/SetWaterMolecularConfiguration = "False"
+
+# Reaction rates
+sv:Ch/TOPAS/BinaryReaction/SolvatedElectron/SolvatedElectron/Products    = 3 "Hydroxide" "Hydroxide" "Dyhydrogen"
+u:Ch/TOPAS/BinaryReaction/SolvatedElectron/SolvatedElectron/ReactionRate = 0.647e10 
+
+sv:Ch/TOPAS/BinaryReaction/SolvatedElectron/Hydroxyl/Products            = 1 "Hydroxide"
+u:Ch/TOPAS/BinaryReaction/SolvatedElectron/Hydroxyl/ReactionRate         = 2.953e10 
+
+sv:Ch/TOPAS/BinaryReaction/SolvatedElectron/Hydrogen/Products            = 2 "Hydroxide" "Dyhydrogen"
+u:Ch/TOPAS/BinaryReaction/SolvatedElectron/Hydrogen/ReactionRate         = 2.652e10
+
+sv:Ch/TOPAS/BinaryReaction/SolvatedElectron/Hydronium/Products           = 1 "Hydrogen"
+u:Ch/TOPAS/BinaryReaction/SolvatedElectron/Hydronium/ReactionRate        = 2.109e10
+
+sv:Ch/TOPAS/BinaryReaction/SolvatedElectron/HydrogenPeroxide/Products    = 2 "Hydroxide" "Hydroxyl"
+u:Ch/TOPAS/BinaryReaction/SolvatedElectron/HydrogenPeroxide/ReactionRate = 1.405e10
+
+sv:Ch/TOPAS/BinaryReaction/Hydroxyl/Hydroxyl/Products                    = 1 "HydrogenPeroxide"
+u:Ch/TOPAS/BinaryReaction/Hydroxyl/Hydroxyl/ReactionRate                 = 0.475e10
+
+sv:Ch/TOPAS/BinaryReaction/Hydroxyl/Hydrogen/Products                    = 1 "NoProduct"
+u:Ch/TOPAS/BinaryReaction/Hydroxyl/Hydrogen/ReactionRate                 = 1.438e10
+
+sv:Ch/TOPAS/BinaryReaction/Hydrogen/Hydrogen/Products                    = 1 "Dyhydrogen"
+u:Ch/TOPAS/BinaryReaction/Hydrogen/Hydrogen/ReactionRate                 = 0.503e10
+
+sv:Ch/TOPAS/BinaryReaction/Hydronium/Hydroxide/Products                  = 1 "NoProduct"
+u:Ch/TOPAS/BinaryReaction/Hydronium/Hydroxide/ReactionRate               = 11.031e10
+
+###
+

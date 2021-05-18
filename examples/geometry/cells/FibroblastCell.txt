@@ -59,6 +59,7 @@ s:Sc/OrganelleScorer/Component = "MyCell"
 s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
 s:Sc/OrganelleScorer/OutputType = "ASCII" 
 s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
+b:Sc/OrganelleScorer/PropagateToChildren = "True"
 
 s:Gr/ViewA/Type = "OpenGL"
 i:Gr/ViewA/WindowSizeX = 1000
@@ -68,6 +69,6 @@ d:Gr/ViewA/Theta = 0 deg
 d:Gr/ViewA/Phi = 0 deg
 u:Gr/ViewA/Zoom = 2.
 
-Ts/PauseBeforeQuit = "True"
-
+Ts/PauseBeforeQuit = "False"
+b:Ts/ShowCPUTime = "True"
 

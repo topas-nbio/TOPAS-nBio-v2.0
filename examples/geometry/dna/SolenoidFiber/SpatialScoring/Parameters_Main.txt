@@ -1,5 +1,5 @@
 i:Ts/NumberOfThreads = 4
-Tf/NumberOfSequentialTimes = 10000
+Tf/NumberOfSequentialTimes = 10
 b:Ts/PauseBeforeQuit = "t"
 b:Ts/DumpParameters = "f"
 i:Ts/Seed = 1234

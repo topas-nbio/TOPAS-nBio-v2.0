@@ -1,0 +1,110 @@
+See LICENCE.txt in DaMaRiS directory for licences and disclaimers
+
+## ---------------------------- Geometry ------------------------------------ ##
+d:Ge/World/HLX= 5. um
+d:Ge/World/HLY= 5. um
+d:Ge/World/HLZ= 5. um
+s:Ge/World/Material ="G4_WATER"
+
+s:Ge/Target/Parent = "World"
+s:Ge/Target/Type = "TsSphere"
+s:Ge/Target/Material = "G4_WATER"
+d:Ge/Target/RMin                 = 0 mm
+d:Ge/Target/RMax                 = 2.5 um
+d:Ge/Target/SPhi                 = 0 deg
+d:Ge/Target/DPhi                 = 360 deg
+d:Ge/Target/STheta               = 0 deg
+d:Ge/Target/DTheta               = 180 deg
+
+## ---------------------------- Beam ---------------------------------------- ##
+#@@@@ Set up the beam to have no interactions as we will be getting DSB locations
+#@@@@ from a file.
+s:So/Demo/Type = "Beam"
+s:So/Demo/BeamParticle = "geantino"
+i:So/Demo/NumberOfHistoriesInRun = 1
+
+## --------------------------- General -------------------------------------  ##
+#@@@@ DaMaRiS is only single threaded.
+i:Ts/NumberOfThreads = 1
+sv:Ph/Default/Modules = 2 "g4em-dna" "DrEmDNAChemistry"
+i:Ts/ChemistryVerbosity = 1
+includeFile = TOPASChemistry.txt
+includeFile = motion.txt
+b:Ch/DaMaRiS/Bool_DaMaRiS = "True"
+s:Ch/ChemistryName = "DaMaRiS"
+b:Ch/DaMaRiS/ChemicalTransportActive = "True"
+i:Ts/Seed = 12345
+
+## ------------------------- DaMaRiS User Settings ----------------------------- ##
+#@@@@ This is a number which is appended onto the end of all output files from
+#@@@@ DaMaRiS runs.
+i:Ch/DaMaRiS/AlternativeRunID = 0
+#@@@@ How many times do you want to repeat the repair simulation.
+#@@@@ 30+ seems to give OK statistics.
+i:Ch/DaMaRiS/BiologyRepeatNumber = 10
+#@@@@ How long should the repair simulation go on for. With current time constants
+#@@@@ Pre-synaptic recruitment has reached a maximum at around ~30s and most DSB
+#@@@@ repair happens within ~30 min. I would consider 24 hours a standard run.
+d:Ch/DaMaRiS/DaMaRiSStageTimeEnd = 86400 s
+
+#@@@@ The following parameters are used to set the time frame and frequency over
+#@@@@ which the motion of DSBs are sampled in order to investigate their MSD.
+#@@@@ For sub-diffusive motion this should scale as MSD = t^a, where a < 1. From
+#@@@@ literature I would expect a to be around 0.5 in order to mimic DSB motion
+#@@@@ in real cells.
+#@@@@ If Not set these values will default to 300 s and 1 s as below.
+d:Ch/DaMaRiS/ObserveDurationForMSD = 300 s
+d:Ch/DaMaRiS/ObserveStepSizeForMSD = 1 s
+
+#@@@@ This is important to set correctly! This is the radius of the sphere which
+#@@@@ the DSBs are not allowed to leave (ie. 'the nucleus'). I have not been able
+#@@@@ to confine them in any other manner so for now no other shape than a sphere
+#@@@@ is allowed for the nucleus and it has to be centered at the world origin.
+d:Ch/DaMaRiS/BoundingCellOrNucleusRadius = Ge/Target/RMax um
+
+#@@@@ If you are reading in from a file the name of the file must be specified
+#@@@@ here. DaMaRiS will store the parsed damage data extracted during the first
+#@@@@ run in memory and use that in subsequent repeats. The damage file must be
+#@@@@ in SDD v1.0 format.
+s:Ch/DaMaRiS/STDFormatDamageFileName = "damage.sdd"
+
+#@@@@ Sets the biological pathway to be used in the simulation.
+#@@@@ pathwayNHEJ.txt will simulate repair by NHEJ only
+#@@@@ pathwayHR.txt will simulate repair by HR and NHEJ
+includefile = pathwayNHEJ.txt
+#includefile = pathwayHR.txt
+
+#@@@@ If the damage file contains multiple exposures the default behaviour is to
+#@@@@ select one of them at random to populate the repair simulation. If instead
+#@@@@ you wish to investigate a specific exposure the it can be selected here.
+#@@@@ Numbers start at 1 for the first exposure identified in the file. Setting
+#@@@@ the number to -1 will cause random selection.
+i:Ch/DaMaRiS/SelectFromExposureNumber = -1
+
+#@@@@ Turns on/off placing DSBs using the timing information in the damage file
+#@@@@ If not set will default to true, that is timing information will >not< be
+#@@@@ used.
+b:Ch/DaMaRiS/TurnOffTime = "True"
+
+#@@@@ --------------------------------------------------------------------------
+#@@@@ Sequential checking of variables for constructing custom DSB distributions.
+#@@@@ leave these all as false to use SDD file to populate DSB pattern.
+#@@@@ --------------------------------------------------------------------------
+#@@@@ If DSBOriginNumber is >= 0 then this number of "DSBEnd" objects will be
+#@@@@ built at the origin.
+#i:Ch/DaMaRiS/DSBOriginNumber = -1
+
+#@@@@ If DSBOffset > 0.0 then this wil build a single "DSBEnd" object the
+#@@@@ specified number of nm away from the origin on the x axis.
+#d:Ch/DaMaRiS/DSBOffset = 0.0 nm
+
+#@@@@ If DSBColumnNumber >= 0 then that number of DSBs will be built randomly in
+#@@@@ a column of specified radius along the z axis through the nucleus.
+#i:Ch/DaMaRiS/DSBColumnNumber = -1
+#d:Ch/DaMaRiS/DSBColumnRadius = -1.0 nm
+
+#@@@@ If DSBSeparation >= 0.0 this will place two DSBs that far apart with a
+#@@@@ specified delay in placing the second DSB. DSBTimeDelay defaults to 0 s if
+#@@@@ not set so does not have to be specified.
+#d:Ch/DaMaRiS/DSBSeparation = -1.0 nm
+#d:Ch/DaMaRiS/DSBTimeDelay = 0.0 s

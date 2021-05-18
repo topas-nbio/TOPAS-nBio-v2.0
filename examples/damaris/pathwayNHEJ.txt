@@ -1,0 +1,80 @@
+i:Ch/DaMaRiS/numberOfConnections = 9
+
+#Change 1
+s:Ch/DaMaRiS/ProteinKinetic1/changeFrom = "DSBEnd"
+sv:Ch/DaMaRiS/ProteinKinetic1/changeTo = 1 "DSBEnd_Inhibited"
+d:Ch/DaMaRiS/ProteinKinetic1/changeTime = 0.85 s
+b:Ch/DaMaRiS/ProteinKinetic1/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic1/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic1/cleanBase = "false"
+
+#Change 2
+s:Ch/DaMaRiS/ProteinKinetic2/changeFrom = "DSBEnd_Inhibited"
+sv:Ch/DaMaRiS/ProteinKinetic2/changeTo = 1 "DSBEnd"
+d:Ch/DaMaRiS/ProteinKinetic2/changeTime = 3.8 s
+b:Ch/DaMaRiS/ProteinKinetic2/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic2/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic2/cleanBase = "false"
+
+#Change 3
+s:Ch/DaMaRiS/ProteinKinetic3/changeFrom = "DSBEnd"
+sv:Ch/DaMaRiS/ProteinKinetic3/changeTo = 1 "DSBEnd_Ku"
+d:Ch/DaMaRiS/ProteinKinetic3/changeTime = 1.1 s
+b:Ch/DaMaRiS/ProteinKinetic3/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic3/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic3/cleanBase = "false"
+
+#Change 4
+s:Ch/DaMaRiS/ProteinKinetic4/changeFrom = "DSBEnd_Ku"
+sv:Ch/DaMaRiS/ProteinKinetic4/changeTo = 1 "DSBEnd_PKcs"
+d:Ch/DaMaRiS/ProteinKinetic4/changeTime = 1.2 s
+b:Ch/DaMaRiS/ProteinKinetic4/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic4/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic4/cleanBase = "false"
+
+#Change 5
+s:Ch/DaMaRiS/ProteinKinetic5/changeFrom = "DSBSynaptic"
+sv:Ch/DaMaRiS/ProteinKinetic5/changeTo = 1 "DSBSynaptic_Stable"
+d:Ch/DaMaRiS/ProteinKinetic5/changeTime = 250.0 s
+b:Ch/DaMaRiS/ProteinKinetic5/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic5/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic5/cleanBase = "false"
+
+#Change 6
+s:Ch/DaMaRiS/ProteinKinetic6/changeFrom = "DSBSynaptic_Stable"
+sv:Ch/DaMaRiS/ProteinKinetic6/changeTo = 1 "DSBSynaptic_Stable"
+d:Ch/DaMaRiS/ProteinKinetic6/changeTime = 300.0 s
+b:Ch/DaMaRiS/ProteinKinetic6/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic6/cleanBackbone = "true"
+b:Ch/DaMaRiS/ProteinKinetic6/cleanBase = "false"
+
+#Change 7
+s:Ch/DaMaRiS/ProteinKinetic7/changeFrom = "DSBSynaptic_Stable"
+sv:Ch/DaMaRiS/ProteinKinetic7/changeTo = 1 "DSBSynaptic_Stable"
+d:Ch/DaMaRiS/ProteinKinetic7/changeTime = 900.0 s
+b:Ch/DaMaRiS/ProteinKinetic7/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic7/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic7/cleanBase = "true"
+
+#Change 8
+s:Ch/DaMaRiS/ProteinKinetic8/changeFrom = "DSBSynaptic_Stable"
+sv:Ch/DaMaRiS/ProteinKinetic8/changeTo = 1 "DSB_Fixed"
+d:Ch/DaMaRiS/ProteinKinetic8/changeTime = 1200.0 s
+b:Ch/DaMaRiS/ProteinKinetic8/requireClean = "true"
+b:Ch/DaMaRiS/ProteinKinetic8/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic8/cleanBase = "false"
+
+#Change 9
+s:Ch/DaMaRiS/ProteinKinetic9/changeFrom = "DSBSynaptic"
+sv:Ch/DaMaRiS/ProteinKinetic9/changeTo = 2 "DSBEnd" "DSBEnd"
+d:Ch/DaMaRiS/ProteinKinetic9/changeTime = 140.0 s
+b:Ch/DaMaRiS/ProteinKinetic9/requireClean = "false"
+b:Ch/DaMaRiS/ProteinKinetic9/cleanBackbone = "false"
+b:Ch/DaMaRiS/ProteinKinetic9/cleanBase = "false"
+
+i:Ch/DaMaRiS/numberOfReactions = 1
+
+#Reaction 1
+sv:Ch/DaMaRiS/Reaction1/reactants = 2 "DSBEnd_PKcs" "DSBEnd_PKcs"
+sv:Ch/DaMaRiS/Reaction1/products = 1 "DSBSynaptic"
+d:Ch/DaMaRiS/Reaction1/reactionRange = 25.0 nm

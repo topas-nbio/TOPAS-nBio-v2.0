@@ -27,13 +27,12 @@ s:Ge/MyCell/Nuclei/Material="G4_WATER"
 s:Ge/MyCell/Nuclei/Color="red"
 s:Ge/MyCell/Nuclei/DrawingStyle="solid"
 
-
 Ph/Default/Modules = 1 "g4em-livermore"
 
 s:So/Disk/Type = "Beam" 
 s:So/Disk/Component =  "BeamPosition" 
 s:So/Disk/BeamParticle = "proton" #gamma
-d:So/Disk/BeamEnergy = 5 MeV 
+d:So/Disk/BeamEnergy = 2 MeV 
 u:So/Disk/BeamEnergySpread = 0
 s:So/Disk/BeamShape = "Rectangle"
 s:So/Disk/BeamPositionDistribution = "Flat"
@@ -41,8 +40,8 @@ s:So/Disk/BeamAngularDistribution = "Gaussian"
 d:So/Disk/BeamAngularCutoffX = 10 deg
 d:So/Disk/BeamAngularCutoffY = 10 deg
 s:So/Disk/BeamPositionCutoffShape = "Rectangle"
-d:So/Disk/BeamPositionCutoffX = 10 um
-d:So/Disk/BeamPositionCutoffY = 10 um
+d:So/Disk/BeamPositionCutoffX = 1 um
+d:So/Disk/BeamPositionCutoffY = 1 um
 d:So/Disk/BeamAngularSpreadX = 0.01 deg
 d:So/Disk/BeamAngularSpreadY = 0.01 deg
 i:So/Disk/NumberOfHistoriesInRun=100
@@ -60,10 +59,10 @@ s:Sc/OrganelleScorer/Component = "MyCell"
 s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
 s:Sc/OrganelleScorer/OutputType = "ASCII" 
 s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
+b:Sc/OrganelleScorer/PropagateToChildren = "true"
 
 s:Gr/ViewA/Type = "OpenGL"
 i:Gr/ViewA/WindowSizeX = 1024
 i:Gr/ViewA/WindowSizeY = 768
-
 
 Ts/PauseBeforeQuit = "True"

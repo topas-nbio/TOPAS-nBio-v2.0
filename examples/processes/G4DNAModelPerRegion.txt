@@ -22,24 +22,23 @@ s:Ge/MyCell/Color="magenta"
 # Assign a component to a region. By
 # default, all the children volumes will
 # share the same region
-s:Ge/MyCell/AssignToRegionNamed = "G4DNA"
 
 #Nucleus
-d:Ge/MyCell/Nucleus/NuclRadius=5. um
+d:Ge/MyCell/Nucleus/NucleusRadius=5. um
 s:Ge/MyCell/Nucleus/Material="G4_WATER"
 s:Ge/MyCell/Nucleus/Color="red"
 s:Ge/MyCell/Nucleus/DrawingStyle="solid"
-d:Ge/MyCell/Nucleus/transNucZ = -5. um
+d:Ge/MyCell/Nucleus/TranslateZ = -5. um
+s:Ge/MyCell/Nucleus/AssignToRegionNamed = "G4DNA"
 
 #Mitochondria
-i:Ge/MyCell/Mitochondria/NbOfMito=10
+i:Ge/MyCell/Mitochondria/NumberOfMitochondria=10
 d:Ge/MyCell/Mitochondria/a=0.5 um
 d:Ge/MyCell/Mitochondria/b=0.3 um
 d:Ge/MyCell/Mitochondria/c=0.9 um
 s:Ge/MyCell/Mitochondria/Material="G4_WATER"
 s:Ge/MyCell/Mitochondria/Color="grass"
 s:Ge/MyCell/Mitochondria/DrawingStyle="solid"
-
 
 # Define condensed-history em model anywhere
 sv:Ph/Default/Modules = 1 "g4em-livermore"
@@ -61,4 +60,5 @@ i:Gr/ViewA/WindowSizeY = 700
 u:Gr/ViewA/Zoom = 2.0
 b:Gr/ViewA/IncludeStepPoints = "True"
 
-Ts/PauseBeforeQuit = "True"
+Ts/PauseBeforeQuit = "False"
+b:Ts/ShowCPUTime = "True"

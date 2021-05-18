@@ -16,7 +16,6 @@
 
 #include "TsParameterManager.hh"
 #include "G4VPhysicalVolume.hh"
-#include "G4PhysicalVolumeStore.hh"
 
 #include "G4TwoVector.hh"
 #include "G4ExtrudedSolid.hh"
@@ -160,7 +159,7 @@ G4VPhysicalVolume* TsFibroblastCell2::Construct()
                 
                 if (OverlapCheck == false){break;}
                 if (OverlapCheck == true){
-                    G4PhysicalVolumeStore::DeRegister(pMito);
+                    pMito = NULL;
                     G4cout << "**** Finding new position for volume " << subComponentName2 << ":" << j <<  " ****" << G4endl;
                 }
             }

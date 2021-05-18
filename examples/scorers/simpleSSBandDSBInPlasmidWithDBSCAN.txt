@@ -100,5 +100,5 @@ d:Gr/ViewA/Phi = 20 deg
 u:Gr/ViewA/Zoom = 2.5
 
 i:Ts/NumberOfThreads = 0
-
+b:Ts/ShowCPUTime = "True"
 

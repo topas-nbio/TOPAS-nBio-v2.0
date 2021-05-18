@@ -138,7 +138,7 @@ void TsScoreGValue::AccumulateEvent() {
 		
 		if ( species.get() == 0 ) return;
 		
-		std::vector<G4MolecularConfiguration*>::iterator molecule_it = species->begin();
+		auto molecule_it = species->begin();
 		
 		while ( molecule_it != species->end() ) {
 			for ( int iTime = 0; iTime < (int)fTimeToRecord.size(); iTime++ ) {

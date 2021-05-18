@@ -20,6 +20,8 @@
 
 i:Ts/NumberOfThreads = 4
 sv:Ph/Default/Modules = 2 "g4em-dna" "g4em-dna-chemistry"
+# This gives access of the hits with the scoring manager
+b:Ch/Default/ChemicalStageTransportActive = "True"
 
 d:Ge/World/HLX= 5. um
 d:Ge/World/HLY= 5. um
@@ -59,7 +61,7 @@ b:Sc/NumberOfMoleculesAtTime/TimeBinLog = "True"
 s:Sc/NumberOfMoleculesAtTime/OutputType = "ascii" # or root
 s:Sc/NumberOfMoleculesAtTime/OutputFile = "NumberOfMoleculesAtTime_e_750keV"
 
-i:So/Demo/NumberOfHistoriesInRun = 12
+i:So/Demo/NumberOfHistoriesInRun = 4
 i:Ts/ShowHistoryCountAtInterval = 1 
-
+b:Ts/ShowCPUTime = "True"
 i:Ts/Seed = 12345

@@ -5,9 +5,9 @@ s:Ch/ChemistryName = "TOPASChemistry"
 includeFile = TOPASChemistry.txt
 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
-d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 1.0 us
-dv:Ch/TOPASChemistry/ChemicalStageTimeStep           = 6 1.0  3.0   10.0   100.0  1000.0  1000000.0  ps
-dv:Ch/TOPASChemistry/ChemicalStageTimeStepResolution = 6 0.1  1.0   10.0   100.0  1000.0  100000.0 ps 
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 3.0 ns
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 5 1.0  3.0   10.0   100.0  1000.0  ps 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 5 0.1  1.0   10.0   100.0  1000.0  ps 
 
 s:Ch/TOPASChemistry/RemoveInMaterial = "G4_WATER_MODIFIED"
 sv:Ch/TOPASChemistry/RemoveInMaterialTheseMolecules = 7 "solvatedelectron" "hydroxyl" "hydrogenperoxide" "hydrogen"  "hydronium" "dyhydrogen" "hydroxide" 
@@ -43,7 +43,7 @@ s:Gr/view/Type = "OpenGl"
 i:Gr/view/WindowSizeX = 900
 i:Gr/view/WindowSizeY = 700
 u:Gr/view/Zoom = 4
-b:Ts/PauseBeforeQuit = "True"
+b:Ts/PauseBeforeQuit = "False"
 
 Ts/NumberOfThreads = 1 
 b:Ts/ShowCPUTime = "True"

@@ -20,24 +20,24 @@ b:Ge/World/Invisible="true"
 #s:Ge/MyCell/Material="G4_WATER"
 #s:Ge/MyCell/Parent="World"
 #i:Ge/MyCell/NumberOfRows=20
-#i:Ge/MyCell/NumberOfCols=30
+#i:Ge/MyCell/NumberOfColumns=30
 
 #Example of a layer with complex protein geometry configuration
-#s:Ge/MyCell/Type="TsIonChannel"
-#s:Ge/MyCell/Material="G4_WATER"
-#s:Ge/MyCell/Parent="World"
-#i:Ge/MyCell/NumberOfRows=20
-#i:Ge/MyCell/NumberOfCols=30
-
-#Example of a layer with simple protein
-s:Ge/MyCell/Type="TsChannel"
+s:Ge/MyCell/Type="TsIonChannel"
 s:Ge/MyCell/Material="G4_WATER"
 s:Ge/MyCell/Parent="World"
 i:Ge/MyCell/NumberOfRows=20
-i:Ge/MyCell/NumberOfCols=30
-d:Ge/MyCell/ChannelRmax = 10 nm
-d:Ge/MyCell/ChannelRmin = 2 nm
-d:Ge/MyCell/ChannelHalfLength = 20 nm
+i:Ge/MyCell/NumberOfColumns=30
+
+#Example of a layer with simple protein
+# s:Ge/MyCell/Type="TsChannel"
+# s:Ge/MyCell/Material="G4_WATER"
+# s:Ge/MyCell/Parent="World"
+# i:Ge/MyCell/NumberOfRows=20
+# i:Ge/MyCell/NumberOfColumns=30
+# d:Ge/MyCell/ChannelRmax = 10 nm
+# d:Ge/MyCell/ChannelRmin = 2 nm
+# d:Ge/MyCell/ChannelHalfLength = 20 nm
 
 #Lipid bilayer parameters
 d:Ge/MyCell/LipidHeadRadius=1. nm
