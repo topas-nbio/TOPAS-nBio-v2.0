@@ -94,4 +94,5 @@ d:Gr/ViewA/Theta = 55 deg
 d:Gr/ViewA/Phi = 20 deg
 u:Gr/ViewA/Zoom = 2.5
 
+b:Ts/ShowCPUTime = "True"
 

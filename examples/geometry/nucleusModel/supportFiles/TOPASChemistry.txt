@@ -1,0 +1,42 @@
+s:Ch/ChemistryName = "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True" # "true" or "false"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.0 ns
+dv:Ch/TOPASChemistry/AddTimeStepHighEdge = 1 999999 ps
+dv:Ch/TOPASChemistry/AddTimeStepResolution = 1 0.5 ps
+
+# Diffusion coefficients
+sv:Ch/TOPASChemistry/DiffusionCoefficients/Molecules = 7 "SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide"
+dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 7  4.90022052437e9 2.2e9 7e9 9.4601846875e9 4.8e9 5.3032890625e9 2.3e9 nm2/s
+
+b:Ch/TOPASChemistry/SetWaterMolecularConfiguration = "False"
+
+# Reaction rates
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/SolvatedElectron/Products    = 3 "Hydroxide" "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/SolvatedElectron/ReactionRate = 0.647e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroxyl/Products            = 1 "Hydroxide"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroxyl/ReactionRate         = 2.953e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/Products            = 2 "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/ReactionRate         = 2.652e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydronium/Products           = 1 "Hydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydronium/ReactionRate        = 2.109e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/HydrogenPeroxide/Products    = 2 "Hydroxide" "Hydroxyl"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/HydrogenPeroxide/ReactionRate = 1.405e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydroxyl/Products                    = 1 "HydrogenPeroxide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydroxyl/ReactionRate                 = 0.475e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydrogen/Products                    = 1 "NoProduct"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydrogen/ReactionRate                 = 1.438e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydrogen/Products                    = 1 "Dyhydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydrogen/ReactionRate                 = 0.503e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydronium/Hydroxide/Products                  = 1 "NoProduct"
+d:Ch/TOPASChemistry/BinaryReaction/Hydronium/Hydroxide/ReactionRate               = 11.031e10 /M/s
+
+###
+

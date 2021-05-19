@@ -12,10 +12,10 @@
 
 #include "TsEmDNAChemistry.hh"
 #include "TsParameterManager.hh"
-#include "TsDNAOneStepThermalizationModel.hh"
+#include "G4DNAOneStepThermalizationModel.hh"
 #include "TsDNARuddIonisationExtendedModel.hh"
-#include "TsDNAMolecularStepByStepModel.hh"
-#include "TsDNASmoluchowskiReactionModel.hh"
+#include "G4DNAMolecularStepByStepModel.hh"
+#include "G4DNASmoluchowskiReactionModel.hh"
 
 #include "TsDNAFirstOrderReaction.hh"
 #include "TsDNARemoveInMaterial.hh"
@@ -590,20 +590,20 @@ void TsEmDNAChemistry::ConstructProcess()
     G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
     G4VProcess* process = G4ProcessTable::GetProcessTable()->FindProcess("e-_G4DNAVibExcitation", "e-");
     
-    if (process) {
+    if (process != nullptr) {
         G4DNAVibExcitation* vibExcitation = (G4DNAVibExcitation*) process;
         G4VEmModel* model = vibExcitation->EmModel();
         G4DNASancheExcitationModel* sancheExcitationMod =
         dynamic_cast<G4DNASancheExcitationModel*>(model);
-        if(sancheExcitationMod) {
+        if(sancheExcitationMod != nullptr) {
             sancheExcitationMod->ExtendLowEnergyLimit(0.025 * eV);
         }
     }
     
     process = G4ProcessTable::GetProcessTable()->FindProcess("e-_G4DNAElectronSolvation", "e-");
-    if ( process ) {
+    if ( process == nullptr ) {
         G4DNAElectronSolvation* solvation = (G4DNAElectronSolvation*)process;
-        G4VEmModel* solvationModel = new TsDNAOneStepThermalizationModel();
+        G4VEmModel* solvationModel = new G4DNAOneStepThermalizationModel();
         solvation->SetEmModel(solvationModel, 0);
     }
     
@@ -685,7 +685,7 @@ void TsEmDNAChemistry::ConstructProcess()
             ->AddRestProcess(new G4DNAElectronHoleRecombination(), 2);
             G4DNAMolecularDissociation* dissociationProcess =
             new G4DNAMolecularDissociation("H2O_DNAMolecularDecay");
-            dissociationProcess->SetDecayDisplacer(moleculeDef, new G4DNAWaterDissociationDisplacer);
+            dissociationProcess->SetDisplacer(moleculeDef, new G4DNAWaterDissociationDisplacer);
             dissociationProcess->SetVerboseLevel(1);
             moleculeDef->GetProcessManager()->AddRestProcess(dissociationProcess, 1);
         }
@@ -697,11 +697,11 @@ void TsEmDNAChemistry::ConstructProcess()
 void TsEmDNAChemistry::ConstructTimeStepModel(G4DNAMolecularReactionTable* reactionTable)
 {
     G4VDNAReactionModel* reactionRadiusComputer =
-    new TsDNASmoluchowskiReactionModel();
+    new G4DNASmoluchowskiReactionModel();
     reactionTable->PrintTable(reactionRadiusComputer);
     
-    TsDNAMolecularStepByStepModel* stepByStep =
-    new TsDNAMolecularStepByStepModel();
+    G4DNAMolecularStepByStepModel* stepByStep =
+    new G4DNAMolecularStepByStepModel();
     stepByStep->SetReactionModel(reactionRadiusComputer);
     
     RegisterTimeStepModel(stepByStep, 0);

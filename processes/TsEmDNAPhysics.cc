@@ -20,6 +20,7 @@
 #include "G4DNAElastic.hh"
 #include "G4DNAChampionElasticModel.hh"
 #include "G4DNAScreenedRutherfordElasticModel.hh"
+#include "G4DNAELSEPAElasticModel.hh"
 
 #include "G4DNAExcitation.hh"
 #include "G4DNAAttachment.hh"
@@ -59,7 +60,7 @@
 
 #include "G4PhysicsConstructorFactory.hh"
 
-#include "TsDNAOneStepThermalizationModel.hh"
+#include "G4DNAOneStepThermalizationModel.hh"
 #include "G4DNAUeharaScreenedRutherfordElasticModel.hh"
 #include "G4DNACPA100ElasticModel.hh"
 #include "G4DNACPA100ExcitationModel.hh"
@@ -90,6 +91,7 @@ TsEmDNAPhysics::TsEmDNAPhysics(G4int ver, const G4String&)
     param->SetAuger(true);
     param->SetAugerCascade(true);
     param->SetDeexcitationIgnoreCut(true);
+    param->ActivateDNA();
     SetPhysicsType(bElectromagnetic);
 }
 
@@ -103,6 +105,7 @@ TsEmDNAPhysics::TsEmDNAPhysics(TsParameterManager* pM)
     param->SetAuger(true);
     param->SetAugerCascade(true);
     param->SetDeexcitationIgnoreCut(true);
+    param->ActivateDNA();
     SetPhysicsType(bElectromagnetic);
 }
 
@@ -158,6 +161,12 @@ void TsEmDNAPhysics::ConstructProcess()
                 ph->RegisterProcess(theDNAElasticProcess, particle);
                 solvationHighLimit = 7.4 * eV;
                 
+            } else if ( eScatteringModel == "elsepa" ) {
+                G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
+                theDNAElasticProcess->SetEmModel(new G4DNAELSEPAElasticModel());
+                ph->RegisterProcess(theDNAElasticProcess, particle);
+                solvationHighLimit = 10.0 * eV;
+				
             } else if ( eScatteringModel == "screenedrutherford" ) {
                 G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
                 theDNAElasticProcess->SetEmModel(new G4DNAScreenedRutherfordElasticModel());
@@ -456,8 +465,12 @@ void TsEmDNAPhysics::ConstructProcess()
                     }
                 }
             } else {
-                //G4DNAIonisation*
                 G4DNAIonisation* theDNAIonisationProcess = new G4DNAIonisation("e-_G4DNAIonisation");
+		G4DNABornIonisationModel* mod = new G4DNABornIonisationModel();
+                mod->SetHighEnergyLimit(1*MeV);
+		mod->SelectFasterComputation(true);
+		theDNAIonisationProcess->SetEmModel(mod);
+
                 if ( !useVarianceReduction ) {
                     ph->RegisterProcess(theDNAIonisationProcess, particle);
                 } else {
@@ -476,7 +489,7 @@ void TsEmDNAPhysics::ConstructProcess()
             
             G4DNAElectronSolvation* solvation = new G4DNAElectronSolvation("e-_G4DNAElectronSolvation");
             
-            G4VEmModel* solvationModel = new TsDNAOneStepThermalizationModel();
+            auto solvationModel = G4DNASolvationModelFactory::GetMacroDefinedModel();
             if ( solvationHighLimit > 0 )
                 solvationModel->SetHighEnergyLimit(solvationHighLimit);
             
@@ -505,7 +518,7 @@ void TsEmDNAPhysics::ConstructProcess()
                 ph->RegisterProcess(new G4DNAAttachment("e-_G4DNAAttachment"), particle);
             
         } else if ( particleName == "proton" ) {
-            G4String pScatteringModel = "wentzelvi";
+            G4String pScatteringModel = "default";
             if ( fPm->ParameterExists("Ph/Default/Proton/SetElasticScatteringModel") )
                 pScatteringModel = fPm->GetStringParameter("Ph/Default/Proton/SetElasticScatteringModel");
             
@@ -514,26 +527,27 @@ void TsEmDNAPhysics::ConstructProcess()
                 G4hMultipleScattering* msc = new G4hMultipleScattering();
                 msc->SetEmModel(new G4LowEWentzelVIModel());
                 ph->RegisterProcess(msc, particle);
-            } else {
+            } else { 
                 ph->RegisterProcess(new G4DNAElastic("proton_G4DNAElastic"), particle);
             }
             
             ph->RegisterProcess(new G4DNAExcitation("proton_G4DNAExcitation"), particle);
             
             G4DNAIonisation* protonIonisationProcess = new G4DNAIonisation("proton_G4DNAIonisation");
-            G4VEmModel* mod1 = new G4DNARuddIonisationModel();
+            G4DNARuddIonisationExtendedModel* mod1 = new G4DNARuddIonisationExtendedModel();
             mod1->SetLowEnergyLimit(0*eV);
             mod1->SetHighEnergyLimit(500*keV);
-            
-            G4VEmModel* mod2;
+			
+            G4DNABornIonisationModel* mod2;
             mod2= new G4DNABornIonisationModel();
             mod2->SetLowEnergyLimit(500*keV);
             mod2->SetHighEnergyLimit(100*MeV);
+	    mod2->SelectFasterComputation(true);
             
-            G4VEmModel* mod3 = new TsDNARuddIonisationExtendedModel();
+            TsDNARuddIonisationExtendedModel* mod3 = new TsDNARuddIonisationExtendedModel();
             mod3->SetLowEnergyLimit(100*MeV);
             mod3->SetHighEnergyLimit(500*MeV);
-            
+			
             protonIonisationProcess->AddEmModel(1, mod1);
             protonIonisationProcess->AddEmModel(2, mod2);
             protonIonisationProcess->AddEmModel(3, mod3);
@@ -542,44 +556,80 @@ void TsEmDNAPhysics::ConstructProcess()
             ph->RegisterProcess(new G4DNAChargeDecrease("proton_G4DNAChargeDecrease"), particle);
             
         } else if ( particleName == "hydrogen" ) {
+            ph->RegisterProcess(new G4DNAElastic("hydrogen_G4DNAElastic"), particle);
             ph->RegisterProcess(new G4DNAExcitation("hydrogen_G4DNAExcitation"), particle);
-            ph->RegisterProcess(new G4DNAIonisation("hydrogen_G4DNAIonisation"), particle);
+	    G4DNAIonisation* theDNAIonisationProcess = new G4DNAIonisation("hydrogen_G4DNAIonisation");
+            theDNAIonisationProcess->SetEmModel(new G4DNARuddIonisationExtendedModel());
+            ph->RegisterProcess(theDNAIonisationProcess, particle);
             ph->RegisterProcess(new G4DNAChargeIncrease("hydrogen_G4DNAChargeIncrease"), particle);
             
         } else if ( particleName == "alpha" ) {
+            G4String alphaEModel = "default";
+            if ( fPm->ParameterExists("Ph/Default/Alpha/SetElasticScatteringModel") ) 
+                alphaEModel = fPm->ParameterExists("Ph/Default/Alpha/SetElasticScatteringModel");
             
-            G4hMultipleScattering* msc = new G4hMultipleScattering();
-            msc->SetEmModel(new G4LowEWentzelVIModel());
-            ph->RegisterProcess(msc, particle);
-            
+            alphaEModel.toLower();
+
+            if (alphaEModel == "default") { 
+                ph->RegisterProcess(new G4DNAElastic("alpha_G4DNAElastic"), particle); 
+            } else {
+                G4hMultipleScattering* msc = new G4hMultipleScattering();
+                msc->SetEmModel(new G4LowEWentzelVIModel());
+                ph->RegisterProcess(msc, particle);
+            }
+
             ph->RegisterProcess(new G4DNAExcitation("alpha_G4DNAExcitation"), particle);
-            ph->RegisterProcess(new G4DNAIonisation("alpha_G4DNAIonisation"), particle);
+            G4DNAIonisation* theDNAIonisationProcess = new G4DNAIonisation("alpha_G4DNAIonisation"); 
+            theDNAIonisationProcess->SetEmModel(new G4DNARuddIonisationExtendedModel());
+            ph->RegisterProcess(theDNAIonisationProcess, particle);
             ph->RegisterProcess(new G4DNAChargeDecrease("alpha_G4DNAChargeDecrease"), particle);
             
         } else if ( particleName == "alpha+" ) {
+            G4String alphaEModel = "default";
+            if ( fPm->ParameterExists("Ph/Default/AlphaPlus/SetElasticScatteringModel") ) 
+                alphaEModel = fPm->ParameterExists("Ph/Default/AlphaPlus/SetElasticScatteringModel");
             
-            G4hMultipleScattering* msc = new G4hMultipleScattering();
-            msc->SetEmModel(new G4LowEWentzelVIModel());
-            ph->RegisterProcess(msc, particle);
-            
+            alphaEModel.toLower();
+            if (alphaEModel == "default") { 
+                ph->RegisterProcess(new G4DNAElastic("alpha+_G4DNAElastic"), particle); 
+ 
+ 	    } else { 
+                G4hMultipleScattering* msc = new G4hMultipleScattering();
+                msc->SetEmModel(new G4LowEWentzelVIModel());
+                ph->RegisterProcess(msc, particle);
+            } 
+
             ph->RegisterProcess(new G4DNAExcitation("alpha+_G4DNAExcitation"), particle);
-            ph->RegisterProcess(new G4DNAIonisation("alpha+_G4DNAIonisation"), particle);
+            G4DNAIonisation* theDNAIonisationProcess = new G4DNAIonisation("alpha+_G4DNAIonisation");
+            theDNAIonisationProcess->SetEmModel(new G4DNARuddIonisationExtendedModel());
+            ph->RegisterProcess(theDNAIonisationProcess, particle);
             ph->RegisterProcess(new G4DNAChargeDecrease("alpha+_G4DNAChargeDecrease"), particle);
             ph->RegisterProcess(new G4DNAChargeIncrease("alpha+_G4DNAChargeIncrease"), particle);
             
         } else if ( particleName == "helium" ) {
+            ph->RegisterProcess(new G4DNAElastic("helium_G4DNAElastic"), particle);
             ph->RegisterProcess(new G4DNAExcitation("helium_G4DNAExcitation"), particle);
-            ph->RegisterProcess(new G4DNAIonisation("helium_G4DNAIonisation"), particle);
+            G4DNAIonisation* theDNAIonisationProcess = new G4DNAIonisation("helium_G4DNAIonisation");
+            theDNAIonisationProcess->SetEmModel(new G4DNARuddIonisationExtendedModel());
+            ph->RegisterProcess(theDNAIonisationProcess, particle);
             ph->RegisterProcess(new G4DNAChargeIncrease("helium_G4DNAChargeIncrease"), particle);
             
         } else if ( particleName == "GenericIon" ) {
-            G4hMultipleScattering* msc = new G4hMultipleScattering();
-            msc->SetEmModel(new G4LowEWentzelVIModel(), 1);
-            ph->RegisterProcess(msc, particle);
-           
+            G4String ionEModel = "default";
+            if ( fPm->ParameterExists("Ph/Default/GenericIon/SetElasticScatteringModel") ) 
+                ionEModel = fPm->ParameterExists("Ph/Default/GenericIon/SetElasticScatteringModel");
+             
+            ionEModel.toLower();
+
+            if ( ionEModel == "wentzelvi" ) { 
+                G4hMultipleScattering* msc = new G4hMultipleScattering();
+                msc->SetEmModel(new G4LowEWentzelVIModel(), 1);
+                ph->RegisterProcess(msc, particle);
+            }
+ 
 	    G4DNAIonisation* genericIonIonisationProcess = new G4DNAIonisation("GenericIon_G4DNAIonisation"); 
-	    G4VEmModel* mod = new TsDNARuddIonisationExtendedModel();
-            genericIonIonisationProcess->AddEmModel(1, mod);
+	    //G4VEmModel* mod = new G4DNARuddIonisationExtendedModel();
+            //genericIonIonisationProcess->AddEmModel(1, mod);
             ph->RegisterProcess(genericIonIonisationProcess, particle);
             
         } else if (particleName == "e+") {

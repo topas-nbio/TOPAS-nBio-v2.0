@@ -10,7 +10,7 @@ b:Ge/QuitIfOverlapDetected="true"
 d:Ge/World/HLX=150 nm
 d:Ge/World/HLY=150 nm
 d:Ge/World/HLZ=150 nm
-b:Ge/World/SetInvisible="true"
+b:Ge/World/Invisible="true"
 s:Ge/World/Material="G4_WATER"
 
 #Circular DNA plasmid
@@ -67,8 +67,7 @@ i:Gr/ViewA/WindowSizeY = 1500
 d:Gr/ViewA/Theta = 55 deg
 d:Gr/ViewA/Phi = 20 deg
 d:Gr/ViewA/PerspectiveAngle = 30 deg
-u:Gr/ViewA/Zoom = 6.
 
-Ts/PauseBeforeQuit = "true"
-
+Ts/PauseBeforeQuit = "false"
+b:Ts/ShowCPUTime = "True"
 

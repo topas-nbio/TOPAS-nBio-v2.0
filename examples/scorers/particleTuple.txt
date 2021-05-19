@@ -7,8 +7,8 @@ includeFile = ../processes/TOPASChemistry.txt
 s:Ch/ChemistryName = "TOPASChemistry" 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 15.0 ns 
-dv:Ch/TOPASChemistry/ChemicalStageTimeStep           = 2 10.0 15.0  ns 
-dv:Ch/TOPASChemistry/ChemicalStageTimeStepResolution = 2  1.0 10.0  ps 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges   = 2 10.0 15.0  ns 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 2  1.0 10.0  ps 
 
 # Geometry
 d:Ge/World/HLX= 1 um  

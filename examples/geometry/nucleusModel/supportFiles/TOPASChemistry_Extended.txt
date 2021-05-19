@@ -1,0 +1,92 @@
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True" # "true" or "false"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.0 ns
+dv:Ch/TOPASChemistry/AddTimeStepHighEdge = 1 999999 ps
+dv:Ch/TOPASChemistry/AddTimeStepResolution = 1 0.5 ps
+
+# Diffusion coefficients
+sv:Ch/TOPASChemistry/DiffusionCoefficients/Molecules = 11 "SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide" "Oxygen" "SuperoxideAnion" "Hydroperoxy" "Dioxidanide"
+dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 11  4.90022052437e9 2.2e9 7e9 9.4601846875e9 4.8e9 5.3032890625e9 2.3e9 2.1e-9 2.1e-9 2.0e-9 2.0e-9 nm2/s
+
+b:Ch/TOPASChemistry/SetWaterMolecularConfiguration = "False"
+
+# Reaction rates
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/SolvatedElectron/Products    = 3 "Hydroxide" "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/SolvatedElectron/ReactionRate = 0.647e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroxyl/Products            = 1 "Hydroxide"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroxyl/ReactionRate         = 2.953e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/Products            = 2 "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/ReactionRate         = 2.652e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydronium/Products           = 1 "Hydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydronium/ReactionRate        = 2.109e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/HydrogenPeroxide/Products    = 2 "Hydroxide" "Hydroxyl"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/HydrogenPeroxide/ReactionRate = 1.405e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydroxyl/Products                    = 1 "HydrogenPeroxide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydroxyl/ReactionRate                 = 0.475e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydrogen/Products                    = 1 "NoProduct"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydrogen/ReactionRate                 = 1.438e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydrogen/Products                    = 1 "Dyhydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydrogen/ReactionRate                 = 0.503e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydronium/Hydroxide/Products                  = 1 "NoProduct"
+d:Ch/TOPASChemistry/BinaryReaction/Hydronium/Hydroxide/ReactionRate               = 11.031e10 /M/s
+
+###
+sv:Ch/TOPASChemistry/BinaryReaction/DyHydrogen/Hydroxyl/Products                   = 1 "Hydrogen"
+d:Ch/TOPASChemistry/BinaryReaction/DyHydrogen/Hydroxyl/ReactionRate                = 0.0045e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/HydrogenPeroxide/Products            = 1 "Hydroperoxy" 
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/HydrogenPeroxide/ReactionRate         = 0.0023e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydroperoxy/Products                 = 1 "Oxygen"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Hydroperoxy/ReactionRate              = 1.0e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/SuperoxideAnion/Products             = 2 "Oxygen" "Hydroxide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/SuperoxideAnion/ReactionRate          = 0.9e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Dioxidanide/Products                 = 2 "Hydroperoxy" "Hydroxide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroxyl/Dioxidanide/ReactionRate              = 0.9e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroperoxy/Products         = 1 "Dioxidanide"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroperoxy/ReactionRate      = 2.0e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Oxygen/Products              = 1 "SuperoxideAnion"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Oxygen/ReactionRate           = 1.9e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/SuperoxideAnion/Products     = 2 "Hydroxide" "Dioxidanide"
+d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/SuperoxideAnion/ReactionRate  = 1.3e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/HydrogenPeroxide/Products            = 1 "Hydroxyl" 
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/HydrogenPeroxide/ReactionRate         = 0.01e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydroperoxy/Products                 = 1 "HydrogenPeroxide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydroperoxy/ReactionRate              = 2e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Oxygen/Products                      = 1 "Hydroperoxy"
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Oxygen/ReactionRate                   = 2e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydroxide/Products                   = 1 "SolvatedElectron"
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/Hydroxide/ReactionRate                = 0.002e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydrogen/SuperoxideAnion/Products             = 1 "Dioxidanide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydrogen/SuperoxideAnion/ReactionRate          = 2.0e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydronium/SuperoxideAnion/Products            = 1 "Hydroperoxy"
+d:Ch/TOPASChemistry/BinaryReaction/Hydronium/SuperoxideAnion/ReactionRate         = 3.0e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydronium/Dioxidanide/Products                = 1 "HydrogenPeroxide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydronium/Dioxidanide/ReactionRate             = 2.0e10  /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroperoxy/Hydroperoxy/Products              = 2 "HydrogenPeroxide" "Oxygen"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroperoxy/Hydroperoxy/ReactionRate           = 0.000076e10 /M/s
+
+sv:Ch/TOPASChemistry/BinaryReaction/Hydroperoxy/SuperoxideAnion/Products          = 2 "Oxygen" "Dioxidanide"
+d:Ch/TOPASChemistry/BinaryReaction/Hydroperoxy/SuperoxideAnion/ReactionRate       = 0.0085e10 /M/s
+
+

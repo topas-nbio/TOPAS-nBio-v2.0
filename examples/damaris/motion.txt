@@ -1,0 +1,31 @@
+## -------------------------------- Motion ---------------------------------  ##
+#@@@@ These parameters control how the DSB molecules diffuse through the
+#@@@@ simulation.
+#@@@@
+#@@@@ DiffusionMode:
+#@@@@ 0) Sets the motion to normal Geant4-DNA Brownian motion with default
+#@@@@ diffusion coefficients of 1.4 nm^2/s for all DSBs.
+#@@@@ 1) Sets the motion to sub-diffusion implemented in the DREP code as a
+#@@@@ CTRW model.
+#@@@@
+#@@@@ DiffusionCoefficientForJump:
+#@@@@ This is the diffusion coefficient used by the molecule to determine its
+#@@@@ motion during the one 'jump' it is allowed to do between waiting times.
+#@@@@ This is probably the only parameter which should be changed in order to
+#@@@@ modify the speed of sub-diffusion for the DSBs.
+#@@@@
+#@@@@ DiffusionCoefficientForTrapped:
+#@@@@ This is the diffusion coefficient used by the molecule to determine its
+#@@@@ motion during whilst it is waiting. This could be set to something small
+#@@@@ to introduce some amount of 'wiggle' whilst the particle is waiting BUT
+#@@@@ then be sure to properly characterise the motion and see if it still is
+#@@@@ sub-diffusive.
+#@@@@
+#@@@@ MinWaitingTime:
+#@@@@ Minimum time the particle is allowed to be trapped for. Larger values will
+#@@@@ speed up the simulation time but also reduce the overall mobility of DSBs.
+
+i:Ch/DaMaRiS/DiffusionMode = 1
+u:Ch/DaMaRiS/DiffusionCoefficientForTrapped = 0.0
+d:Ch/DaMaRiS/MinWaitingTime = 1e9 ps
+u:Ch/DaMaRiS/DiffusionCoefficientForJump = 2.808e11

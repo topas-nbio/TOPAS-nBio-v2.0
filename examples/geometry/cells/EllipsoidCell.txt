@@ -78,5 +78,5 @@ i:Gr/ViewA/WindowSizeX = 1000
 i:Gr/ViewA/WindowSizeY = 800
 u:Gr/ViewA/Zoom = 2.
 
-Ts/PauseBeforeQuit = "True"
-
+Ts/PauseBeforeQuit = "False"
+b:Ts/ShowCPUTime = "True"

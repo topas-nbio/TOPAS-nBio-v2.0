@@ -54,7 +54,7 @@ s:Sc/OrganelleScorer/Component = "MyCell"
 s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
 s:Sc/OrganelleScorer/OutputType = "ASCII" 
 s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
-
+b:Sc/OrganelleScorer/PropagateToChildren = "true"
 
 s:Gr/ViewA/Type = "OpenGL"
 i:Gr/ViewA/WindowSizeX = 1024

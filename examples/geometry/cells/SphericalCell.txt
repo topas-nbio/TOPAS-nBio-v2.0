@@ -13,6 +13,7 @@ b:Ge/QuitIfOverlapDetected="false"
 d:Ge/World/HLX=50. um
 d:Ge/World/HLY=50. um
 d:Ge/World/HLZ=50. um
+b:Ge/World/Invisible = "True"
 
 s:Ge/MyCell/Type="TsSphericalCell"
 s:Ge/MyCell/Material="G4_WATER"
@@ -65,11 +66,11 @@ s:Sc/OrganelleScorer/Component = "MyCell"
 s:Sc/OrganelleScorer/IfOutputFileAlreadyExists = "Overwrite"  
 s:Sc/OrganelleScorer/OutputType = "ASCII" 
 s:Sc/OrganelleScorer/OutputFile = "EdepToOrganelles"
-
+b:Sc/OrganelleScorer/PropagateToChildren = "true"
 
 s:Gr/ViewA/Type = "OpenGL"
 i:Gr/ViewA/WindowSizeX = 1024
 i:Gr/ViewA/WindowSizeY = 768
-u:Gr/ViewA/Zoom = 2.
 
-Ts/PauseBeforeQuit = "True"
+Ts/PauseBeforeQuit = "False"
+b:Ts/ShowCPUTime = "True"

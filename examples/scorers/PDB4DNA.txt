@@ -1,10 +1,14 @@
 # This example shows how to setup the 
 # scoring of SSB and DSB based on overlayed 
 # geometries. The output is a tuple with 
-# SSB and DSB. It is required a PDB4DNA file. 
+# SSB and DSB. This requires a PDB4DNA file. 
 # The scoring region was created by hand and 
 # matches the dimensions and translation of the 
 # PDB4DNA geometry.
+s:Gr/ViewA/Type = "OpenGL"
+i:Gr/ViewA/WindowSizeX = 1000
+i:Gr/ViewA/WindowSizeY = 800
+
 
 i:Ts/Seed = 1
 i:Ts/NumberOfThreads = 1

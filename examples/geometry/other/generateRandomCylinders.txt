@@ -79,7 +79,7 @@ d:Gr/view/Theta = 45 deg
 d:Gr/view/Phi   = 15 deg
 u:Gr/view/Zoom  = 1.5
 
-b:Ts/PauseBeforeQuit = "True"
+b:Ts/PauseBeforeQuit = "False"
 i:Ts/NumberOfThreads = 1 
 b:Ts/ShowCPUTime = "True"
 i:Ts/Seed = 1 

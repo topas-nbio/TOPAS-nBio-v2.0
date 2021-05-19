@@ -1,0 +1,131 @@
+# -- Geometry
+# World
+d:Ge/World/HLX                          = 7.0 um
+d:Ge/World/HLY                          = 7.0 um
+d:Ge/World/HLZ                          = 7.0 um
+b:Ge/World/Invisible                    = "true"
+s:Ge/World/Material                     = "G4_WATER"
+
+# Nucleus
+s:Ge/Nucleus/Type                       = "TsNucleus"
+s:Ge/Nucleus/Parent                     = "World"
+s:Ge/Nucleus/Material                   = "G4_WATER"
+s:Ge/Nucleus/Color                      = "White"
+d:Ge/Nucleus/NucleusRadius              = 4.65 um
+i:Ge/Nucleus/HilbertCurveLayer          = 4
+i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
+s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
+s:Ge/Nucleus/Voxel/Material             = "G4_WATER"
+b:Ge/Nucleus/ShowDNAVoxels              = "false"
+s:Ge/Nucleus/ChromatinFiber/Material    = "G4_WATER"
+b:Ge/Nucleus/ShowChromatinCylinders     = "false"
+s:Ge/Nucleus/Histone/Material           = "G4_HistoneMaterial"
+b:Ge/Nucleus/OnlyBuildOneHistone        = "false"
+b:Ge/Nucleus/HistoneAsScavenger         = "true"
+b:Ge/Nucleus/AddBases                   = "true"
+s:Ge/Nucleus/Base1/Material             = "G4_BaseMaterial"
+s:Ge/Nucleus/Base2/Material             = "G4_BaseMaterial"
+b:Ge/Nucleus/AddBackbones               = "true"
+s:Ge/Nucleus/Backbone1/Material         = "G4_BackboneMaterial"
+s:Ge/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
+b:Ge/Nucleus/AddHydrationShell          = "true"
+s:Ge/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
+s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
+
+# -- Materials
+s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
+d:Ma/G4_HistoneMaterial/CloneWithDensity    = 1.407 g/cm3
+s:Ma/G4_BaseMaterial/CloneFromMaterial      = "G4_WATER"
+d:Ma/G4_BaseMaterial/CloneWithDensity       = 1.0 g/cm3
+s:Ma/G4_BackboneMaterial/CloneFromMaterial  = "G4_WATER"
+d:Ma/G4_BackboneMaterial/CloneWithDensity   = 1.0 g/cm3
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
+
+# -- Physics and Chemistry
+#sv:Ph/Default/Modules                   = 7 "g4em-dna" "g4h-phy_QGSP_BIC_HP" "g4decay" "g4ion-binarycascade" "g4h-elastic_HP" "g4stopping" "TsEmDNAChemistry"
+sv:Ph/Default/Modules                   = 2 "g4em-dna" "TsEmDNAChemistry"
+i:Ph/Verbosity                          = 0
+includeFile = supportFiles/TOPASChemistry.txt
+s:Ch/ChemistryName = "TOPASChemistry"
+
+# -- Source
+s:So/ParticleGun/Type                               = "Beam"
+s:So/ParticleGun/Component                          = "BeamPosition"
+d:Ge/BeamPosition/TransX                            = 0.1 um
+d:Ge/BeamPosition/TransY                            = -0.1 um
+d:Ge/BeamPosition/TransZ                            = 5. um
+s:So/ParticleGun/BeamParticle                       = "proton"
+s:So/ParticleGun/BeamPositionDistribution           = "none"
+s:So/ParticleGun/BeamAngularDistribution            = "none"
+d:So/ParticleGun/BeamEnergy                         = 6.0 MeV
+i:So/ParticleGun/NumberOfHistoriesInRun             = 1
+
+# -- Scorer --
+s:Sc/DNAScorer/Quantity                                 = "NucleusDNADamage"
+s:Sc/DNAScorer/Component                                = "Nucleus"
+b:Sc/DNAScorer/PropagateToChildren                      = "true"
+s:Sc/DNAScorer/OutputType                               = "root"
+s:Sc/DNAScorer/OutputFile                               = "NucleusDNADamage"
+s:Sc/RootFileName										= Sc/DNAScorer/OutputFile
+s:Sc/DNAScorer/IfOutputFileAlreadyExists                = "overwrite"
+b:Sc/DNAScorer/WriteCSVOutputWithAllDamageSpecification = "true"
+b:Sc/DNAScorer/MinimalSDDOutput                         = "false"
+b:Sc/DNAScorer/IncludeDSBDamageSitesOnlyinSDD           = "false"
+i:Sc/DNAScorer/DSBSeparation                            = 10
+d:Sc/DNAScorer/DamageThreshold                          = 17.5 eV
+b:Sc/DNAScorer/UseLinearProbabilityThreshold            = "false"
+#d:Sc/DNAScorer/LinearProbability_lower_limit            = 5 eV
+#d:Sc/DNAScorer/LinearProbability_upper_limit            = 37.5 eV
+u:Sc/DNAScorer/ProbabilityForOHToCauseDamage            = 0.4
+b:Sc/DNAScorer/ExcludeShortFragment                     = "false"
+i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
+i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000
+b:Sc/DNAScorer/ScoreDirectDamages                       = "true"
+b:Sc/DNAScorer/ScoreIndirectDamages                     = "true"
+d:Sc/DNAScorer/ScoringRadius                            = Ge/Nucleus/NucleusRadius um
+b:Sc/DNAScorer/HistoneAsScavenger                       = Ge/Nucleus/HistoneAsScavenger
+i:Sc/DNAScorer/NumberOfHistoriesInRun                   = So/ParticleGun/NumberOfHistoriesInRun
+d:Sc/DNAScorer/DosePerExposure                          = 1 Gy
+s:Sc/DNAScorer/PrimaryParticle                          = So/ParticleGun/BeamParticle
+i:Sc/DNAScorer/BasePairPositionAtGeometricHierarchy     = 0
+
+# Materials to score
+sv:Sc/DNAScorer/Strand1MaterialNames                    = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
+sv:Sc/DNAScorer/Strand2MaterialNames                    = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
+
+# Info about nucleus geometry for scorer
+s:Sc/DNAScorer/GeometryInfo                            = "supportFiles/Geoinfo.txt"
+s:Sc/DNAScorer/CopyNoTable                             = "supportFiles/CopyNoTable.txt"
+s:Sc/DNAScorer/signedCHVoxel                           = "supportFiles/signedCHVoxel.txt"
+
+# SDD header - See Schuemann et al. (2019). A New Standard DNA Damage (SDD) Data Format. Rad Res, 191(1), 76
+s:Sc/DNAScorer/AuthorName							   = "Name"
+s:Sc/DNAScorer/SimulationDetails					   = "Nucleus simulation" 
+s:Sc/DNAScorer/SourceDetails					   	   = "Monoenergetic source"
+i:Sc/DNAScorer/SourceType					   		   = 1
+d:Sc/DNAScorer/MeanEnergy					   		   = So/ParticleGun/BeamEnergy MeV
+s:Sc/DNAScorer/EnergyDistribution					   = "M, 0"
+s:Sc/DNAScorer/IrradiationTarget					   = "Nucleus"
+s:Sc/DNAScorer/CellCycleStage					       = "0"
+s:Sc/DNAScorer/DNAStructure					           = "0, 1"
+i:Sc/DNAScorer/InVitroOrInVivo						   = 0
+s:Sc/DNAScorer/ProliferationStatus					   = "1"
+s:Sc/DNAScorer/Microenvironment					       = "20, 0.01"
+d:Sc/DNAScorer/Time					  				   = 0 s
+s:Sc/DNAScorer/AdditionalInfo					       = ""
+
+Ts/ShowHistoryCountAtInterval                       = 1
+
+# -- Visualization
+#s:Gr/view/Type                          = "OpenGL"
+#i:Gr/view/WindowSizeX                   = 800
+#i:Gr/view/WindowSizeY                   = 800
+#d:Gr/view/Theta                         = 45 deg
+#d:Gr/view/Phi                           = 30 deg
+#s:Gr/view/ColorBy                       = "ParticleType"
+#sv:Gr/view/ColorByParticleTypeNames     = 4 "e-" "alpha" "proton" "neutron"
+#sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
+#s:Gr/view/BackgroundColor               = "White"
+
+i:Ts/Seed = 2580

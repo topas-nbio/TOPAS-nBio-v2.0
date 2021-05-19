@@ -5,17 +5,24 @@ s:Ph/Default/Electron/SetElasticScatteringModel   = "CPA100"
 
 s:Ch/ChemistryName = "TOPASChemistry"
 
-includeFile = ../processes/TOPASChemistry.txt
+includeFile = TOPASChemistry.txt
 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 1 us
-dv:Ch/TOPASChemistry/ChemicalStageTimeStep           = 7 0.1 1.0  3.0   10.0   100  100 100 ps
-dv:Ch/TOPASChemistry/ChemicalStageTimeStepResolution = 7 1.0 10.0 100.0 1000.0 10000.0 100000.0 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 7 0.1 1.0  3.0   10.0   100  100 100 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 7 1.0 10.0 100.0 1000.0 10000.0 100000.0 999999 ps
 
-d:Ge/World/HLX= 1 mm
-d:Ge/World/HLY= 1 mm
-d:Ge/World/HLZ= 1 mm
+d:Ge/World/HLX= 10 cm
+d:Ge/World/HLY= 10 cm
+d:Ge/World/HLZ= 10 cm
 s:Ge/World/Material ="G4_WATER"
+
+d:Ge/Target/HLX= Ge/World/HLX cm 
+d:Ge/Target/HLY= Ge/World/HLY cm
+d:Ge/Target/HLZ= Ge/World/HLZ cm 
+s:Ge/Target/Material = "G4_WATER"
+s:Ge/Target/Type     = "TsBox"
+s:Ge/Target/Parent   = "World"
 
 d:Ge/BeamPosition/TransZ = 0.0 um
 d:Ge/BeamPosition/RotX = 0 deg
@@ -28,14 +35,14 @@ d:So/Demo/BeamEnergy = 999.999 keV
 u:perCent = 0.01
 
 s:Sc/Gvalue/Quantity = "Gvalue"
-s:Sc/Gvalue/Component = "World"
+s:Sc/Gvalue/Component = "Target"
 s:Sc/Gvalue/OutputFile = "Gvalue"
 s:Sc/Gvalue/IfOutputFileAlreadyExists = "Overwrite"
 s:Sc/Gvalue/OutputType = "ascii"
 b:Sc/Gvalue/OutputToConsole = "True"
 i:Sc/Gvalue/OutputBufferSize = 1
 d:Sc/Gvalue/KillIfPrimaryAccumulatedEnergyLossExceeds = So/Demo/BeamEnergy keV * perCent
-d:Sc/Gvalue/AbortEventIfPrimaryAccumulatedEnergyLossExceeds = 1.02 * Sc/Gvalue/KillIfPrimaryAccumulatedEnergyLossExceeds keV
+d:Sc/Gvalue/AbortEventIfPrimaryAccumulatedEnergyLossExceeds = 1.01 * Sc/Gvalue/KillIfPrimaryAccumulatedEnergyLossExceeds keV
 # alternatively
 #d:Sc/Gvalue/KillIfPrimaryAccumulatedTrackLengthExceeds = 0.5 um
 # G-value scoring bins
@@ -49,7 +56,7 @@ i:Ts/ShowHistoryCountAtInterval  = 1
 
 i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
 
-Ts/NumberOfThreads = -1
+Ts/NumberOfThreads = 0
 b:Ts/ShowCPUTime = "True"
 i:Ts/Seed = 1
 

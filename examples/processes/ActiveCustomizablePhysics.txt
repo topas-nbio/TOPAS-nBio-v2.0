@@ -27,7 +27,7 @@ s:Gr/view/Type = "OpenGl"
 i:Gr/view/WindowSizeX = 900
 i:Gr/view/WindowSizeY = 700
 u:Gr/view/Zoom = 4
-b:Ts/PauseBeforeQuit = "True"
+b:Ts/PauseBeforeQuit = "False"
 
 Ts/NumberOfThreads = 1 
 b:Ts/ShowCPUTime = "True"

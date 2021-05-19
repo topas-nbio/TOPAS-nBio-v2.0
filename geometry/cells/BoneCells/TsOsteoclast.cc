@@ -16,6 +16,7 @@
 
 #include "TsParameterManager.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4PhysicalVolumeStore.hh"
 
 #include "G4Box.hh"
 #include "G4Orb.hh"
@@ -106,7 +107,7 @@ G4VPhysicalVolume* TsOsteoclast::Construct()
                     
                 if (OverlapCheck == false){break;}
                 if (OverlapCheck == true){
-                    delete pNucleus;
+					G4PhysicalVolumeStore::DeRegister(pNucleus);
                     G4cout << "**** Finding new position for volume " << subComponentName2 << ":" << j <<  " ****" << G4endl;
                 }
             }
