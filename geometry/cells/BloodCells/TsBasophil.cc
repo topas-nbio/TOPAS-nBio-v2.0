@@ -18,7 +18,7 @@
 #include "G4VPhysicalVolume.hh"
 
 #include "G4Orb.hh"
-
+#include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 #include "Randomize.hh"
@@ -115,34 +115,33 @@ G4VPhysicalVolume* TsBasophil::Construct()
         
         //Randomly distribute granules throughout cytoplasm volume
         for (int j = 0; j < NumberOfGranules; j++){
-                
-            G4bool Overlap = true;
-            while (Overlap == true){
-                    
+            auto OverlapCheck = true;
+            while (OverlapCheck)
+            {
                 G4double u = G4UniformRand()*2*pi;
                 G4double v = std::acos(2*G4UniformRand()-1);
                 G4double dr = G4UniformRand()*(BasophilRadius - NuclRadius);
                 G4double x = 0.0;
                 G4double y = 0.0;
                 G4double z = 0.0;
-                    
+                
                 x = (NuclRadius + dr)* std::cos(u) * std::sin(v);
                 y = (NuclRadius + dr)* std::sin(u) * std::sin(v);
                 z = (NuclRadius + dr)* std::cos(v);
-                    
+                
                 G4ThreeVector* position = new G4ThreeVector(x,y,z);
-            
+                
                 G4RotationMatrix* rotm = new G4RotationMatrix();
-            
+                
                 rotm->rotateX(0);
                 rotm->rotateY(0);
-            
+                
                 G4VPhysicalVolume* pGranule = CreatePhysicalVolume(subComponentName2, j, true, lGranule, rotm, position, fEnvelopePhys);
-            
+                
                 OverlapCheck = pGranule->CheckOverlaps();
-            
-                if (OverlapCheck == false){break;}
-                if (OverlapCheck == true){
+                
+                if (OverlapCheck == true) {
+                    fEnvelopePhys->GetLogicalVolume()->RemoveDaughter(pGranule);
                     pGranule = NULL;
                     G4cout << "**** Finding new position for volume " << subComponentName2 << ":" << j <<  " ****" << G4endl;
                 }
