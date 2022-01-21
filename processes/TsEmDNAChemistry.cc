@@ -192,9 +192,11 @@ void TsEmDNAChemistry::DefineParameters()
             fReactionProducts.push_back(products);
             fReactionRates.push_back(reactionRate);
         }
-    }
+	} else {
+		Quit("Ch/" + fName + "/BinaryReaction", "No reactions defined. No reaction table will be built and this will lead to fatal errors in G4Track.");
+	}
 
-    // First order reactions (Scavengers)
+	// First order reactions (Scavengers)
     if ( fPm->ParameterExists(GetFullParmName("Scavenger/Molecules")) ) {
         G4String* scavengedMolecules = fPm->GetStringVector(GetFullParmName("Scavenger/Molecules"));
         G4double* scavengerConcentrations = fPm->GetDoubleVector(GetFullParmName("Scavenger/Concentrations"), "molar concentration");
