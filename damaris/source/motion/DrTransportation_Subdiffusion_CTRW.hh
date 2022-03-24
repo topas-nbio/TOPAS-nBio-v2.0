@@ -69,8 +69,11 @@ public:
 class DrTransportation_Subdiffusion_CTRW : public G4ITTransportation{
 public:
 	DrTransportation_Subdiffusion_CTRW(const G4String& aName ="DrTransportation_Subdiffusion_CTRW", G4int verbosityLevel = 0);
+
   G4IT_ADD_CLONE(G4VITProcess,DrTransportation_Subdiffusion_CTRW)
+
   virtual ~DrTransportation_Subdiffusion_CTRW();
+
   DrTransportation_Subdiffusion_CTRW(const DrTransportation_Subdiffusion_CTRW& other);
   DrTransportation_Subdiffusion_CTRW& operator=(const DrTransportation_Subdiffusion_CTRW& other);
 

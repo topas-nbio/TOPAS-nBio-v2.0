@@ -14,19 +14,21 @@
 // See README for references.
 //
 #include "DrDSBGun.hh"
-#include "DrBreakTable.hh"
 #include "DrReaderSDD.hh"
 #include "TsDamagePhaseSpaceStore.hh"
 #include "DrDefinitions.hh"
+#include "TsParameterManager.hh"
+#include "DrDSBMoleculeManager.hh"
 #include <G4SystemOfUnits.hh>
 #include <G4UnitsTable.hh>
+#include <Randomize.hh>
 
 using namespace std;
 
 DrDSBGun::DrDSBGun() {
     fMoleculeGun = new DrMoleculeGun();
     fBoundingRadius = DrDefinitions::Instance()->GetBoundingCellOrNucleusRadius();
-    DrBreakTable::Instance()->ClearStaticMembers();
+    DrDefinitions::Instance()->fInitialBreakNumber = 0;
 }
 
 DrDSBGun::~DrDSBGun() { delete fMoleculeGun; }
@@ -47,13 +49,19 @@ void DrDSBGun::PlaceClockMolecule() {
 
 void DrDSBGun::AddMoleculeToGun(const G4ThreeVector& position, const G4String& name, const G4double& time){
     auto* breakMol = new DrBreakMolecule();
-    DrBreakTable::Instance()->NewBreakID(breakMol);
+//    DrBreakTable::Instance()->NewBreakID(breakMol);
+
+    auto DSBMoleculeManager = new DrDSBMoleculeManager();
+    DSBMoleculeManager->NewBreakID(breakMol);
+
     breakMol->sBreakEndA->fDamageTypes[0] = 0;
     breakMol->sBreakEndA->fDamageTypes[1] = 0;
     breakMol->sBreakEndA->fDamageTypes[2] = 1;
     breakMol->sBreakEndA->fOriginalPosition = position;
     breakMol->sBreakEndA->fLesionTime = {time};
     fMoleculeGun->AddMolecule(breakMol, name);
+
+    delete DSBMoleculeManager;
 }
 
 G4int DrDSBGun::BuildDSBEnd_Offset(G4String name, G4double offset){
@@ -63,7 +71,7 @@ G4int DrDSBGun::BuildDSBEnd_Offset(G4String name, G4double offset){
     AddMoleculeToGun(position, name, time);
 
     G4cout << "Placed a " << name << " molecule at " << position << G4endl;
-    DrBreakTable::Instance()->fInitialBreakNumber = (0);
+    DrDefinitions::Instance()->fInitialBreakNumber = (0);
 
     if (!fMoleculeGun->GetMoleculeShoot().empty()) return 1;
     else return 0;
@@ -76,7 +84,7 @@ G4int DrDSBGun::BuildDSBEnd_Origin(G4int number, G4String name) {
         AddMoleculeToGun(position, name, time);
     }
 
-    DrBreakTable::Instance()->fInitialBreakNumber = G4int(floor(number / 2));
+    DrDefinitions::Instance()->fInitialBreakNumber = G4int(floor(number / 2));
     G4cout << "Placed " << number << " " << name << "(s) at origin" << G4endl;
 
     if (!fMoleculeGun->GetMoleculeShoot().empty()) return 1;
@@ -112,7 +120,7 @@ G4int DrDSBGun::BuildDSB_Column(G4int number, G4double radius_nm) {
         }
     }
 
-    DrBreakTable::Instance()->fInitialBreakNumber = G4int(floor(number / 2));
+    DrDefinitions::Instance()->fInitialBreakNumber = G4int(floor(number / 2));
     G4cout << "Placed " << number << " DSB ends in a column" << G4endl;
 
     if (!fMoleculeGun->GetMoleculeShoot().empty()) return 1;
@@ -135,7 +143,7 @@ G4int DrDSBGun::BuildDSB_SepSpaceAndTime(G4double separation,
         fMoleculeGun->AddMolecule(make_pair(backbone, base), "DSBEnd", G4ThreeVector(RHS, 0., 0.), timeDelay * second);
         fMoleculeGun->AddMolecule(make_pair(backbone, base), "DSBEnd", G4ThreeVector(RHS, 0., 0.), timeDelay * second);
 
-        DrBreakTable::Instance()->fInitialBreakNumber = (2);
+        DrDefinitions::Instance()->fInitialBreakNumber = (2);
         G4cout << G4endl << "placed >2< double strand breaks "
                << G4BestUnit(separation, "Length") << " apart"<<G4endl <<"with a "
                << G4BestUnit(timeDelay, "Time") <<" delay between them."<< G4endl;
@@ -143,7 +151,7 @@ G4int DrDSBGun::BuildDSB_SepSpaceAndTime(G4double separation,
     else if(DSB_or_DSBEnd == 1){
         fMoleculeGun->AddMolecule(make_pair(backbone, base), "DSBEnd", G4ThreeVector(LHS, 0., 0.), 0. * second);
         fMoleculeGun->AddMolecule(make_pair(backbone, base), "DSBEnd", G4ThreeVector(RHS, 0., 0.), timeDelay * second);
-        DrBreakTable::Instance()->fInitialBreakNumber = (1);
+        DrDefinitions::Instance()->fInitialBreakNumber = (1);
         G4cout << G4endl << "placed >2< double strand break ends "
                << G4BestUnit(separation, "Length") << " apart." << G4endl;
     }
@@ -166,7 +174,7 @@ G4int DrDSBGun::BuildDSB_Pattern(G4int backbone, G4int base,
         fMoleculeGun->AddMolecule(make_pair(backbone, base), "DSBEnd", placeThis, 0. * second);
         fMoleculeGun->AddMolecule(make_pair(backbone, base), "DSBEnd", placeThis, 0. * second);
     }
-    DrBreakTable::Instance()->fInitialBreakNumber = (G4int)placeList.size();
+    DrDefinitions::Instance()->fInitialBreakNumber = (G4int)placeList.size();
     G4cout << G4endl << "placed custom distribution of >" << placeList.size()
            << "< double strand break ends" << G4endl;
     return 1;
@@ -192,7 +200,7 @@ G4int DrDSBGun::PlaceFromSTDFile(const G4String& fileName) {
     } else {
         G4cerr << "ERROR: STDInput not successfully read,"
                << " event vector not populated" << G4endl;
-        exit(EXIT_FAILURE);
+        DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
     }
 
     vector< vector<DrDamageEvent*> > STDInput;
@@ -238,7 +246,7 @@ DoubleStrandBreak DrDSBGun::ParseSTDInput(DrDamageEvent* damageEvent) {
                 } else {
                     G4cerr << "ERROR: Not capable of dealing with multiple DSBs"
                            << " on the same line" << G4endl;
-                    exit(EXIT_FAILURE);
+                    DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
                 }
             }
         }
@@ -339,14 +347,15 @@ G4int DrDSBGun::SelectRandomFromSTDInput(storeTypeDef input) {
     } else {
         G4cerr << "ERROR: cannot select experiment from STD input! Input vector"
                << " size is: " << input.size() << G4endl;
-        exit(EXIT_FAILURE);
+        DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
     }
     return selected;
 }
 
 G4int DrDSBGun::PlaceBreaks(vector<vector<DrDamageEvent*> > list) {
 
-    auto breakTable = DrBreakTable::Instance();
+    auto DSBMoleculeManager = new DrDSBMoleculeManager();
+
     G4int countDSB{0};
 
     for (const auto& level1 : list){
@@ -366,8 +375,9 @@ G4int DrDSBGun::PlaceBreaks(vector<vector<DrDamageEvent*> > list) {
             SetBreakMolPropertiesFromEvent(DSB,breakMolRHS);
 
             //@@@@ Set correct partner IDs
-            breakTable->NewBreakID(breakMolLHS);
-            breakTable->NewBreakID(breakMolRHS);
+            DSBMoleculeManager->NewBreakID(breakMolLHS);
+            DSBMoleculeManager->NewBreakID(breakMolRHS);
+
             breakMolLHS->sBreakEndA->fCorrectPartnerBreakMoleculeID = breakMolRHS->sBreakEndA->fOriginalBreakMoleculeID;
             breakMolRHS->sBreakEndA->fCorrectPartnerBreakMoleculeID = breakMolLHS->sBreakEndA->fOriginalBreakMoleculeID;
 
@@ -394,9 +404,11 @@ G4int DrDSBGun::PlaceBreaks(vector<vector<DrDamageEvent*> > list) {
         }
     }
 
+    delete DSBMoleculeManager;
+
     G4cout<<"Placed "<<countDSB*2<<" double strand break ends."<<G4endl;
 
-    DrBreakTable::Instance()->fInitialBreakNumber = (countDSB);
+    DrDefinitions::Instance()->fInitialBreakNumber = (countDSB);
 
     if (!fMoleculeGun->GetMoleculeShoot().empty())
         return 1;

@@ -14,7 +14,7 @@
 //
 #pragma once
 
-#include <G4DNAMolecularReaction.hh>
+#include <G4VITReactionProcess.hh>
 
 class G4DNAMolecularReactionTable;
 class G4VDNAReactionModel;
@@ -27,8 +27,25 @@ class G4VDNAReactionModel;
   * the molecules can react. If so, the reaction is made.
   */
 
-class DrDNAMolecularReaction : public G4DNAMolecularReaction
+class DrDNAMolecularReaction : public G4VITReactionProcess
 {
     public:
-        std::unique_ptr<G4ITReactionChange> MakeReaction(const G4Track&, const G4Track&) override;
+    DrDNAMolecularReaction();
+    explicit DrDNAMolecularReaction(G4VDNAReactionModel*);
+    ~DrDNAMolecularReaction() override = default;
+    DrDNAMolecularReaction(const DrDNAMolecularReaction& other) = delete;
+    DrDNAMolecularReaction& operator=(const DrDNAMolecularReaction& other) = delete;
+
+    G4bool TestReactibility(const G4Track&,
+                            const G4Track&,
+                            double currentStepTime,
+                            bool userStepTimeLimit) override;
+
+    std::unique_ptr<G4ITReactionChange> MakeReaction(const G4Track&, const G4Track&) override;
+
+    void SetReactionModel(G4VDNAReactionModel*);
+
+protected:
+    const G4DNAMolecularReactionTable*& fMolReactionTable;
+    G4VDNAReactionModel* fpReactionModel;
 };

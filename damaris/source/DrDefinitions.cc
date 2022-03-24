@@ -16,6 +16,7 @@
 #include "DrDefinitions.hh"
 #include "DrDSBEnd_Generic.hh"
 #include <G4MoleculeTable.hh>
+#include "DrProteinKinetics_Generic.hh"
 #include <regex>
 #include <G4SystemOfUnits.hh>
 #include <TsParameterManager.hh>
@@ -174,7 +175,7 @@ void DrDefinitions::InitialiseBinning(){
         vector<G4double> binValues;
         if(!binFile) {
             G4cout << "ERROR: could not load in " << DrDefinitions::Instance()->GetExplicitBinning() << G4endl;
-            exit(1);
+            fPm->AbortSession(1);
         }
         else {
             string value;
@@ -346,6 +347,7 @@ vector<pair<G4double,vector<G4String> > > DrDefinitions::InitialiseReactions(){
 
 G4String DrDefinitions::GetFullParmName(const G4String& parameterName){
     // Set the biology name
+//    if (fName != "Default") return fName;
     if ( fPm->ParameterExists("Ch/ChemistryName") ) fName = fPm->GetStringParameter("Ch/ChemistryName");
     return "Ch/"+fName+"/"+parameterName;
 }

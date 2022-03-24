@@ -15,7 +15,8 @@
 //
 #include "DrReportSystem.hh"
 #include "DrDefinitions.hh"
-#include "DrBreakTable.hh"
+#include "TsParameterManager.hh"
+#include "DrDSBMoleculeManager.hh"
 #include <G4Scheduler.hh>
 #include <G4SystemOfUnits.hh>
 #include <G4MoleculeFinder.hh>
@@ -108,7 +109,7 @@ G4double DrReportSystem::PostStepGetPhysicalInteractionLength(
     if (value < 0) {
         G4cerr << "ERROR: Post step interaction length returned by"
                << "DrReportSystem cannot be negative!" << G4endl;
-        exit(EXIT_FAILURE);
+        DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
     }
 
     //@@@@ negative lets the stepper know we are returning a time
@@ -118,7 +119,7 @@ G4double DrReportSystem::PostStepGetPhysicalInteractionLength(
 G4VParticleChange *DrReportSystem::RecordSystem(const G4Track &) {
 
     std::map<const G4MoleculeDefinition*, G4int > moleculeCount;
-    auto bTable = DrBreakTable::Instance();
+    DrDefinitions* definitions = DrDefinitions::Instance();
     G4int bleachedCount{0};
 
     for(auto read: DrDefinitions::Instance()->GetNameMap()){
@@ -137,17 +138,21 @@ G4VParticleChange *DrReportSystem::RecordSystem(const G4Track &) {
         else moleculeCount[molDef]++; // found molecule, add one to count
 
         if(molDef->GetName().substr(0,3) == "DSB"){
-            if(bTable->GetBreakMolecule(*track, "DrReportSystem")->sBreakEndA->fPKcsIsBleached) bleachedCount++;
-            if(bTable->GetBreakMolecule(*track, "DrReportSystem")->sBreakEndB->fPKcsIsBleached) bleachedCount++;
+            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+            if(breakMolecule->sBreakEndA->fPKcsIsBleached) bleachedCount++;
+            if(breakMolecule->sBreakEndB->fPKcsIsBleached) bleachedCount++;
         }
     }
     //----------------------------------------------------------------------
     // Add the recorded moleculeCount above into TypeTable
     //----------------------------------------------------------------------
     G4double time = round(G4Scheduler::Instance()->GetGlobalTime()/s);
-    G4int initialDSBs = DrBreakTable::Instance()->fInitialBreakNumber;
-    bTable->UpdateTypeTracking(moleculeCount,time);
-    bTable->fBleachedStoreRun[time].push_back(G4double(bleachedCount)/G4double(initialDSBs*2));
+    G4int initialDSBs = DrDefinitions::Instance()->fInitialBreakNumber;
+
+    DrDSBMoleculeManager* DSBMoleculeManager = new DrDSBMoleculeManager();
+    DSBMoleculeManager->UpdateTypeTracking(moleculeCount,time);
+    delete DSBMoleculeManager;
+    definitions->fBleachedStoreRun[time].push_back(G4double(bleachedCount)/G4double(initialDSBs*2));
 
     return &aParticleChange;
 }

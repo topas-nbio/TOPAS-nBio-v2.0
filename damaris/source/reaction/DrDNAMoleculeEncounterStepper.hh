@@ -33,16 +33,24 @@ class G4Molecule;
  *
  */
 
-class DrDNAMoleculeEncounterStepper : public G4DNAMoleculeEncounterStepper
+class DrDNAMoleculeEncounterStepper : public G4VITTimeStepComputer
 {
 public:
     DrDNAMoleculeEncounterStepper();
-  virtual G4double CalculateStep(const G4Track&, const G4double&);
+    ~DrDNAMoleculeEncounterStepper() override;
+    DrDNAMoleculeEncounterStepper(const DrDNAMoleculeEncounterStepper&) = delete;
+    DrDNAMoleculeEncounterStepper& operator=(const DrDNAMoleculeEncounterStepper&) = delete;
 
-    inline void SetReactionModel(G4VDNAReactionModel* reactionModel)
-    {
-        fReactionModel = reactionModel;
-    }
+    void Prepare() override ;
+    G4double CalculateStep(const G4Track&, const G4double&) override ;
+
+    void SetReactionModel(G4VDNAReactionModel*);
+    G4VDNAReactionModel* GetReactionModel();
+
+    void SetVerbose(int);
+    // Final time returned when reaction is available in the reaction table = 1
+    // All details = 2
+
 private:
     void InitializeForNewTrack();
 
@@ -57,6 +65,7 @@ private:
   const G4DNAMolecularReactionTable*& fMolecularReactionTable;
   G4VDNAReactionModel* fReactionModel;
   G4int fVerbose;
+
 
     class Utils
     {

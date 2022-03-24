@@ -14,10 +14,29 @@
 //
 #pragma once
 
-#include <G4MoleculeDefinition.hh>
-#include "DrProteinKinetics_Generic.hh"
+//#include <G4MoleculeDefinition.hh>
+//#include "DrProteinKinetics_Generic.hh"
+
+#include "DrPrecompiler.hh"
+#include <G4Types.hh>
+#include <G4String.hh>
+#include <vector>
+#include <map>
 
 class TsParameterManager;
+class G4MoleculeDefinition;
+class DrProteinKinetics_Generic;
+
+struct checkBreakStore{
+    G4int fNumberBreakMoleculeLeft{-1};
+    G4int fNumberUnrepaired{-1};
+    G4int fMisrepairCounter{-1};
+    G4int fInterChromosomeAberration{-1};
+    G4int fInterChromatidAberration{-1};
+    G4int fInterArmAberration{-1};
+    G4int fIntraArmAberration{-1};
+};
+
 class DrDefinitions {
 
     //-----------------------------------------------
@@ -29,13 +48,14 @@ protected:
     static DrDefinitions *definitionsInstance;
 
 private:
-    G4String GetFullParmName(const G4String&);
     void SetParameters();
     std::vector<G4String> RegisterMolecules(G4String);
-
 public:
+
     ~DrDefinitions();
     static DrDefinitions *Instance();
+    G4String GetFullParmName(const G4String&);
+    inline TsParameterManager* GetParameterManager() const {return fPm; }
 
     inline void ResetCurrentExplicitBinNuber() { fCurrentExplicitBinNuber = -1; }
     inline void IncrimentCurrentExplicitBinNuber() { fCurrentExplicitBinNuber++; }
@@ -79,6 +99,7 @@ public:
     inline G4int GetCurrentExplicitBinNuber() const { return fCurrentExplicitBinNuber; }
     inline G4bool GetTurnOffTime() const {return fTurnOffTime; }
     inline std::map<G4String, G4MoleculeDefinition*> GetNameMap() const {return fNameMap; }
+
 
     //-----------------Set Functions-----------------
     inline void SetVerbosity(G4int _value) { fVerbose = _value; }
@@ -126,4 +147,35 @@ private:
     std::vector<G4String> fHasXRCC4;
     std::map<G4String, G4MoleculeDefinition*> fNameMap;
     std::vector<std::pair<G4MoleculeDefinition*, DrProteinKinetics_Generic*> > fProcList;
+
+
+public:
+    //-----------------Storage Parameters-----------------
+    std::map<G4int,checkBreakStore> fCheckBreakStore;
+    std::vector<G4double> fDisplacementTrackingStore;
+    std::map<G4double,std::vector<G4double> > fMSDTrackingStore;
+    std::vector<G4double> fResidualEndDisplacementStore;
+    std::vector<G4double> fResidualSynDisplacementStore;
+    std::map<G4double,std::vector<G4double> > fBleachedStoreRun;
+    std::vector<G4double> fMisrepairSeparationsStore;
+    std::vector<G4double> fMisrepairTimeStore;
+    std::vector<G4int> fMisrepairNumberStore;
+
+    G4int fCurrentBiologyRepeatNumber;
+    G4int fInitialBreakNumber;
+
+    //@@@@@@@@@@@@@@@@@@@
+    // TypeTracking
+    //
+    std::vector< std::map <G4double, std::map <const G4MoleculeDefinition*, std::vector <G4double> > > > fMoleculesRecord;
+
+#ifdef DEBUG_DAMARIS
+    public:
+    std::map<G4String, std::vector<G4double> > debugProcMap;
+    std::vector<G4double> spaceStepStore;
+    std::vector<G4double> actualReactionRangeStore;
+    std::vector<G4double> suggestedReactionRangeStore;
+    std::vector<G4double> diffTimeStore;
+#endif /*DEBUG_DAMARIS*/
+
 };

@@ -14,7 +14,7 @@
 // See README for references.
 //
 #include "DrMoleculeGun.hh"
-#include "DrBreakTable.hh"
+#include "DrDSBMoleculeManager.hh"
 #include <G4Molecule.hh>
 #include <G4MoleculeGunMessenger.hh>
 #include <G4MoleculeTable.hh>
@@ -187,23 +187,25 @@ void DrMoleculeGun::BuildAndPushTrack(G4int /*chromosomeID*/,
                                       const G4String &name,
                                       const G4ThreeVector &position,
                                       double time) {
-  G4MolecularConfiguration *conf =
-      G4MoleculeTable::Instance()->GetConfiguration(name);
-  assert(conf != 0);
-  G4Molecule *molecule = new G4Molecule(conf);
-  G4Track *track = molecule->BuildTrack(time, position);
-  PushTrack(track);
-  DrBreakMolecule *breakMolecule =
-      DrBreakTable::Instance()->LinkNewBreakMolecule(track);
-  DrBreakTable::Instance()->NewBreakID(breakMolecule);
-  breakMolecule->sBreakEndA->fDamageTypes[1] = insults.first;
-  breakMolecule->sBreakEndA->fDamageTypes[0] = insults.second;
-  breakMolecule->sBreakEndA->fOriginalPosition = position;
-  G4int breakID = breakMolecule->sBreakEndA->fOriginalBreakMoleculeID;
-  if (breakID % 2 != 0)
-    breakMolecule->sBreakEndA->fCorrectPartnerBreakMoleculeID = breakID - 1; // odd
-  else
-    breakMolecule->sBreakEndA->fCorrectPartnerBreakMoleculeID = breakID + 1; // even
+    G4MolecularConfiguration *conf = G4MoleculeTable::Instance()->GetConfiguration(name);
+    assert(conf != 0);
+    G4Molecule *molecule = new G4Molecule(conf);
+    G4Track *track = molecule->BuildTrack(time, position);
+    PushTrack(track);
+
+    auto DSBMoleculeManager = new DrDSBMoleculeManager();
+
+    DrBreakMolecule *breakMolecule = DSBMoleculeManager->LinkNewBreakMolecule(track);
+    DSBMoleculeManager->NewBreakID(breakMolecule);
+
+    breakMolecule->sBreakEndA->fDamageTypes[1] = insults.first;
+    breakMolecule->sBreakEndA->fDamageTypes[0] = insults.second;
+    breakMolecule->sBreakEndA->fOriginalPosition = position;
+    G4int breakID = breakMolecule->sBreakEndA->fOriginalBreakMoleculeID;
+    if (breakID % 2 != 0) breakMolecule->sBreakEndA->fCorrectPartnerBreakMoleculeID = breakID - 1; // odd
+    else breakMolecule->sBreakEndA->fCorrectPartnerBreakMoleculeID = breakID + 1; // even
+
+    delete DSBMoleculeManager;
 }
 
 void DrMoleculeGun::BuildAndPushTrack(DrBreakMolecule* breakMol,
@@ -214,7 +216,9 @@ void DrMoleculeGun::BuildAndPushTrack(DrBreakMolecule* breakMol,
     G4Track *track = molecule->BuildTrack(breakMol->sBreakEndA->fLesionTime[0],
             breakMol->sBreakEndA->fOriginalPosition);
     PushTrack(track);
-    DrBreakTable::Instance()->LinkThisBreakMolecule(track,breakMol);
+    auto DSBMoleculeManager = new DrDSBMoleculeManager();
+    DSBMoleculeManager->LinkThisBreakMolecule(track,breakMol);
+    delete DSBMoleculeManager;
 }
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //------------------------------------------------------------------------------

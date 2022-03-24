@@ -16,8 +16,8 @@
 #include "DrEmDNAChemistry.hh"
 #include "TsParameterManager.hh"
 
-#include "G4PhysicalConstants.hh"
-#include "G4SystemOfUnits.hh"
+#include <G4PhysicalConstants.hh>
+#include <G4SystemOfUnits.hh>
 
 //JWW_DaMaRiS
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -33,8 +33,9 @@
 #include "DrReportMSD.hh"
 //@@@@ Utils:
 #include "DrDefinitions.hh"
-//@@@@ For the clock molecule
+//@@@@ Molecules:
 #include "DrClock.hh"
+#include "DrProteinKinetics_Generic.hh"
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 

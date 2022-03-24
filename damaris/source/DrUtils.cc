@@ -13,11 +13,11 @@
 // DaMaRiS is developed at the University of Manchester.
 // See README for references.
 //
-#include "DrBreakTable.hh"
 #include "DrDefinitions.hh"
+#include "TsParameterManager.hh"
 #include "DrUtils.hh"
-#include <G4Scheduler.hh>
 #include "DrDSBEnd_Generic.hh"
+#include <G4Scheduler.hh>
 #include <G4SystemOfUnits.hh>
 
 using namespace std;
@@ -30,15 +30,15 @@ void DrUtils::ExtractBiologicallyRelevantParameters() {
 
     NormaliseMoleculeStore();
 
-    auto currentData = DrBreakTable::Instance()->fMoleculesRecord[1];
+    auto currentData = DrDefinitions::Instance()->fMoleculesRecord[1];
 
-    if(DrBreakTable::Instance()->fMoleculesRecord[0].size() == 0){
-        DrBreakTable::Instance()->fMoleculesRecord[0] = currentData;
+    if(DrDefinitions::Instance()->fMoleculesRecord[0].size() == 0){
+        DrDefinitions::Instance()->fMoleculesRecord[0] = currentData;
     }
     else{
-        for(auto timePoint: DrBreakTable::Instance()->fMoleculesRecord[1]){
+        for(auto timePoint: DrDefinitions::Instance()->fMoleculesRecord[1]){
             G4double time = timePoint.first;
-            auto oldData = DrBreakTable::Instance()->fMoleculesRecord[0];
+            auto oldData = DrDefinitions::Instance()->fMoleculesRecord[0];
             for(auto molecule: timePoint.second){
                 const G4MoleculeDefinition* molDef = molecule.first;
 
@@ -65,15 +65,15 @@ void DrUtils::ExtractBiologicallyRelevantParameters() {
                 G4double deltaNewAverage_NTI = newValue_NTI - newAverage_NTI;
                 G4double newVariance_NTI = oldVariance_NTI + (deltaOldAverage_NTI*deltaNewAverage_NTI);
 
-                DrBreakTable::Instance()->fMoleculesRecord[0][time][molDef][0] = newAverage_NTS;
-                DrBreakTable::Instance()->fMoleculesRecord[0][time][molDef][1] = newVariance_NTS;
-                DrBreakTable::Instance()->fMoleculesRecord[0][time][molDef][2] = repeatCount;
-                DrBreakTable::Instance()->fMoleculesRecord[0][time][molDef][3] = newAverage_NTI;
-                DrBreakTable::Instance()->fMoleculesRecord[0][time][molDef][4] = newVariance_NTI;
+                DrDefinitions::Instance()->fMoleculesRecord[0][time][molDef][0] = newAverage_NTS;
+                DrDefinitions::Instance()->fMoleculesRecord[0][time][molDef][1] = newVariance_NTS;
+                DrDefinitions::Instance()->fMoleculesRecord[0][time][molDef][2] = repeatCount;
+                DrDefinitions::Instance()->fMoleculesRecord[0][time][molDef][3] = newAverage_NTI;
+                DrDefinitions::Instance()->fMoleculesRecord[0][time][molDef][4] = newVariance_NTI;
             }
         }
     }
-    DrBreakTable::Instance()->fMoleculesRecord[1].clear();
+    DrDefinitions::Instance()->fMoleculesRecord[1].clear();
 }
 
 void DrUtils::NormaliseMoleculeStore(){
@@ -82,35 +82,35 @@ void DrUtils::NormaliseMoleculeStore(){
         G4double initial{0};
         if(molecule.first.substr(0,6) == "DSBEnd" ||
            molecule.first.substr(0,12) == "DSB_Fixed_HR"){
-            initial = DrBreakTable::Instance()->fInitialBreakNumber*2;
+            initial = DrDefinitions::Instance()->fInitialBreakNumber*2;
         }
         else if(molecule.first.substr(0,6) == "DSBSyn" ||
                 molecule.first.substr(0,6) == "DSB_Fi"){
-            initial = DrBreakTable::Instance()->fInitialBreakNumber;
+            initial = DrDefinitions::Instance()->fInitialBreakNumber;
         }
 
         const G4MoleculeDefinition* molDef = molecule.second;
 
-        for (const auto& timePoint: DrBreakTable::Instance()->fMoleculesRecord[1]){
+        for (const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[1]){
             auto molCountMap = timePoint.second;
             if(molCountMap[molDef][0] > max) {
                 max = molCountMap[molDef][0];
             }
         }
-        for (const auto& timePoint: DrBreakTable::Instance()->fMoleculesRecord[1]){
+        for (const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[1]){
             if(max > 0){
-                DrBreakTable::Instance()->fMoleculesRecord[1][timePoint.first][molDef][0] /= max;
+                DrDefinitions::Instance()->fMoleculesRecord[1][timePoint.first][molDef][0] /= max;
             }
             else if(max == 0){
-                DrBreakTable::Instance()->fMoleculesRecord[1][timePoint.first][molDef][0] = 0;
+                DrDefinitions::Instance()->fMoleculesRecord[1][timePoint.first][molDef][0] = 0;
             }
             else if(max < 0){
                 G4cout << "ERROR: max value of molecule " << molDef->GetName()
                         << " was calculated to be negative whilst trying to normalise."
                         << G4endl;
-                exit(EXIT_FAILURE);
+                DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
             }
-            DrBreakTable::Instance()->fMoleculesRecord[1][timePoint.first][molDef][3] /= initial;
+            DrDefinitions::Instance()->fMoleculesRecord[1][timePoint.first][molDef][3] /= initial;
         }
     }
 }
@@ -153,7 +153,7 @@ void DrUtils::PrintBiologicallyRelevantParameters() {
     G4double radius = DrDefinitions::Instance()->GetBoundingCellOrNucleusRadius();
     vector<pair<G4double, G4double>> list;
     file << "Original_Seperation_of_Misrepair" << G4endl;
-    list = BinDoubleList(DrBreakTable::Instance()->fMisrepairSeparationsStore,
+    list = BinDoubleList(DrDefinitions::Instance()->fMisrepairSeparationsStore,
                          2500, 0, radius);
     file << "# Separation (nm) | Normalised Frequency" << G4endl;
     for (auto data : list) {
@@ -163,7 +163,7 @@ void DrUtils::PrintBiologicallyRelevantParameters() {
     //----------------------------------------------------------------------------
     file << "Time_of_Misrepair_Interactions" << G4endl;
     file << "# Time of Interaction (s) | Normalised Frequency" << G4endl;
-    list = BinDoubleList(DrBreakTable::Instance()->fMisrepairTimeStore,
+    list = BinDoubleList(DrDefinitions::Instance()->fMisrepairTimeStore,
                          (G4int)(floor(G4Scheduler::Instance()->GetEndTime() / s)), 0,
                          G4Scheduler::Instance()->GetEndTime());
     for (auto data : list) {
@@ -183,7 +183,7 @@ void DrUtils::PrintBiologicallyRelevantParameters() {
     //@@@@ run from it's original location at t=0
     file << "Displacement_at_End" << G4endl;
     file << "# Displacement (nm) | Normalised Frequency" << G4endl;
-    list = BinDoubleList(DrBreakTable::Instance()->fDisplacementTrackingStore,
+    list = BinDoubleList(DrDefinitions::Instance()->fDisplacementTrackingStore,
                          2500, 0, radius);
     for (auto data : list) {
         file << data.first / nm << " " << data.second << G4endl;
@@ -191,7 +191,7 @@ void DrUtils::PrintBiologicallyRelevantParameters() {
     file << G4endl << G4endl;
     //----------------------------------------------------------------------------
     file << "Displacement_of_ResidualEnds" << G4endl;
-    list = BinDoubleList(DrBreakTable::Instance()->fResidualEndDisplacementStore,
+    list = BinDoubleList(DrDefinitions::Instance()->fResidualEndDisplacementStore,
                          2500, 0, radius);
     for (auto data : list) {
         file << data.first / nm << " " << data.second << G4endl;
@@ -199,7 +199,7 @@ void DrUtils::PrintBiologicallyRelevantParameters() {
     file << G4endl << G4endl;
     //----------------------------------------------------------------------------
     file << "Displacement_of_ResidualSyn" << G4endl;
-    list = BinDoubleList(DrBreakTable::Instance()->fResidualSynDisplacementStore,
+    list = BinDoubleList(DrDefinitions::Instance()->fResidualSynDisplacementStore,
                          2500, 0, radius);
     for (auto data : list) {
         file << data.first / nm << " " << data.second << G4endl;
@@ -214,20 +214,20 @@ void DrUtils::PrintPerRepBiologicallyRelevantParameters() {
     //----------------------------------------------------------------------------
     //@@@@ The following calculates the percentage of wrong and unrepaired double
     //@@@@ strand breaks at the end of each chemistry repeat.
-    DrBreakTable *bTable = DrBreakTable::Instance();
-    G4int RunID = bTable->fCurrentBiologyRepeatNumber;
+    DrDefinitions* definitions = DrDefinitions::Instance();
+    G4int RunID = definitions->fCurrentBiologyRepeatNumber;
 
     std::ofstream file;
     G4int altRunID = DrDefinitions::Instance()->GetAlternativeRunID();
     file.open("PerRepResults" + std::to_string(altRunID) + ".out",
               std::ios_base::app);
-    file << bTable->fInitialBreakNumber << " "
-            << bTable->fCheckBreakStore[RunID].fMisrepairCounter << " "
-            << bTable->fCheckBreakStore[RunID].fNumberUnrepaired << " "
-            << bTable->fCheckBreakStore[RunID].fInterChromosomeAberration << " "
-            << bTable->fCheckBreakStore[RunID].fInterChromatidAberration << " "
-            << bTable->fCheckBreakStore[RunID].fInterArmAberration << " "
-            << bTable->fCheckBreakStore[RunID].fIntraArmAberration << " "
+    file << definitions->fInitialBreakNumber << " "
+            << definitions->fCheckBreakStore[RunID].fMisrepairCounter << " "
+            << definitions->fCheckBreakStore[RunID].fNumberUnrepaired << " "
+            << definitions->fCheckBreakStore[RunID].fInterChromosomeAberration << " "
+            << definitions->fCheckBreakStore[RunID].fInterChromatidAberration << " "
+            << definitions->fCheckBreakStore[RunID].fInterArmAberration << " "
+            << definitions->fCheckBreakStore[RunID].fIntraArmAberration << " "
             << G4endl;
     file.close();
 
@@ -235,16 +235,15 @@ void DrUtils::PrintPerRepBiologicallyRelevantParameters() {
 }
 
 void DrUtils::PrintMRPercent() {
-    DrBreakTable *bTable = DrBreakTable::Instance();
-    auto initDSB = (G4double)bTable->fInitialBreakNumber;
+    auto initDSB = (G4double)DrDefinitions::Instance()->fInitialBreakNumber;
     G4double averagePercentMR{0.0};
-    for (auto read : DrBreakTable::Instance()->fMisrepairNumberStore) {
+    for (auto read : DrDefinitions::Instance()->fMisrepairNumberStore) {
         averagePercentMR += G4double(read) / initDSB;
     }
     averagePercentMR /= DrDefinitions::Instance()->GetBiologyRepeatNumber();
 
     G4double err = StdErrMeanList(averagePercentMR,
-                                  DrBreakTable::Instance()->fMisrepairNumberStore);
+                                  DrDefinitions::Instance()->fMisrepairNumberStore);
     std::ofstream file;
     file.open("Misrepair.out", std::ios_base::app);
     file << DrDefinitions::Instance()->GetDSBTimeDelay() << " "
@@ -271,19 +270,19 @@ void DrUtils::PrintBinList(G4String fileName, vector<G4double> inList,
 }
 
 void DrUtils::PrintToScreenBioParam() {
-    DrBreakTable *bTable = DrBreakTable::Instance();
-    G4int RunID = bTable->fCurrentBiologyRepeatNumber;
+    DrDefinitions* definitions = DrDefinitions::Instance();
+    G4int RunID = definitions->fCurrentBiologyRepeatNumber;
     G4cout.precision(3);
-    G4cout << "Initial number of DSBs: " << bTable->fInitialBreakNumber << G4endl
-           << "Misrepaired: " << bTable->fCheckBreakStore[RunID].fMisrepairCounter << G4endl
+    G4cout << "Initial number of DSBs: " << definitions->fInitialBreakNumber << G4endl
+           << "Misrepaired: " << definitions->fCheckBreakStore[RunID].fMisrepairCounter << G4endl
            << "Chromosome Aberrations: "
-           << bTable->fCheckBreakStore[RunID].fInterChromosomeAberration << " / "
-           << bTable->fCheckBreakStore[RunID].fInterChromatidAberration << " / "
-           << bTable->fCheckBreakStore[RunID].fInterArmAberration << " / "
-            << bTable->fCheckBreakStore[RunID].fIntraArmAberration
-           << G4endl << "Still unrepaired: " << bTable->fCheckBreakStore[RunID].fNumberUnrepaired
+           << definitions->fCheckBreakStore[RunID].fInterChromosomeAberration << " / "
+           << definitions->fCheckBreakStore[RunID].fInterChromatidAberration << " / "
+           << definitions->fCheckBreakStore[RunID].fInterArmAberration << " / "
+            << definitions->fCheckBreakStore[RunID].fIntraArmAberration
+           << G4endl << "Still unrepaired: " << definitions->fCheckBreakStore[RunID].fNumberUnrepaired
            << G4endl << "Molecules left in simulation at end: "
-           << bTable->fCheckBreakStore[RunID].fNumberBreakMoleculeLeft << G4endl;
+           << definitions->fCheckBreakStore[RunID].fNumberBreakMoleculeLeft << G4endl;
 }
 
 G4double DrUtils::StdErrMeanMultiColumn(G4double average,
@@ -362,7 +361,7 @@ vector<pair<G4double, G4double>> DrUtils::BinDoubleList(vector<G4double> list,
 void DrUtils::PrintMSD(std::ofstream& file) {
 
     map<G4double, vector<G4double>> displacementAtTimeStore =
-            DrBreakTable::Instance()->fMSDTrackingStore;
+            DrDefinitions::Instance()->fMSDTrackingStore;
 
     for (const auto& timePoint : displacementAtTimeStore) {
 
@@ -372,7 +371,7 @@ void DrUtils::PrintMSD(std::ofstream& file) {
             G4cerr << "(DrUtils::PrintMSD) ERROR: no displacements recorded for this"
                    << " time step!" << G4endl << "Time step: " << timePoint.first
                    << G4endl;
-            exit(EXIT_FAILURE);
+            DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
         }
         G4double sqrd_displacement{0.};
         G4double sum_sqrd_displacement{0.};
@@ -413,13 +412,13 @@ void DrUtils::PrintMSD(std::ofstream& file) {
 
 void DrUtils::PrintFRAP(std::ofstream &file) {
 
-    auto bTable = DrBreakTable::Instance();
+    DrDefinitions* definitions = DrDefinitions::Instance();
     G4int repeats = DrDefinitions::Instance()->GetBiologyRepeatNumber();
     std::map<G4double,std::pair<G4double,G4double>> storeBleached;
     std::map<G4double,std::pair<G4double,G4double>> storePKcs;
     std::map<G4double,std::pair<G4double,G4double>> storeFRAP;
 
-    for(const auto& read: bTable->fBleachedStoreRun){
+    for(const auto& read: definitions->fBleachedStoreRun){
         G4double average{0.0};
         for(const auto& read2: read.second){
             average += read2;
@@ -430,7 +429,7 @@ void DrUtils::PrintFRAP(std::ofstream &file) {
         storeBleached[read.first] = std::make_pair(average,SEM);
     }
 
-    for(const auto& timePoint: bTable->fMoleculesRecord[0]){
+    for(const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[0]){
         G4double time = timePoint.first;
         auto data = timePoint.second;
 
@@ -478,7 +477,6 @@ void DrUtils::PrintFRAP(std::ofstream &file) {
 
 void DrUtils::PrintRecruitment(std::ofstream &file) {
 
-    DrBreakTable *bTable = DrBreakTable::Instance();
     G4int repeats = DrDefinitions::Instance()->GetBiologyRepeatNumber();
 
     //Storage Structures
@@ -489,7 +487,7 @@ void DrUtils::PrintRecruitment(std::ofstream &file) {
     //-------------------------------------------------------------------------------------
     // Ku70/80
     file << "Ku_Recruitment" << G4endl;
-    for(const auto& timePoint: bTable->fMoleculesRecord[0]){
+    for(const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[0]){
         G4double time = timePoint.first;
         auto data = timePoint.second;
         G4double average{0.};
@@ -524,7 +522,7 @@ void DrUtils::PrintRecruitment(std::ofstream &file) {
     //-------------------------------------------------------------------------------------
     // DNA-PKcs
     file << "PKcs_Recruitment" << G4endl;
-    for(const auto& timePoint: bTable->fMoleculesRecord[0]){
+    for(const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[0]){
         G4double time = timePoint.first;
         auto data = timePoint.second;
         G4double average{0.};
@@ -559,7 +557,7 @@ void DrUtils::PrintRecruitment(std::ofstream &file) {
     //-------------------------------------------------------------------------------------
     // XRCC4
     file << "XRCC4_Recruitment" << G4endl;
-    for(const auto& timePoint: bTable->fMoleculesRecord[0]){
+    for(const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[0]){
         G4double time = timePoint.first;
         auto data = timePoint.second;
         G4double average{0.};
@@ -594,7 +592,6 @@ void DrUtils::PrintRecruitment(std::ofstream &file) {
 
 void DrUtils::PrintRawMolecules(std::ofstream &file){
 
-    DrBreakTable *bTable = DrBreakTable::Instance();
     G4int repeats = DrDefinitions::Instance()->GetBiologyRepeatNumber();
 
     for(const auto& molList: DrDefinitions::Instance()->GetNameMap()){
@@ -606,7 +603,7 @@ void DrUtils::PrintRawMolecules(std::ofstream &file){
             file << molList.first << G4endl;
         }
 
-        for(const auto& timePoint: bTable->fMoleculesRecord[0]){
+        for(const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[0]){
             G4double time = timePoint.first;
             auto data = timePoint.second;
 
@@ -640,7 +637,6 @@ void DrUtils::PrintRawMolecules(std::ofstream &file){
 
 void DrUtils::PrintResiduals(std::ofstream &file) {
 
-    DrBreakTable *bTable = DrBreakTable::Instance();
     G4int repeats = DrDefinitions::Instance()->GetBiologyRepeatNumber();
 
     G4double numberOfRepeats{0.};
@@ -655,7 +651,7 @@ void DrUtils::PrintResiduals(std::ofstream &file) {
     for(const auto& molList: DrDefinitions::Instance()->GetNameMap()){
         const G4MoleculeDefinition* molDef = molList.second;
         if(molList.first.substr(0,9) == "DSB_Fixed"){
-            for(const auto& timePoint: bTable->fMoleculesRecord[0]){
+            for(const auto& timePoint: DrDefinitions::Instance()->fMoleculesRecord[0]){
                 G4double time = timePoint.first; // time is in seconds
                 auto data = timePoint.second;
 
@@ -683,7 +679,7 @@ void DrUtils::PrintResiduals(std::ofstream &file) {
     G4double initVal{0.};
 
     if(relVal != 0.){
-        for(auto read: DrBreakTable::Instance()->fCheckBreakStore){
+        for(auto read: DrDefinitions::Instance()->fCheckBreakStore){
             absVal += read.second.fNumberUnrepaired;
         }
         absVal /= repeats;

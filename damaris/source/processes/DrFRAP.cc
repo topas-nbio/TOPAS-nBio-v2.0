@@ -15,8 +15,9 @@
 //
 #include "DrFRAP.hh"
 #include "DrClock.hh"
-#include "DrBreakTable.hh"
 #include "DrDefinitions.hh"
+#include "TsParameterManager.hh"
+#include "DrBreakMolecule.hh"
 #include <G4MoleculeFinder.hh>
 #include <G4Scheduler.hh>
 #include <G4SystemOfUnits.hh>
@@ -109,7 +110,7 @@ G4double DrFRAP::PostStepGetPhysicalInteractionLength(const G4Track &track, G4do
   if (value < 0) {
     G4cerr << "ERROR: Post step interaction length returned by"
            << "DrFRAP cannot be negative!" << G4endl;
-    exit(EXIT_FAILURE);
+      DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
   }
 
   //@@@@ negative lets the stepper know we are returning a time
@@ -136,7 +137,7 @@ G4VParticleChange *DrFRAP::FRAP(const G4Track &track) {
       auto listOfAllMolecules = DrDefinitions::Instance()->GetNameMap();
       if(listOfAllMolecules.find(NameOfMoleculesWithPKc) != listOfAllMolecules.end()){
         if(moleculeName == NameOfMoleculesWithPKc){
-          auto breakMolecule = DrBreakTable::Instance()->GetBreakMolecule(*molTrack,"DrFRAP");
+            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(molTrack->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
           breakMolecule->sBreakEndA->fPKcsIsBleached = true;
           if(breakMolecule->sBreakEndB->fOriginalBreakMoleculeID != -1) breakMolecule->sBreakEndB->fPKcsIsBleached = true;
         }

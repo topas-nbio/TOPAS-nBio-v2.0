@@ -14,9 +14,11 @@
 //
 #pragma once
 
-#include <G4DNAMolecularStepByStepModel.hh>
+#include <G4VITStepModel.hh>
 
 class G4DNAMolecularReactionTable;
+class G4VDNAReactionModel;
+
 
 /**
   * G4DNAMolecularStepByStepModel :
@@ -28,8 +30,26 @@ class G4DNAMolecularReactionTable;
   * reaction.
   */
 
-class DrDNAMolecularStepByStepModel : public G4DNAMolecularStepByStepModel{
+class DrDNAMolecularStepByStepModel : public G4VITStepModel{
 public:
     DrDNAMolecularStepByStepModel(const G4String& name = "DrDNAMolecularStepByStepModel");
-   virtual void Initialize();
+    void Initialize() override ;
+
+    DrDNAMolecularStepByStepModel(const G4String& name,
+                                  std::unique_ptr<G4VITTimeStepComputer> pTimeStepper,
+                                  std::unique_ptr<G4VITReactionProcess> pReactionProcess);
+
+    DrDNAMolecularStepByStepModel& operator=(const DrDNAMolecularStepByStepModel&) = delete;
+    DrDNAMolecularStepByStepModel(const DrDNAMolecularStepByStepModel&) = delete;
+    ~DrDNAMolecularStepByStepModel() override;
+
+    void PrintInfo() override;
+
+    void SetReactionModel(G4VDNAReactionModel*);
+    G4VDNAReactionModel* GetReactionModel();
+
+protected:
+    const G4DNAMolecularReactionTable*& fMolecularReactionTable;
+    std::unique_ptr<G4VDNAReactionModel> fpReactionModel;
+
 };

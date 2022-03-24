@@ -18,6 +18,42 @@
 #include <G4MoleculeFinder.hh>
 #include <G4ITReactionChange.hh>
 #include <G4Scheduler.hh>
+#include <G4VDNAReactionModel.hh>
+
+DrDNAMolecularReaction::DrDNAMolecularReaction()
+        : G4VITReactionProcess()
+        , fMolReactionTable(reference_cast<const G4DNAMolecularReactionTable*>(fpReactionTable))
+        , fpReactionModel(nullptr)
+{
+}
+
+DrDNAMolecularReaction::DrDNAMolecularReaction(G4VDNAReactionModel* pReactionModel)
+        : DrDNAMolecularReaction()
+{
+    fpReactionModel = pReactionModel;
+}
+
+G4bool DrDNAMolecularReaction::TestReactibility(const G4Track &trackA,
+                                                const G4Track &trackB,
+                                                double currentStepTime,
+                                                bool userStepTimeLimit) /*const*/
+{
+    const auto pMoleculeA = GetMolecule(trackA)->GetMolecularConfiguration();
+    const auto pMoleculeB = GetMolecule(trackB)->GetMolecularConfiguration();
+
+    const G4double reactionRadius = fpReactionModel->GetReactionRadius(pMoleculeA, pMoleculeB);
+
+    G4double separationDistance = -1.;
+
+    if (currentStepTime == 0.)
+    {
+        userStepTimeLimit = false;
+    }
+
+    G4bool output = fpReactionModel->FindReaction(trackA, trackB, reactionRadius,
+                                                  separationDistance, userStepTimeLimit);
+    return output;
+}
 
 std::unique_ptr<G4ITReactionChange> DrDNAMolecularReaction::MakeReaction(const G4Track& trackA, const G4Track& trackB){
 
@@ -65,4 +101,9 @@ std::unique_ptr<G4ITReactionChange> DrDNAMolecularReaction::MakeReaction(const G
     }
     pChanges->KillParents(true);
     return pChanges;
+}
+
+void DrDNAMolecularReaction::SetReactionModel(G4VDNAReactionModel* pReactionModel)
+{
+    fpReactionModel = pReactionModel;
 }

@@ -14,7 +14,7 @@
 //
 #pragma once
 
-#include "G4MoleculeDefinition.hh"
+#include <G4MoleculeDefinition.hh>
 
 class DrClock : public G4MoleculeDefinition
 {

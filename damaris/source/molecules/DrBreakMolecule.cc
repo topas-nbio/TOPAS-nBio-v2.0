@@ -14,7 +14,7 @@
 // See README for references.
 //
 #include "DrBreakMolecule.hh"
-#include "DrBreakTable.hh"
+#include "DrDefinitions.hh"
 #include <fstream>
 
 DrBreakMolecule::DrBreakMolecule():G4VAuxiliaryTrackInformation(), fIsWaiting(true), fWaitingTime(-1.0), fDiffusionTime(-1.0){
@@ -40,7 +40,7 @@ DrBreakMolecule& DrBreakMolecule::operator =(const DrBreakMolecule& rhs){
 }
 
 void DrBreakMolecule::PrintBreakDetails() {
-    G4String ID = DrBreakTable::Instance()->fCurrentBiologyRepeatNumber;
+    G4String ID = DrDefinitions::Instance()->fCurrentBiologyRepeatNumber;
     std::ofstream file("ReportBreakStructure.out", std::ios_base::app);
     file << "===Start of run " << ID <<"===" << G4endl;
     file << "---Start of BreakEndA---" << G4endl;

@@ -14,14 +14,19 @@
 // See README for references.
 //
 #include "DrDNAMoleculeEncounterStepper.hh"
+#include "DrPrecompiler.hh"
+#include "DrBreakMolecule.hh"
+#include "DrDefinitions.hh"
+#include "TsParameterManager.hh"
 #include <G4VDNAReactionModel.hh>
 #include <G4DNAMolecularReactionTable.hh>
 #include <G4UnitsTable.hh>
 #include <G4MoleculeFinder.hh>
 #include <G4MolecularConfiguration.hh>
+
+#ifdef DEBUG_DAMARIS
 #include "DrDefinitions.hh"
-#include "DrBreakTable.hh"
-#include "DrPrecompiler.hh"
+#endif /*DEBUG_DAMARIS*/
 
 using namespace std;
 using namespace CLHEP;
@@ -37,7 +42,9 @@ DrDNAMoleculeEncounterStepper::Utils::Utils(const G4Track& tA, const G4Molecular
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   G4String substringOfName = fpMoleculeA->GetDefinition()->GetName().substr(0,3);
 
-  if(substringOfName=="DSB" && DrDefinitions::Instance()->GetIsSubDiffusion()){
+  G4bool isSubDiffusion = DrDefinitions::Instance()->GetIsSubDiffusion();
+  if(substringOfName=="DSB" && isSubDiffusion){
+
     fDiffusionCoefficientMoleculeA= DrDefinitions::Instance()->GetJumpDiff();
     fDiffusionCoefficientMoleculeB= DrDefinitions::Instance()->GetJumpDiff();
   }
@@ -53,12 +60,37 @@ DrDNAMoleculeEncounterStepper::Utils::Utils(const G4Track& tA, const G4Molecular
 }
 
 DrDNAMoleculeEncounterStepper::DrDNAMoleculeEncounterStepper()
-        :G4DNAMoleculeEncounterStepper()
+        :G4VITTimeStepComputer()
         , fHasAlreadyReachedNullTime(false)
         , fMolecularReactionTable(reference_cast<const G4DNAMolecularReactionTable*>(fpReactionTable))
         , fReactionModel(nullptr)
         , fVerbose(0)
 {
+}
+
+DrDNAMoleculeEncounterStepper::~DrDNAMoleculeEncounterStepper() = default;
+
+
+void DrDNAMoleculeEncounterStepper::Prepare()
+{
+    G4VITTimeStepComputer::Prepare();
+
+#if defined (DEBUG_MEM)
+    MemStat mem_first, mem_second, mem_diff;
+#endif
+
+#if defined (DEBUG_MEM)
+    mem_first = MemoryUsage();
+#endif
+    G4MoleculeFinder::Instance()->UpdatePositionMap();
+
+#if defined (DEBUG_MEM)
+    mem_second = MemoryUsage();
+    mem_diff = mem_second - mem_first;
+    G4cout << "\t || MEM || DrDNAMoleculeEncounterStepper::Prepare || "
+        "After computing G4ITManager<G4Molecule>::Instance()->"
+        "UpdatePositionMap, diff is : " << mem_diff << G4endl;
+#endif
 }
 
 void DrDNAMoleculeEncounterStepper::InitializeForNewTrack()
@@ -103,15 +135,12 @@ void DrDNAMoleculeEncounterStepper::CheckAndRecordResults(const Utils& utils,
 
         if (trackB == 0)
         {
-            G4ExceptionDescription exceptionDescription;
-            exceptionDescription
-                    << "The reactant B found using the MoleculeFinder does not have a valid "
-                       "track attached to it. If this is done on purpose, please do "
-                       "not record this molecule in the MoleculeFinder."
-                    << G4endl;
-            G4Exception("G4DNAMoleculeEncounterStepper::RetrieveResults",
-                        "MoleculeEncounterStepper001", FatalErrorInArgument,
-                        exceptionDescription);
+          G4cerr
+          << "G4DNAMoleculeEncounterStepper::RetrieveResults"
+          << "The reactant B found using the MoleculeFinder does not have a valid" << G4endl
+          << "track attached to it. If this is done on purpose, please do" << G4endl
+          << "not record this molecule in the MoleculeFinder." << G4endl;
+            DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
             continue;
         }
 
@@ -122,42 +151,31 @@ void DrDNAMoleculeEncounterStepper::CheckAndRecordResults(const Utils& utils,
 
         if (trackB == &utils.fpTrackA)
         {
-            G4ExceptionDescription exceptionDescription;
-            exceptionDescription
-                    << "A track is reacting with itself (which is impossible) ie fpTrackA == trackB"
-                    << G4endl;
-            exceptionDescription << "Molecule A (and B) is of type : "
-                                 << utils.fpMoleculeA->GetName() << " with trackID : "
-                                 << utils.fpTrackA.GetTrackID() << G4endl;
-
-            G4Exception("G4DNAMoleculeEncounterStepper::RetrieveResults",
-                        "MoleculeEncounterStepper003", FatalErrorInArgument,
-                        exceptionDescription);
-
+          G4cerr
+          << "G4DNAMoleculeEncounterStepper::RetrieveResults"
+          << "A track is reacting with itself (which is impossible) ie fpTrackA == trackB" << G4endl
+          << "Molecule A (and B) is of type : " << G4endl
+          << utils.fpMoleculeA->GetName() << " with trackID : "
+          << utils.fpTrackA.GetTrackID() << G4endl;
+            DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
         }
 
         if (fabs(trackB->GetGlobalTime() - utils.fpTrackA.GetGlobalTime())
             > utils.fpTrackA.GetGlobalTime() * (1 - 1 / 100))
         {
-            G4ExceptionDescription exceptionDescription;
-            exceptionDescription
-                    << "The interacting tracks are not synchronized in time" << G4endl;
-            exceptionDescription
-                    << "trackB->GetGlobalTime() != fpTrackA.GetGlobalTime()" << G4endl;
-
-            exceptionDescription << "fpTrackA : trackID : " << utils.fpTrackA.GetTrackID()
-                                 << "\t Name :" << utils.fpMoleculeA->GetName()
-                                 << "\t fpTrackA->GetGlobalTime() = "
-                                 << G4BestUnit(utils.fpTrackA.GetGlobalTime(), "Time") << G4endl;
-
-            exceptionDescription << "trackB : trackID : " << trackB->GetTrackID()
-                                 << "\t Name :" << utils.fpMoleculeB->GetName()
-                                 << "\t trackB->GetGlobalTime() = "
-                                 << G4BestUnit(trackB->GetGlobalTime(), "Time") << G4endl;
-
-            G4Exception("G4DNAMoleculeEncounterStepper::RetrieveResults",
-                        "MoleculeEncounterStepper004", FatalErrorInArgument,
-                        exceptionDescription);
+          G4cerr
+          << "G4DNAMoleculeEncounterStepper::RetrieveResults"
+          << "The interacting tracks are not synchronized in time" << G4endl
+          << "trackB->GetGlobalTime() != fpTrackA.GetGlobalTime()" << G4endl
+          << "fpTrackA : trackID : " << utils.fpTrackA.GetTrackID() << G4endl
+          << "\t Name :" << utils.fpMoleculeA->GetName() << G4endl
+          << "\t fpTrackA->GetGlobalTime() = " << G4endl
+          << G4BestUnit(utils.fpTrackA.GetGlobalTime(), "Time") << G4endl
+          << "trackB : trackID : " << trackB->GetTrackID() << G4endl
+          << "\t Name :" << utils.fpMoleculeB->GetName() << G4endl
+          << "\t trackB->GetGlobalTime() = " << G4endl
+          << G4BestUnit(trackB->GetGlobalTime(), "Time") << G4endl;
+            DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
         }
 
 #ifdef G4VERBOSE
@@ -300,23 +318,29 @@ DrDNAMoleculeEncounterStepper::CalculateStep(const G4Track& trackA,
             G4double r = sqrt(r2);
             G4double tempMinET = pow(r - R, 2) / utils.fConstant;
             // constant = 16 * (fDA + fDB + 2*sqrt(fDA*fDB))
-
             //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            G4bool isSubDiffusion = DrDefinitions::Instance()->GetIsSubDiffusion();
+            G4double fDiffusionCoefficientForJump = DrDefinitions::Instance()->GetJumpDiff();
+            G4double fDiffusionCoefficientForTrapped = DrDefinitions::Instance()->GetTrapDiff();
+
             if(pMoleculeA->GetDefinition()->GetName().substr(0,3) == "DSB"){
                 //@@@@ Here the minimum time required for the particles to diffuse
                 //@@@@ within interaction range is set depending on sub-diffusive
                 //@@@@ parameters
-                if(DrDefinitions::Instance()->GetIsSubDiffusion()){
+                if(isSubDiffusion){
                     G4IT* reactiveB = resultsNearest->GetItem<G4IT>();
                     G4Track *trackB = reactiveB->GetTrack();
 
-                    G4bool isWaitingMoleculeA = DrBreakTable::Instance()->GetBreakMolecule(trackA)->fIsWaiting;
-                    G4bool isWaitingMoleculeB = DrBreakTable::Instance()->GetBreakMolecule(*trackB)->fIsWaiting;
+                    DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+                    DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
 
-                    G4double JumpDCMoleculeA = DrDefinitions::Instance()->GetJumpDiff();
-                    G4double JumpDCMoleculeB = DrDefinitions::Instance()->GetJumpDiff();
-                    G4double TrappedDCMoleculeA = DrDefinitions::Instance()->GetTrapDiff();
-                    G4double TrappedDCMoleculeB = DrDefinitions::Instance()->GetTrapDiff();
+                    G4bool isWaitingMoleculeA = breakMoleculeA->fIsWaiting;
+                    G4bool isWaitingMoleculeB = breakMoleculeB->fIsWaiting;
+
+                    G4double JumpDCMoleculeA = fDiffusionCoefficientForJump;
+                    G4double JumpDCMoleculeB = fDiffusionCoefficientForJump;
+                    G4double TrappedDCMoleculeA = fDiffusionCoefficientForTrapped;
+                    G4double TrappedDCMoleculeB = fDiffusionCoefficientForTrapped;
 
                     if(isWaitingMoleculeA && isWaitingMoleculeB){
                         //@@@@ This means that both particles, although within the
@@ -359,18 +383,21 @@ DrDNAMoleculeEncounterStepper::CalculateStep(const G4Track& trackA,
                     G4double range = R + sqrt(fUserMinTimeStep*utils.fConstant);
 
                     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                    if(pMoleculeA->GetDefinition()->GetName().substr(0,3) == "DSB" && DrDefinitions::Instance()->GetIsSubDiffusion()){
+                    if(pMoleculeA->GetDefinition()->GetName().substr(0,3) == "DSB" && isSubDiffusion){
 
                         G4IT* reactiveB = resultsNearest->GetItem<G4IT>();
                         G4Track *trackB = reactiveB->GetTrack();
 
-                        G4bool isWaitingMoleculeA = DrBreakTable::Instance()->GetBreakMolecule(trackA, "MolEnc")->fIsWaiting;
-                        G4bool isWaitingMoleculeB = DrBreakTable::Instance()->GetBreakMolecule(*trackB, "MolEnc")->fIsWaiting;
+                        DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+                        DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
 
-                        G4double JumpDCMoleculeA = DrDefinitions::Instance()->GetJumpDiff();
-                        G4double JumpDCMoleculeB = DrDefinitions::Instance()->GetJumpDiff();
-                        G4double TrappedDCMoleculeA = DrDefinitions::Instance()->GetTrapDiff();
-                        G4double TrappedDCMoleculeB = DrDefinitions::Instance()->GetTrapDiff();
+                        G4bool isWaitingMoleculeA = breakMoleculeA->fIsWaiting;
+                        G4bool isWaitingMoleculeB = breakMoleculeB->fIsWaiting;
+
+                        G4double JumpDCMoleculeA = fDiffusionCoefficientForJump;
+                        G4double JumpDCMoleculeB = fDiffusionCoefficientForJump;
+                        G4double TrappedDCMoleculeA = fDiffusionCoefficientForTrapped;
+                        G4double TrappedDCMoleculeB = fDiffusionCoefficientForTrapped;
 
                         if(isWaitingMoleculeA && isWaitingMoleculeB){
                             //@@@@ This means that both particles, although within the
@@ -393,7 +420,7 @@ DrDNAMoleculeEncounterStepper::CalculateStep(const G4Track& trackA,
                         }
 
 #ifdef DEBUG_DAMARIS
-                        DrBreakTable::Instance()->suggestedReactionRangeStore.push_back(range);
+                        DrDefinitions::Instance()->suggestedReactionRangeStore.push_back(range);
 #endif /*DEBUG_DAMARIS*/
 
                     }
@@ -453,4 +480,19 @@ DrDNAMoleculeEncounterStepper::CalculateStep(const G4Track& trackA,
     }
 #endif
     return fSampledMinTimeStep;
+}
+
+void DrDNAMoleculeEncounterStepper::SetReactionModel(G4VDNAReactionModel* pReactionModel)
+{
+    fReactionModel = pReactionModel;
+}
+
+G4VDNAReactionModel* DrDNAMoleculeEncounterStepper::GetReactionModel()
+{
+    return fReactionModel;
+}
+
+void DrDNAMoleculeEncounterStepper::SetVerbose(int flag)
+{
+    fVerbose = flag;
 }

@@ -37,4 +37,8 @@ public:
 
 private:
 	TsParameterManager* fPm;
+    void DebugPositions();
+    void PlotPositions();
+    void ExtractDisplacements();
+    void RunFinalCheckBreaks();
 };
