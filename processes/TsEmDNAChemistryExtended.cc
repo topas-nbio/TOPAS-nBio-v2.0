@@ -178,7 +178,7 @@ void TsEmDNAChemistryExtended::DefineParameters()
     std::vector<G4String>* reactionNames = new std::vector<G4String>;
     fPm->GetParameterNamesBracketedBy("Ch/" + fName, "ReactionRate", reactionNames);
     G4int numberOfReactions = reactionNames->size();
-    G4int prefixLength = G4String("Ch/" + fName + "/BinaryReaction/").length();
+    G4int prefixLength = G4String("Ch/" + fName + "/Reaction/").length();
     //G4int prefixLength = G4String("Ch/" + fName + "/").length();
     
     if ( numberOfReactions > 0 ) {
@@ -226,6 +226,11 @@ void TsEmDNAChemistryExtended::DefineParameters()
                 fReactionRates.push_back(reactionRate);
         }
     }
+
+    else {
+        Quit("Ch/"+fName +"/Reaction/","No Reactions were declared for chemistry!");
+    } 
+
        // First order reactions (Scavengers)
     if ( fPm->ParameterExists(GetFullParmName("Scavenger/Molecules")) ) {
         G4String* scavengedMolecules = fPm->GetStringVector(GetFullParmName("Scavenger/Molecules"));

@@ -198,6 +198,10 @@ void TsEmDNAChemistry::DefineParameters()
         }
     }
 
+    else {
+        Quit("Ch/"+fName +"/Reaction/","No Reactions were declared for chemistry!");
+    } 
+
     // First order reactions (Scavengers)
     if ( fPm->ParameterExists(GetFullParmName("Scavenger/Molecules")) ) {
         G4String* scavengedMolecules = fPm->GetStringVector(GetFullParmName("Scavenger/Molecules"));
