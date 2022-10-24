@@ -1,0 +1,37 @@
+
+# Diffusion coefficients
+sv:Ch/TOPASChemistry/DiffusionCoefficients/Molecules = 7 "SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide"
+dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 7  4.90022052437e9 2.2e9 7e9 9.4601846875e9 4.8e9 5.3032890625e9 2.3e9 nm2/s
+
+b:Ch/TOPASChemistry/SetWaterMolecularConfiguration = "False"
+
+# Reaction rates
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/SolvatedElectron/Products    = 3 "Hydroxide" "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/SolvatedElectron/ReactionRate = 0.647e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/Products            = 1 "Hydroxide"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/ReactionRate         = 2.953e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/Products            = 2 "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionRate         = 2.652e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/Products           = 1 "Hydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/ReactionRate        = 2.109e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/HydrogenPeroxide/Products    = 2 "Hydroxide" "Hydroxyl"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/HydrogenPeroxide/ReactionRate = 1.405e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/Products                    = 1 "HydrogenPeroxide"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/ReactionRate                 = 0.475e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/Products                    = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/ReactionRate                 = 1.438e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/Products                    = 1 "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionRate                 = 0.503e10 /M/s
+
+sv:Ch/TOPASChemistry/Reaction/Hydronium/Hydroxide/Products                  = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydronium/Hydroxide/ReactionRate               = 11.031e10 /M/s
+
+###
+

@@ -1,4 +1,4 @@
-// Scorer for NumberOfMoleculesAtTime
+// Scorer for TsSBSMoleculesAtTime
 //
 // ********************************************************************
 // *                                                                  *
@@ -67,16 +67,16 @@ fPm(pM)
 	}
 
     fEnergyLossKill = 0.0;
-    if ( fPm->ParameterExists(GetFullParmName("KillIfPrimaryAccumulatedEnergyLossExceeds")) )
-        fEnergyLossKill = fPm->GetDoubleParameter(GetFullParmName("KillIfPrimaryAccumulatedEnergyLossExceeds"),"Energy");
+    if ( fPm->ParameterExists(GetFullParmName("KillPrimaryIfEnergyLossExceeds")) )
+        fEnergyLossKill = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryIfEnergyLossExceeds"),"Energy");
 
     fEnergyLossAbort = 0.0;
-    if ( fPm->ParameterExists(GetFullParmName("AbortEventIfPrimaryAccumulatedEnergyLossExceeds") ) )
-        fEnergyLossAbort = fPm->GetDoubleParameter(GetFullParmName("AbortEventIfPrimaryAccumulatedEnergyLossExceeds"), "Energy");
+    if ( fPm->ParameterExists(GetFullParmName("AbortEventIfPrimaryEnergyLossExceeds") ) )
+        fEnergyLossAbort = fPm->GetDoubleParameter(GetFullParmName("AbortEventIfPrimaryEnergyLossExceeds"), "Energy");
 
     fMaximumTrackLength = 0.0;
-    if ( fPm->ParameterExists(GetFullParmName("KillIfPrimaryAccumulatedTrackLengthExceeds")) )
-        fMaximumTrackLength = fPm->GetDoubleParameter(GetFullParmName("KillIfPrimaryAccumulatedTrackLengthExceeds"), "Length");
+    if ( fPm->ParameterExists(GetFullParmName("KillPrimaryBasedOnTrackLength")) )
+        fMaximumTrackLength = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryBasedOnTrackLength"), "Length");
 
     fNbOfScoredEvents = 0;
 }

@@ -42,6 +42,7 @@ protected:
     G4int fRunID;
     G4int fEventID;
     G4String fVolName;
+    G4int fNucleusID;
 
 };
 #endif

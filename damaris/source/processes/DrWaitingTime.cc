@@ -14,10 +14,11 @@
 // See README for references.
 //
 #include "DrWaitingTime.hh"
-#include "DrBreakTable.hh"
 #include "DrDefinitions.hh"
-#include <G4SystemOfUnits.hh>
+#include "TsParameterManager.hh"
 #include "DrPrecompiler.hh"
+#include "DrBreakMolecule.hh"
+#include <G4SystemOfUnits.hh>
 
 #ifndef State
 #define State(theXInfo) (GetState<WaitingTimeState>()->theXInfo)
@@ -67,7 +68,7 @@ G4double DrWaitingTime::PostStepGetPhysicalInteractionLength(const G4Track &trac
 
   State(fPreviousTimeAtPreStepPoint) = track.GetGlobalTime();
 
-  DrBreakMolecule *breakMolecule = DrBreakTable::Instance()->GetBreakMolecule(track, "wait PSGPIL");
+  DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
 
   G4double moleculeWaitingTime = breakMolecule->fWaitingTime;
   G4double moleculeDiffusionTime = breakMolecule->fDiffusionTime;
@@ -122,7 +123,7 @@ G4double DrWaitingTime::PostStepGetPhysicalInteractionLength(const G4Track &trac
   }
   else {
     G4cerr << "ERROR: DrWaitingTime parameters not as expected PSGPIL" << G4endl;
-    exit(EXIT_FAILURE);
+      DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
   }
 
   fpState->currentInteractionLength = returnValue;
@@ -132,7 +133,7 @@ G4double DrWaitingTime::PostStepGetPhysicalInteractionLength(const G4Track &trac
   if (value < 0) {
     G4cerr << "ERROR: Post step interaction length returned by"
            << "DrWaitingTime cannot be negative!" << G4endl;
-      exit(EXIT_FAILURE);
+      DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
   }
 
 #ifdef DEBUG_DAMARIS
@@ -159,19 +160,21 @@ G4VParticleChange *DrWaitingTime::PostStepDoIt(const G4Track &track, const G4Ste
 }
 
 void DrWaitingTime::Process(const G4Track &track) {
-  G4bool isWaiting = DrBreakTable::Instance()->GetBreakMolecule(track, "Wait Proc")->fIsWaiting;
-  if (!isWaiting) {
-    DrBreakTable::Instance()->GetBreakMolecule(track, "Wait Proc")->fDiffusionTime = -1.0;
-    GenerateWaitingTime(track);
-    DrBreakTable::Instance()->GetBreakMolecule(track, "Wait Proc")->fIsWaiting = true;
-    State(fHasJustProc) = true;
-  }
-  else {
-    DrBreakTable::Instance()->GetBreakMolecule(track, "Wait Proc")->fWaitingTime = -1.0;
-    DrBreakTable::Instance()->GetBreakMolecule(track, "Wait Proc")->fDiffusionTime = 1.0 * picosecond;
-    DrBreakTable::Instance()->GetBreakMolecule(track, "Wait Proc")->fIsWaiting = false;
-    State(fHasJustProc) = true;
-  }
+    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+
+    G4bool isWaiting = breakMolecule->fIsWaiting;
+    if (!isWaiting) {
+        breakMolecule->fDiffusionTime = -1.0;
+        GenerateWaitingTime(track);
+        breakMolecule->fIsWaiting = true;
+        State(fHasJustProc) = true;
+    }
+    else {
+        breakMolecule->fDiffusionTime = 1.0 * picosecond;
+        breakMolecule->fIsWaiting = false;
+        breakMolecule->fWaitingTime = -1.0;
+        State(fHasJustProc) = true;
+    }
 }
 
 void DrWaitingTime::GenerateWaitingTime(const G4Track &track) {
@@ -179,5 +182,6 @@ void DrWaitingTime::GenerateWaitingTime(const G4Track &track) {
   G4double rand = G4UniformRand();
   G4double alpha = 0.5;
   G4double waitingTime = A / pow((1 - rand), (1 / alpha));
-  DrBreakTable::Instance()->GetBreakMolecule(track, "Wait GenWait")->fWaitingTime = waitingTime;
+  DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+  breakMolecule->fWaitingTime = waitingTime;
 }

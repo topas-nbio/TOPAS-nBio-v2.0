@@ -177,7 +177,7 @@ void AddChromosomeDomain::AddChromID(double x_hit,
             ConvertIDtoChromID(PossibleDomains[0],
                                chromosome,
                                copy,
-                               chromatid);
+                               ID);
         }
 
 }
@@ -299,8 +299,8 @@ bool AddChromosomeDomain::CheckDomain(int DomainID,
                                    double z,
                                    double Radius)
 {
-    bool OverlapCondition=false;
-    bool TouchingCondition=false;
+    //bool OverlapCondition=false;
+    //bool TouchingCondition=false;
 
     //check overlap with other domains
     for (auto position:DomainCentre){
@@ -329,8 +329,8 @@ bool AddChromosomeDomain::CheckDomain(int DomainID,
             //overlapping by more than max
             if (overlap<=-MaxOverlap){
 
-                OverlapCondition=false;
-                TouchingCondition=false;
+                //OverlapCondition=false;
+                //TouchingCondition=false;
                 if (Verbosity>1){
                     cout<<"Checking Domain: "<<DomainID<<", Against: "<<position.first<<endl;
                     cout<<"Proposed Centre "<<x<<" "<<y<<" "<<z<<" Radius "<<Radius<<endl;
@@ -348,8 +348,8 @@ bool AddChromosomeDomain::CheckDomain(int DomainID,
                     cout<<"Comparis Centre "<<position.second[0]<<" "<<position.second[1]<<" "<<position.second[2]<<" Radius "<<Radius_prev<<endl;
                     cout<<"Not touching a domain"<<endl<<endl;
                 }
-            } else {
-                TouchingCondition=true;
+            //} else {
+            //    TouchingCondition=true;
             }
         }
     }

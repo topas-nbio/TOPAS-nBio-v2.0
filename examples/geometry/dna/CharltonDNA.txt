@@ -25,38 +25,28 @@ s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
 d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
 
 #Modified water material is needed for scoring strand breaks:
-s:Ge/MyDNA/BasePair/Material="G4_WATER"
-s:Ge/MyDNA/Sugar1/Material="G4_WATER_MODIFIED_1"
-s:Ge/MyDNA/Sugar2/Material="G4_WATER_MODIFIED_2"
+s:Ge/MyDNA/BasePair/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Backbone1/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Backbone2/Material="G4_WATER_MODIFIED_2"
 
 s:Ge/MyDNA/BasePair/DrawingStyle="solid"
-s:Ge/MyDNA/Sugar1/Color="red"
-s:Ge/MyDNA/Sugar1/DrawingStyle="solid"
-s:Ge/MyDNA/Sugar2/Color="blue"
-s:Ge/MyDNA/Sugar2/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone1/Color="red"
+s:Ge/MyDNA/Backbone1/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone2/Color="blue"
+s:Ge/MyDNA/Backbone2/DrawingStyle="solid"
 
 sv:Ph/Default/Modules = 1 "g4em-dna"
 
-#Score SSB and DSB in DNA
-
-s:Sc/StrandBreak/Quantity                             = "SimpleSSBandDSB"
-s:Sc/StrandBreak/Component                            = "MyDNA"
-s:Sc/StrandBreak/OutputType                           = "ASCII"
-s:Sc/StrandBreak/OutputFile                           = "StrandBreaks"
-b:Sc/StrandBreak/OutputToConsole                      = "True"
-s:Sc/StrandBreak/IfOutputFileAlreadyExists            = "Overwrite"
-# Parameters to define a strand break and a double strand break
-i:Sc/StrandBreak/BasePairDistanceForDefiningDSB       = 10
-d:Sc/StrandBreak/EnergyThresholdForHavingSSB          = 0 eV #17.5 eV
-# The sensitive detector is inherit to the children geometries (sugar1, sugar2)
-b:Sc/StrandBreak/PropagateToChildren = "True"
-# For this example, the sugars and base are replica volumes 
-i:Sc/StrandBreak/BasePairPositionAtGeometricHierarchy = 0   # the sugars and base are in position 0.
-# To let the scorer differentiate between strand 1 (sugar1) and strand 2 (sugar2)
-s:Sc/StrandBreak/Strand1MaterialName                  = "G4_WATER_MODIFIED_1"
-s:Sc/StrandBreak/Strand2MaterialName                  = "G4_WATER_MODIFIED_2"
-# Only hits in sugar's volume
-sv:Sc/StrandBreak/OnlyIncludeIfInMaterial = 2 "G4_WATER_MODIFIED_1" "G4_WATER_MODIFIED_2"
+# -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
+includeFile									= ../../scorers/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Component 				= "MyDNA"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Example/NumberOfHistoriesInRun
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 1 "G4_WATER_MODIFIED_1"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 1 "G4_WATER_MODIFIED_2"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/Example/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/Example/BeamEnergy MeV
 
 
 # Set a source

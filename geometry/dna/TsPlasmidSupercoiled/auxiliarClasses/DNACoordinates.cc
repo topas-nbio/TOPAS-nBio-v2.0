@@ -39,6 +39,8 @@ void DNACoordinates::Generate(vector<G4ThreeVector> &path,
     
     if (BuildSphere){
         BuildSphereDNA(newPath, DNAPts);
+    } else if (BuildHalfCyl || BuildQuartCyl){
+        BuildDNA(newPath, DNAPts);
     } else {
         BuildDNA(newPath, DNAPts);
     }

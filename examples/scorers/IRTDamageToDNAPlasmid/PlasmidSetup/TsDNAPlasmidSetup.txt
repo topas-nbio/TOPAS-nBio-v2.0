@@ -1,0 +1,33 @@
+##########################
+#### TOPAS Parameters ####
+##########################
+
+Ts/NumberOfThreads = 1
+i:Ts/Verbosity = 3
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+Ts/ShowHistoryCountAtInterval    = 0
+
+Ts/Seed = 1
+
+##########################
+######### Source #########
+##########################
+
+i:So/Demo/NumberOfHistoriesInRun = 0
+
+##########################
+######## Geometry ########
+##########################
+
+Ge/World/HLX = 1.0 um
+Ge/World/HLY = 1.0 um
+Ge/World/HLZ = 1.0 um
+Ge/World/Material = "G4_WATER"
+
+includeFile = PlasmidGeometry.txt
+d:Ge/plasmid/R = 0.5 um
+i:Ge/plasmid/NumberOfPlasmids = 1000
+s:Ge/plasmid/InputFile  = "pUC19_20C_3Sigma_ALP_Corrected.fab2g4dna"
+s:Ge/plasmid/OutputFile = "Plasmid_50ugg_Sphere_1um_diameter"
+
+##########################

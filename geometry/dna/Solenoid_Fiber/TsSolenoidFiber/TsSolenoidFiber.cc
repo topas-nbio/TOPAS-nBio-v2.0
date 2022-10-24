@@ -267,10 +267,10 @@ void TsSolenoidFiber::SetDNAVolumes(G4bool BuildHalfCyl,
     //                                                      1.407 *g/cm/cm/cm);
 
     //SubCompartment names
-    G4String back1 = "back1";
-    G4String back2 = "back2";
-    G4String base1 = "base1";
-    G4String base2 = "base2";
+    G4String back1 = "Backbone1";
+    G4String back2 = "Backbone2";
+    G4String base1 = "Base1";
+    G4String base2 = "Base2";
 
     //sphere DNA
     if (BuildSphere){
@@ -570,13 +570,13 @@ void TsSolenoidFiber::PlaceDNASphere(vector<G4ThreeVector> &newPath)
         int bpID=bp+1;
 
         G4ThreeVector *posBack1 = &back1;
-        CreatePhysicalVolume("back1", bpID, true, lBack1, 0, posBack1, fEnvelopePhys);
+        CreatePhysicalVolume("Backbone1", bpID, true, lBack1, 0, posBack1, fEnvelopePhys);
         G4ThreeVector *posBase1 = &base1;
-        CreatePhysicalVolume("base1", bpID, true, lBase1, 0, posBase1, fEnvelopePhys);
+        CreatePhysicalVolume("Base1", bpID, true, lBase1, 0, posBase1, fEnvelopePhys);
         G4ThreeVector *posBack2 = &back2;
-        CreatePhysicalVolume("back2", bpID, true, lBack2, 0, posBack2, fEnvelopePhys);
+        CreatePhysicalVolume("Backbone2", bpID, true, lBack2, 0, posBack2, fEnvelopePhys);
         G4ThreeVector *posBase2 = &base2;
-        CreatePhysicalVolume("base2", bpID, true, lBase2, 0, posBase2, fEnvelopePhys);
+        CreatePhysicalVolume("Base2", bpID, true, lBase2, 0, posBase2, fEnvelopePhys);
 
       //  new G4PVPlacement(0,
       //                    back1,
@@ -669,13 +669,13 @@ void TsSolenoidFiber::PlaceDNA(vector<G4ThreeVector> &newPath)
 
 
         G4ThreeVector *posBack1 = &back1;
-        CreatePhysicalVolume("back1", bpID, true, lBack1, rot1, posBack1, fEnvelopePhys);
+        CreatePhysicalVolume("Backbone1", bpID, true, lBack1, rot1, posBack1, fEnvelopePhys);
         G4ThreeVector *posBase1 = &base1;
-        CreatePhysicalVolume("base1", bpID, true, lBase1, rot1, posBase1, fEnvelopePhys);
+        CreatePhysicalVolume("Base1", bpID, true, lBase1, rot1, posBase1, fEnvelopePhys);
         G4ThreeVector *posBack2 = &back2;
-        CreatePhysicalVolume("back2", bpID, true, lBack2, rot1, posBack2, fEnvelopePhys);
+        CreatePhysicalVolume("Backbone2", bpID, true, lBack2, rot1, posBack2, fEnvelopePhys);
         G4ThreeVector *posBase2 = &base2;
-        CreatePhysicalVolume("base2", bpID, true, lBase2, rot1, posBase2, fEnvelopePhys);
+        CreatePhysicalVolume("Base2", bpID, true, lBase2, rot1, posBase2, fEnvelopePhys);
 
 
       //  new G4PVPlacement(rot1,

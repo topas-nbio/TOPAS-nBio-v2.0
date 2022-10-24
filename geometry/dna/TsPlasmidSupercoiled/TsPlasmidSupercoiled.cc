@@ -221,13 +221,13 @@ void TsPlasmidSupercoiled::PlaceDNA(vector<DNA *> &DNApt,
     if (BuildSphere){
 		G4Orb* gDNA_base = new G4Orb("DNA_base",  0.208*nm);
         
-        lBase1 = CreateLogicalVolume("base1", gDNA_base);
-        lBase2 = CreateLogicalVolume("base2", gDNA_base);
+        lBase1 = CreateLogicalVolume("Base1", gDNA_base);
+        lBase2 = CreateLogicalVolume("Base2", gDNA_base);
         
 		G4Orb* gDNA_backbone = new G4Orb("DNA_deoxyribose", 0.29*nm); 
         
-        lBack1 = CreateLogicalVolume("deoxyribose1", gDNA_backbone);
-        lBack2 = CreateLogicalVolume("deoxyribose2", gDNA_backbone);
+        lBack1 = CreateLogicalVolume("Backbone1", gDNA_backbone);
+        lBack2 = CreateLogicalVolume("Backbone2", gDNA_backbone);
     }
     //Cylinder DNA
     else {
@@ -259,8 +259,8 @@ void TsPlasmidSupercoiled::PlaceDNA(vector<DNA *> &DNApt,
                                        180*deg); //pDphi
         
         
-        lBase1 = CreateLogicalVolume("base1", gDNA_base1);
-        lBase2 = CreateLogicalVolume("base2", gDNA_base2);
+        lBase1 = CreateLogicalVolume("Base1", gDNA_base1);
+        lBase2 = CreateLogicalVolume("Base2", gDNA_base2);
         
         
         G4Tubs* gDNA_backbone1 = new G4Tubs("DNA_deoxyribose1",
@@ -276,8 +276,8 @@ void TsPlasmidSupercoiled::PlaceDNA(vector<DNA *> &DNApt,
                                            0*deg, //pSphi
                                            SweptAngle*deg); //pDphi
         
-        lBack1 = CreateLogicalVolume("deoxyribose1", gDNA_backbone1);
-        lBack2 = CreateLogicalVolume("deoxyribose2", gDNA_backbone2);
+        lBack1 = CreateLogicalVolume("Backbone1", gDNA_backbone1);
+        lBack2 = CreateLogicalVolume("Backbone2", gDNA_backbone2);
     }
     
     //place the DNA
@@ -292,17 +292,17 @@ void TsPlasmidSupercoiled::PlaceDNA(vector<DNA *> &DNApt,
 		
         if (IsBac){
             if (Stra==1){
-                CreatePhysicalVolume("deoxyribose1", bpID, true, lBack1, rotation, position, fEnvelopePhys);
+                CreatePhysicalVolume("Backbone1", bpID, true, lBack1, rotation, position, fEnvelopePhys);
             }
             else if (Stra==2){
-                CreatePhysicalVolume("deoxyribose2", bpID, true, lBack2, rotation, position, fEnvelopePhys);
+                CreatePhysicalVolume("Backbone2", bpID, true, lBack2, rotation, position, fEnvelopePhys);
             }
         } else if (IsBas) {
             if (Stra==1){
-                CreatePhysicalVolume("base1", bpID, true, lBase1, rotation, position, fEnvelopePhys);
+                CreatePhysicalVolume("Base1", bpID, true, lBase1, rotation, position, fEnvelopePhys);
             }
             else if (Stra==2){
-                CreatePhysicalVolume("base2", bpID, true, lBase2, rotation, position, fEnvelopePhys);
+                CreatePhysicalVolume("Base2", bpID, true, lBase2, rotation, position, fEnvelopePhys);
             }
         }
         

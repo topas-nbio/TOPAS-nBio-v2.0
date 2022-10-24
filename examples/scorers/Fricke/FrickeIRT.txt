@@ -1,0 +1,59 @@
+## 
+i:Ts/Verbosity = 0
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+
+includeFile = TOPASFrickeReactions.txt
+
+s:Ch/ChemistryName = "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.00001 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+
+Ge/World/HLX= 1 km 
+Ge/World/HLY= 1 km 
+Ge/World/HLZ= 1 km 
+Ge/World/Material ="G4_WATER"
+
+d:Ge/sWorld/HLX= 1 km 
+d:Ge/sWorld/HLY= 1 km 
+d:Ge/sWorld/HLZ= 1 km 
+s:Ge/sWorld/Material ="G4_WATER"
+s:Ge/sWorld/Type = "TsBox"
+s:Ge/sWorld/Parent = "World"
+
+Ge/BeamPosition/TransZ = -0.0 * Ge/World/HLZ um
+Ge/BeamPosition/RotX = 0 deg
+
+So/Demo/BeamPositionDistribution = "None"
+So/Demo/BeamEnergySpread = 0
+So/Demo/BeamParticle = "e-"
+So/Demo/BeamEnergy = 999.999 keV 
+
+u:perCent = 0.01 
+
+s:Sc/nbOfMol/Quantity = "TsIRTGvalue"
+s:Sc/nbOfMol/Component = "sWorld"
+s:Sc/nbOfMol/OutputFile = "Fe3_Gvalue"
+s:Sc/nbOfMol/IfOutputFileAlreadyExists = "Overwrite"
+s:Sc/nbOfMol/OutputType = "ascii"
+d:Sc/nbOfMol/KillPrimaryIfEnergyLossExceeds = So/Demo/BeamEnergy keV * perCent
+d:Sc/nbOfMol/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/nbOfMol/KillPrimaryIfEnergyLossExceeds keV
+b:Sc/nbOfMol/KillPrimaryBasedOnEnergyLoss = "true"
+d:Sc/nbOfMol/KillPrimaryBasedOnTrackLength = 100 km 
+i:Sc/nbOfMol/OutputBufferSize = 1
+d:Sc/nbOfMol/CutOffTime = 1 ps
+d:Sc/nbOfMol/TimeLower = 1.0 ps
+d:Sc/nbOfMol/TimeUpper = 50 s 
+i:Sc/nbOfMol/TimeBins  = 200
+b:Sc/nbOfMol/HighTimeScavenger = "True"
+sv:Sc/nbOfMol/ReportMoleculesNamed = 1 "Fe3"
+
+i:So/Demo/NumberOfHistoriesInRun = 300
+i:Ts/ShowHistoryCountAtInterval = 30
+
+i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
+
+Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"

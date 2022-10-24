@@ -15,6 +15,9 @@
 
 #include "G4SystemOfUnits.hh"
 
+#include "G4VTouchable.hh"
+#include "G4TouchableHistory.hh"
+
 TsNtupleForCulture::TsNtupleForCulture(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                  G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 : TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer)
@@ -30,6 +33,7 @@ TsNtupleForCulture::TsNtupleForCulture(TsParameterManager* pM, TsMaterialManager
     fNtuple->RegisterColumnI(&fRunID, "Run ID");
     fNtuple->RegisterColumnI(&fEventID, "Event ID");
     fNtuple->RegisterColumnS(&fVolName, "Volume Name");
+    fNtuple->RegisterColumnI(&fNucleusID, "Nucleus ID");
 
 }
 
@@ -48,6 +52,10 @@ G4bool TsNtupleForCulture::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     //Find volume name
     G4Track* aTrack = aStep->GetTrack();
     G4String volumeName = aTrack->GetVolume()->GetName();
+    
+    G4TouchableHistory* theTouchable =  (G4TouchableHistory*)(aTrack->GetTouchable());
+    
+    G4int motherCopyNo = theTouchable->GetReplicaNumber(1);
     
     //Get position
     G4ThreeVector pos = theStepPoint->GetPosition();
@@ -76,6 +84,9 @@ G4bool TsNtupleForCulture::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         
         //Get volume Name
         fVolName = volumeName;
+        
+        //Get the cell ID of the nucleus
+        fNucleusID = motherCopyNo;
 
         fNtuple->Fill();
 

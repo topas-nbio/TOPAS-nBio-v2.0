@@ -1,0 +1,193 @@
+##############################################################################
+#                                                                            #
+# Fricke reactions obtained from Autsavapromporn et al., 2007 Can. J. Chem.  #
+#                                                                            #
+##############################################################################
+
+
+includeFile = TOPASDefaultReactions.txt TOPASReactions_VI.txt
+
+##############################
+# Activate Type VI Reactions #
+##############################
+# Available in TOPASReactions_VI.txt
+
+b:Ch/TOPASChemistry/BackgroundReaction/oxyde/none/Active                 = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/trioxide/none/Active              = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/oxyde/hydronium/Active            = "True" 
+b:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/none/Active           = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/trioxide/hydronium/Active         = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/hydrogen/hydroxide/Active         = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/hydroxide/Active         = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/hydroxide/hydronium/Active        = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/hydronium/hydroxide/Active        = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/none/Active       = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/none/Active      = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/hydroperoxy/hydroxide/Active      = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/hydronium/Active      = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/atomicoxygen/hydroxide/Active     = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/hydronium/Active  = "True" 
+b:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/hydronium/Active = "True"
+b:Ch/TOPASChemistry/BackgroundReaction/hydrogenperoxide/hydroxide/Active = "True" 
+
+##############################
+##### pH Change Modeling #####
+##############################
+
+s:Ch/TOPASChemistry/ModelAcidPropertiesFromSubstance = "H2SO4"
+d:Ch/TOPASChemistry/ModelAcidPropertiesWithConcentration = Ch/H2SO4/Concentration M
+
+d:Ch/H2SO4/Concentration = 0.4 M
+d:Ch/FeSO4/Concentration = 5e-3 M 
+d:Ch/Oxygen/Concentration = 0.25e-3 M
+
+###################################
+##### Iron and Acid Molecules #####
+###################################
+
+s:Mo/Fe2/Symbol = "Fe2"
+d:Mo/Fe2/DiffusionCoefficient = 7.19e10 nm2/s 
+d:Mo/Fe2/Radius = 1.0 nm
+u:Mo/Fe2/Charge = 2
+
+s:Mo/Fe3/Symbol = "Fe3"
+d:Mo/Fe3/DiffusionCoefficient = 6.04e10 nm2/s 
+d:Mo/Fe3/Radius = 1.0 nm
+u:Mo/Fe3/Charge = 2
+
+s:Mo/HSO4m/Symbol = "HSO4^-1"
+d:Mo/HSO4m/DiffusionCoefficient = 1.385e9 nm2/s
+d:Mo/HSO4m/Radius = 1.0 nm
+u:Mo/HSO4m/Charge = -1
+
+s:Mo/SO4m/Symbol = "SO4^-1"
+d:Mo/SO4m/DiffusionCoefficient = 1.385e9 nm2/s
+d:Mo/SO4m/Radius = 1.0 nm
+u:Mo/SO4m/Charge = -1
+
+s:Mo/SO4m2/Symbol = "SO4^-2"
+d:Mo/SO4m2/DiffusionCoefficient = 1.065e9 nm2/s
+d:Mo/SO4m2/Radius = 1.0 nm
+u:Mo/SO4m2/Charge = -2
+
+s:Mo/S2O8m2/Symbol = "S2O8^-2"
+d:Mo/S2O8m2/DiffusionCoefficient = 1.145e9 nm2/s
+d:Mo/S2O8m2/Radius = 1.0 nm
+u:Mo/S2O8m2/Charge = -2
+
+###################################
+########## Acid Reactions #########
+###################################
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/SO4m/Products = 1 "HSO4m"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/SO4m/ReactionRate = 1.0e10 /M/s 
+i:Ch/TOPASChemistry/Reaction/Hydrogen/SO4m/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/SO4m/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/S2O8m2/Products = 2 "SO4m" "HSO4m"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/S2O8m2/ReactionRate = 2.5e7 /M/s 
+i:Ch/TOPASChemistry/Reaction/Hydrogen/S2O8m2/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/S2O8m2/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/HSO4m/Products = 1 "SO4m"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/HSO4m/ReactionRate = 1.5e5 /M/s 
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/HSO4m/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/HSO4m/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/S2O8m2/Products = 2 "SO4m" "SO4m2"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/S2O8m2/ReactionRate = 1.2e10 /M/s 
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/S2O8m2/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/S2O8m2/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/HydrogenPeroxide/SO4m/Products = 2 "Hydroperoxy" "HSO4m"
+d:Ch/TOPASChemistry/Reaction/HydrogenPeroxide/SO4m/ReactionRate = 1.2e7 /M/s 
+i:Ch/TOPASChemistry/Reaction/HydrogenPeroxide/SO4m/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/HydrogenPeroxide/SO4m/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxide/SO4m/Products = 2 "Hydroxyl" "SO4m2"
+d:Ch/TOPASChemistry/Reaction/Hydroxide/SO4m/ReactionRate = 8.3e7 /M/s 
+i:Ch/TOPASChemistry/Reaction/Hydroxide/SO4m/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxide/SO4m/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/SO4m/SO4m/Products = 1 "S2O8m2"
+d:Ch/TOPASChemistry/Reaction/SO4m/SO4m/ReactionRate = 4.4e8 /M/s 
+i:Ch/TOPASChemistry/Reaction/SO4m/SO4m/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SO4m/SO4m/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HSO4m/Products = 1 "SO4m"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HSO4m/ScavengingCapacity = 1.5e5 /s 
+i:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HSO4m/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HSO4m/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/BackgroundReaction/SO4m/Hydroxide/Products = 2 "Hydroxyl" "SO4m2"
+d:Ch/TOPASChemistry/BackgroundReaction/SO4m/Hydroxide/ScavengingCapacity = 8.3 /s 
+i:Ch/TOPASChemistry/BackgroundReaction/SO4m/Hydroxide/ReactionType = 1
+b:Ch/TOPASChemistry/BackgroundReaction/SO4m/Hydroxide/CompatibleWithStepByStep = "False"
+
+###################################
+######### Oxygen Reactions ########
+###################################
+
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Oxygen/Products = 1 "Hydroperoxy"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Oxygen/ReactionRate = 2.1e10 /M/s 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Oxygen/Concentration = Ch/Oxygen/Concentration M 
+i:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Oxygen/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Oxygen/CompatibleWithStepByStep = "False" 
+
+sv:Ch/TOPASChemistry/BackgroundReaction/AtomicOxygen/Oxygen/Products = 1 "ozone"
+d:Ch/TOPASChemistry/BackgroundReaction/AtomicOxygen/Oxygen/ReactionRate = 4.0e9 /M/s 
+d:Ch/TOPASChemistry/BackgroundReaction/AtomicOxygen/Oxygen/Concentration = Ch/Oxygen/Concentration M
+i:Ch/TOPASChemistry/BackgroundReaction/AtomicOxygen/Oxygen/ReactionType = 6 
+b:Ch/TOPASChemistry/BackgroundReaction/AtomicOxygen/Oxygen/CompatibleWithStepByStep = "False" 
+
+sv:Ch/TOPASChemistry/BackgroundReaction/Oxygen/Oxyde/Products = 1 "Trioxide"
+d:Ch/TOPASChemistry/BackgroundReaction/Oxygen/Oxyde/ReactionRate = 3.7e9 /M/s 
+d:Ch/TOPASChemistry/BackgroundReaction/Oxygen/Oxyde/Concentration = Ch/Oxygen/Concentration M 
+i:Ch/TOPASChemistry/BackgroundReaction/Oxygen/Oxyde/ReactionType = 6 
+b:Ch/TOPASChemistry/BackgroundReaction/Oxygen/Oxyde/CompatibleWithStepByStep = "False" 
+
+sv:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/Oxygen/Products = 1 "SuperoxideAnion"
+d:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/Oxygen/ReactionRate = 1.740e10 /M/s 
+d:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/Oxygen/Concentration = Ch/Oxygen/Concentration M 
+i:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/Oxygen/ReactionType = 2 
+b:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/Oxygen/CompatibleWithStepByStep = "False" 
+
+###################################
+########## Iron Reactions #########
+###################################
+
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/Products = 2 "Fe3" "Hydroxide"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/ReactionRate = 3.4e8 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/Concentration =  Ch/FeSO4/Concentration M
+i:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/Products = 2 "Fe3" "Dioxidanide"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/ReactionRate = 9.0e5 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/Concentration =  Ch/FeSO4/Concentration M
+i:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Fe2/Products = 2 "Fe3" "DyHydrogen"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Fe2/ReactionRate = 1.3e7 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Fe2/Concentration =  Ch/FeSO4/Concentration M
+i:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Fe2/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/Fe2/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/BackgroundReaction/SO4m/Fe2/Products = 2 "Fe3" "SO4m2"
+d:Ch/TOPASChemistry/BackgroundReaction/SO4m/Fe2/ReactionRate = 2.79e8 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/SO4m/Fe2/Concentration =  Ch/FeSO4/Concentration M
+i:Ch/TOPASChemistry/BackgroundReaction/SO4m/Fe2/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/SO4m/Fe2/CompatibleWithStepByStep = "False"
+
+###################################
+######### Fenton Reactions ########
+###################################
+
+sv:Ch/TOPASChemistry/BackgroundReaction/HydrogenPeroxide/Fe2/Products = 3 "Fe3" "Hydroxyl" "Hydroxide"
+d:Ch/TOPASChemistry/BackgroundReaction/HydrogenPeroxide/Fe2/ReactionRate = 52.0 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/HydrogenPeroxide/Fe2/Concentration =  Ch/FeSO4/Concentration M
+i:Ch/TOPASChemistry/BackgroundReaction/HydrogenPeroxide/Fe2/ReactionType = 6
+b:Ch/TOPASChemistry/BackgroundReaction/HydrogenPeroxide/Fe2/CompatibleWithStepByStep = "False"
+
+###################################

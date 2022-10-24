@@ -24,13 +24,14 @@
 #include "G4VSolid.hh"
 #include "G4VisAttributes.hh"
 #include "TsVGeometryComponent.hh"
+#include "TsParameterManager.hh"
 
 #include "TsVoxelParameterisation.hh"
 
 class TsVoxelParameterisation : public G4VPVParameterisation
 {
 public:
-    TsVoxelParameterisation();
+    TsVoxelParameterisation(TsParameterManager*);
     virtual ~TsVoxelParameterisation();
     virtual void ComputeTransformation(const G4int copyNo, G4VPhysicalVolume* physVol) const;
 
@@ -50,6 +51,9 @@ protected:
     size_t fNoVoxelX,fNoVoxelY,fNoVoxelZ;
     size_t fNoVoxelXY;
     size_t fNoVoxel;
+
+private:
+    TsParameterManager* fPm;
 
 };
 

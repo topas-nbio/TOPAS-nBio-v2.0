@@ -16,7 +16,7 @@
 
 #include "DrProteinKinetics_Generic.hh"
 #include "DrPrecompiler.hh"
-#include "DrBreakTable.hh"
+#include "DrDSBMoleculeManager.hh"
 #include <G4Molecule.hh>
 #include <G4SystemOfUnits.hh>
 #include <G4Scheduler.hh>
@@ -139,7 +139,7 @@ G4VParticleChange* DrProteinKinetics_Generic::PKGenericAction(const G4Track& tra
     aParticleChange.Initialize(track);
 
     //--------------------Setting Up Involved Molecules-------------------------
-    DrBreakMolecule* motherBreak = DrBreakTable::Instance()->GetBreakMolecule(track, "Generic");
+    DrBreakMolecule* motherBreak = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
     //--------------------------------------------------------------------------
 
     //--------------------Cleaning Additional Lesions---------------------------
@@ -224,7 +224,7 @@ G4VParticleChange* DrProteinKinetics_Generic::PKGenericAction(const G4Track& tra
     if(fNumberSecondaries == 1){
         //@@@@ Carries over the break information, the molecule type is changed but
         //@@@@ the break is still the same.
-        G4int auxIndex = DrBreakTable::Instance()->fBreakMolAuxIndex;
+        G4int auxIndex = G4PhysicsModelCatalog::GetIndex("DrBreakMolecule");
         auto daughterBreak = (DrBreakMolecule*)track.GetAuxiliaryTrackInformation(auxIndex);
         track.SetAuxiliaryTrackInformation(auxIndex,nullptr);
         theDaughterTracks[0]->SetAuxiliaryTrackInformation(auxIndex,daughterBreak);
@@ -232,7 +232,9 @@ G4VParticleChange* DrProteinKinetics_Generic::PKGenericAction(const G4Track& tra
     else if(fNumberSecondaries == 2){
         //@@@@ Carries over the break information, the synaptic complex is split and
         //@@@@ each break end keeps it's information.
-        DrBreakTable::Instance()->SplitBreakMolecule(track, theDaughterTracks[0], theDaughterTracks[1]);
+        auto DSBMoleculeManager = new DrDSBMoleculeManager();
+        DSBMoleculeManager->SplitBreakMolecule(track, theDaughterTracks[0], theDaughterTracks[1]);
+        delete DSBMoleculeManager;
     }
     //@@@@ Remove mother from the simulation
     aParticleChange.ProposeTrackStatus(fStopAndKill);

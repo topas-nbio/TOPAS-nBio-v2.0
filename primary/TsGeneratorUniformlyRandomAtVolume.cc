@@ -67,7 +67,7 @@ void TsGeneratorUniformlyRandomAtVolume::ResolveParameters() {
 		G4cerr << "Topas is exiting due to a serious error in source setup." << G4endl;
 		G4cerr << "Parameter name: " << GetFullParmName("DirectPrimariesTo") << G4endl;
 		G4cerr << "Specify the direction of the primaries: inside, outside or isotropic" << G4endl;
-		exit(1);
+		fPm->AbortSession(1);
 	}
 }
 

@@ -1,0 +1,86 @@
+# -- File for generic scorer of damage to DNA --
+
+# ------------ NOTES -------------------
+# Parameter s:Sc/DNADamageScorer/Component has to be specified in the main parameter file
+# Parameter i:Sc/DNADamageScorer/NumberOfHistoriesInRun has to be specified in the main parameter file
+# ---- 
+# For material filter:
+# ----
+# sv:Sc/DNADamageScorer/Strand1MaterialNames and
+# sv:Sc/DNADamageScorer/Strand2MaterialNames have to be specified in the main parameter file
+# Parameter i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy has to be specified in the main parameter file
+# ----
+# For SDD header:
+# -----
+# Parameter s:Sc/DNADamageScorer/PrimaryParticle may be specified in the main parameter file
+# Parameter d:Sc/DNADamageScorer/MeanEnergy	may be specified in the main parameter file
+# --------------------------------------
+
+# Setting up the output
+b:Sc/DNADamageScorer/PropagateToChildren						= "true"
+s:Sc/DNADamageScorer/OutputFile									= "DNADamage"
+s:Sc/DNADamageScorer/OutputType									= "ascii"
+s:Sc/DNADamageScorer/IfOutputFileAlreadyExists					= "overwrite"
+
+# Options for direct damage (recommended values for spherical DNA model)
+d:Sc/DNADamageScorer/DirectDamageThreshold						= 11.75 eV    # For half-cylindrical DNA model, the recommended value is 17.5 eV
+b:Sc/DNADamageScorer/UseLinearProbabilityForDirectDamage		= "false"
+#d:Sc/DNADamageScorer/LowerLimitForLinearProbabilityFunction	= 5 eV
+#d:Sc/DNADamageScorer/UpperLimitForLinearProbabilityFunction	= 37.5 eV
+
+# Options for quasi-direct damage
+u:Sc/DNADamageScorer/ProbabilityOfChargeTransferFromHydrationShellToBackbone = 0.33333
+
+# Options for indirect damage (recommended values for spherical DNA model)
+b:Sc/DNADamageScorer/AlwaysScavengeSpeciesInDNAComponents		= "false"
+u:Sc/DNADamageScorer/ProbabilityOfScavengingInBackbone			= 0.25		  # For half-cylindrical DNA model, the recommended value is 0.0585
+u:Sc/DNADamageScorer/ProbabilityOfScavengingInBase				= 1.0
+u:Sc/DNADamageScorer/ProbabilityOfIndirectDamageToBackbone		= 0.55		  # If always scavenging in DNA compoennts, the recommended value is 0.4
+u:Sc/DNADamageScorer/ProbabilityOfIndirectDamageToBase			= 1.0		  # If always scavenging in DNA compoennts, the recommended value is 0.4
+b:Sc/DNADamageScorer/ScavengeInHistones							= "true"
+
+# Options for damage classification
+i:Sc/DNADamageScorer/MaximumBasePairDistanceToConsiderDSB		= 10
+b:Sc/DNADamageScorer/ExcludeShortFragments						= "false"
+#i:Sc/DNADamageScorer/LowerThresholdForFragmentDetection		= 0
+#i:Sc/DNADamageScorer/UpperThresholdForFragmentDetection		= 3E8
+
+# Options for foci scoring
+b:Sc/DNADamageScorer/ScoreNumberOfFoci							= "true"
+dv:Sc/DNADamageScorer/FociSizes									= 2 150 500 nm # Maximum of 5 sizes
+b:Sc/DNADamageScorer/Get3DFociImage								= "true"
+b:Sc/DNADamageScorer/Get2DFociImages							= "true"
+sv:Sc/DNADamageScorer/2DFociImagePlanes							= 3 "X" "Y" "Z"
+s:Sc/DNADamageScorer/MicroscopePSFShape							= "Gaussian"
+d:Sc/DNADamageScorer/MicroscopePSFWidth							= 400 nm
+dv:Sc/DNADamageScorer/Foci2DImageResolutions					= 2 25 100 nm
+d:Sc/DNADamageScorer/Foci3DImageResolution						= 400 nm
+
+# Options for output extension
+b:Sc/DNADamageScorer/WriteCSVOutputWithAllDamageSpecification	= "true"
+b:Sc/DNADamageScorer/ScoreDirectDamage							= "true"
+b:Sc/DNADamageScorer/ScoreIndirectDamage						= "true"
+b:Sc/DNADamageScorer/ScoreQuasiDirectDamage						= "true"
+b:Sc/DNADamageScorer/ScoreBaseDamages							= "true"
+b:Sc/DNADamageScorer/ScoreBackboneDamages						= "true"
+b:Sc/DNADamageScorer/BreakDownOutputPerDamageOrigin				= "true"
+
+# Options for SDD output specification
+d:Sc/DNADamageScorer/DosePerExposure							= 1 Gy
+b:Sc/DNADamageScorer/IncludeDSBDamageSitesOnlyInSDD				= "false"
+b:Sc/DNADamageScorer/WriteMinimalSDDOutput						= "false"
+
+# Data for SDD header
+s:Sc/DNADamageScorer/AuthorName							   		= "Name"
+s:Sc/DNADamageScorer/SimulationDetails					   		= "Nucleus simulation" 
+s:Sc/DNADamageScorer/SourceDetails					   	   		= "Monoenergetic source"
+i:Sc/DNADamageScorer/SourceType					   		   		= 1
+s:Sc/DNADamageScorer/EnergyDistribution					   		= "M, 0"
+s:Sc/DNADamageScorer/IrradiationTarget					   		= "Nucleus"
+s:Sc/DNADamageScorer/CellCycleStage					       		= "0"
+s:Sc/DNADamageScorer/DNAStructure					           	= "0, 1"
+i:Sc/DNADamageScorer/InVitroOrInVivo						   	= 0
+s:Sc/DNADamageScorer/ProliferationStatus					   	= "1"
+s:Sc/DNADamageScorer/Microenvironment					       	= "20, 0.01"
+d:Sc/DNADamageScorer/Time					  				   	= 0 s
+s:Sc/DNADamageScorer/AdditionalInfo					       		= ""

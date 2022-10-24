@@ -51,16 +51,16 @@ NtupleForBasePair::NtupleForBasePair(TsParameterManager* pM, TsMaterialManager* 
 
     //name the sensitive volumes
     if (fPm->ParameterExists("Base_strand1_name")){
-      Base_strand1_name=fPm->GetStringParameter("Base_strand1_name");
+    	Base_strand1_name=fPm->GetStringParameter("Base_strand1_name");
     }
     if (fPm->ParameterExists("Base_strand2_name")){
-      Base_strand1_name=fPm->GetStringParameter("Base_strand2_name");
+    	Base_strand2_name=fPm->GetStringParameter("Base_strand2_name");
     }
     if (fPm->ParameterExists("Back_strand1_name")){
-      Base_strand1_name=fPm->GetStringParameter("Back_strand1_name");
+    	Back_strand1_name=fPm->GetStringParameter("Back_strand1_name");
     }
     if (fPm->ParameterExists("Back_strand2_name")){
-      Base_strand1_name=fPm->GetStringParameter("Back_strand2_name");
+    	Back_strand2_name=fPm->GetStringParameter("Back_strand2_name");
     }
 
 }
@@ -91,21 +91,17 @@ G4bool NtupleForBasePair::ProcessHits(G4Step* aStep,G4TouchableHistory*)
       return false;
     }
 
-    if (Volume!="World" && Volume!="Fiber"){
-        G4cout<<"Hit in "<<Volume<<G4endl;
-    }
-
-    if (Volume!=Base_strand1_name ||
-        Volume!=Base_strand2_name ||
-        Volume!=Back_strand1_name ||
-        Volume!=Back_strand2_name){
+    if (Volume.find(Base_strand1_name) == std::string::npos &&
+        Volume.find(Base_strand2_name) == std::string::npos &&
+        Volume.find(Back_strand1_name) == std::string::npos &&
+        Volume.find(Back_strand2_name) == std::string::npos){
         return false;
     }
 
     //get strand and volume
-    if (Volume==Base_strand1_name || Volume==Back_strand1_name){
+    if (Volume.find(Base_strand1_name) != std::string::npos || Volume.find(Back_strand1_name) != std::string::npos){
         fStrand=1;
-        if (Volume==Base_strand1_name){
+        if (Volume.find(Base_strand1_name) != std::string::npos){
             fIsBase=true;
             fIsBack=false;
         } else {
@@ -114,7 +110,7 @@ G4bool NtupleForBasePair::ProcessHits(G4Step* aStep,G4TouchableHistory*)
         }
     } else {
         fStrand=2;
-        if (Volume==Base_strand2_name){
+        if (Volume.find(Base_strand2_name) != std::string::npos){
             fIsBase=true;
             fIsBack=false;
         } else {
@@ -158,11 +154,7 @@ G4bool NtupleForBasePair::ProcessHits(G4Step* aStep,G4TouchableHistory*)
     //record hit
     fNtuple -> Fill();
 
-cout<<"ACCEPTED"<<endl;
     return true;
-
-
-
 }
 
 
@@ -203,23 +195,23 @@ void NtupleForBasePair::UserHookForEndOfRun()
                 //start clustering (sum energy in volumes, and cluster)
                 StartClusteringBasePair*clustering = new StartClusteringBasePair(fPm);
                 clustering->Cluster(data.second);
-                delete clustering;
+                //delete clustering;
             }
 
             //write damage details
             WriteDamageSpecBasePair * DamSpec = new WriteDamageSpecBasePair(fPm);
             DamSpec->Write(Hits);
-            delete DamSpec;
+            //delete DamSpec;
 
             EventHits.clear();
         }
 
 
         //clear lists
-        for (size_t i=0;i<Hits.size();i++){
-            delete Hits[i];
-            Hits[i]=NULL;
-        }
+        //for (size_t i=0;i<Hits.size();i++){
+            //delete Hits[i];
+            //Hits[i]=NULL;
+        //}
         Hits.clear();
 
     } else {

@@ -174,9 +174,9 @@ public:
     
     G4int GetPrimaryID(){
         std::vector<G4int> PIDs;
-        for (G4int i=0;i<GetHits().size();i++){
+        for (unsigned int i=0;i<GetHits().size();i++){
             G4bool present=false;
-            for (G4int j=0;j<PIDs.size();j++){
+            for (unsigned int j=0;j<PIDs.size();j++){
                 if (Hits[i]->GetEventID()==PIDs[j]){present=true;}
             }
             if (!present){
@@ -205,7 +205,7 @@ public:
         G4int DirectDam=0;
         G4int IndirectDam=0;
         G4int OtherDam=0;
-        for (int i=0;i<GetHits().size();i++){
+        for (unsigned int i=0;i<GetHits().size();i++){
             if (GetHits()[i]->GetIsPhys()){DirectDam++;}
             if (GetHits()[i]->GetIsChem()){IndirectDam++;}
             if (GetHits()[i]->GetIsChargeMig()){OtherDam++;}

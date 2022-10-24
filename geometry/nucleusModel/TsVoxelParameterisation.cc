@@ -25,8 +25,8 @@
 #include "G4LogicalVolume.hh"
 
 
-TsVoxelParameterisation::TsVoxelParameterisation()
-    : G4VPVParameterisation()
+TsVoxelParameterisation::TsVoxelParameterisation(TsParameterManager* pM)
+    : G4VPVParameterisation(), fPm(pM)
 {}
 
 TsVoxelParameterisation::~TsVoxelParameterisation()
@@ -92,12 +92,10 @@ void TsVoxelParameterisation::CheckCopyNo( const G4int copyNo ) const
 { 
   if( copyNo < 0 || copyNo >= G4int(fNoVoxel) )
   {
-    std::ostringstream message;
-    message << "Copy number is negative or too big!" << G4endl
-            << "        Copy number: " << copyNo << G4endl
-            << "        Total number of voxels: " << fNoVoxel;
-    G4Exception("VoxPhantomParameterisation::CheckCopyNo()",
-                "GeomNav0002", FatalErrorInArgument, message);
+    G4cerr << "Copy number is negative or too big!" << G4endl;
+    G4cerr << "        Copy number: " << copyNo << G4endl;
+    G4cerr << "        Total number of voxels: " << fNoVoxel << G4endl;
+    fPm->AbortSession(1);
   }
 }
 

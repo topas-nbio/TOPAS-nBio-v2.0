@@ -1,0 +1,73 @@
+#######################
+### TOPAS Parameters ##
+#######################
+
+i:Ts/Verbosity = 1
+i:Ts/ShowHistoryCountAtInterval = 260
+Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"
+
+i:Ts/Seed = 1234
+
+#######################
+# Physics & Chemistry #
+#######################
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+s:Ch/ChemistryName = "Plante"
+includeFile        = PlanteReactions.txt
+
+b:Ch/Plante/ChemicalStageTransportActive = "True"
+d:Ch/Plante/ChemicalStageTimeEnd         = 1.00001 ps
+dv:Ch/Plante/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/Plante/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+
+#######################
+###### Geometry #######
+#######################
+
+d:Ge/World/HLX= 10 um 
+d:Ge/World/HLY= 10 um 
+d:Ge/World/HLZ= 10 um 
+s:Ge/World/Material ="G4_WATER"
+
+s:Ge/target/Parent   = "World"
+s:Ge/target/Material = "G4_WATER"
+s:Ge/target/Type     = "TsBox"
+d:Ge/target/HLX      = 2.5 um
+d:Ge/target/HLY      = 2.5 um
+d:Ge/target/HLZ      = 2.5 um
+
+#######################
+######## Source #######
+#######################
+
+s:So/Example/Type                     = "Volumetric"
+s:So/Example/ActiveMaterial           = "G4_WATER"
+s:So/Example/Component                = "target" 
+s:So/Example/BeamParticle             = "proton"
+d:So/Example/BeamEnergy               = 5.0 MeV 
+u:So/Example/BeamEnergySpread         = 0
+ic:So/Example/NumberOfHistoriesInRun  = 500000
+
+#######################
+######## Scorer #######
+#######################
+
+s:Sc/gvalue/Quantity     = "TsIRTInterPulse" 
+s:Sc/gvalue/Component    = "target"
+s:Sc/gvalue/OutputFile   = "GaussianAllReactions_PlanteReactions_proton_5.0_MeV_0.5_Gy_25uM_FWHM_1.8us"
+s:Sc/gvalue/IfOutputFileAlreadyExists = "Overwrite"
+s:Sc/gvalue/OutputType   = "ascii"
+i:Sc/gvalue/TimeBins     = 500
+d:Sc/gvalue/TimeLower    = 1.0e0 ps
+d:Sc/gvalue/TimeUpper    = 1.0e3 us 
+d:Sc/gvalue/PrescribedDose    = 0.25 Gy 
+s:Sc/gvalue/PulseDistribution = "Gaussian"
+d:Sc/gvalue/PulseTimeMean     = 0.9 us 
+d:Sc/gvalue/PulseTimeFWHM     = 1.8 us 
+sv:Sc/gvalue/ReportMoleculesNamed = 10 "OH^0" "e_aq^-1" "H3O^1" "H2O2^0" "H^0" "H_2^0" "OH^-1" "O2^-1" "HO2^0" "O2^0"
+s:Sc/gvalue/SensitiveVolumeName  = "target"
+
+#######################

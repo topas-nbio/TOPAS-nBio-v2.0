@@ -335,7 +335,7 @@ if (fBuildChromatinFiber)
     if (fBuildBases)
     {
         // Histones
-        G4String Subcomponent6a = "histone";
+        G4String Subcomponent6a = "Histone";
         G4Tubs* sHistone = new G4Tubs(Subcomponent6a,
                                       0,
                                       3.25 * nanometer,

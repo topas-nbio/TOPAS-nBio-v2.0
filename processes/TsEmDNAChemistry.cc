@@ -132,9 +132,9 @@ void TsEmDNAChemistry::DefineParameters()
         for ( int i = 0; i < nbOfMolecules; i++ ) {
             molecules[i].toLower();
             if ( !MoleculeExists(molecules[i]) ) {
-                Quit(GetFullParmName("DiffusionCoefficients/Molecules"), ". Molecule: " + molecules[i] + " was not found in database");
+                Quit(GetFullParmName("DiffusionCoefficients/Molecules"), "\n--- Molecule: " + molecules[i] + " was not found in database");
             } else if ( molecules[i] == "water" ) {
-                Quit(GetFullParmName("DiffusionCoefficients/Molecules"), ". Molecule: " + molecules[i] + " is not allowed to has a diffusion coefficient.");
+                Quit(GetFullParmName("DiffusionCoefficients/Molecules"), "\n--- Molecule: " + molecules[i] + " is not allowed to has a diffusion coefficient.");
             } else {
                 std::map<G4String, G4String>::const_iterator it = fExistingMolecules.find(molecules[i]);
                 fDiffusionCoefficients[it->second] = diffusionCoefficients[i];
@@ -147,11 +147,15 @@ void TsEmDNAChemistry::DefineParameters()
     std::vector<G4String>* reactionNames = new std::vector<G4String>;
     fPm->GetParameterNamesBracketedBy("Ch/" + fName, "ReactionRate", reactionNames);
     G4int numberOfReactions = reactionNames->size();
-    G4int prefixLength = G4String("Ch/" + fName + "/BinaryReaction/").length();
+    G4int prefixLength = G4String("Ch/" + fName + "/Reaction/").length();
     
     if ( numberOfReactions > 0 ) {
         for ( int i = 0; i < numberOfReactions; i++ ) {
             G4String parName = (*reactionNames)[i];
+			if (fPm->ParameterExists(parName.substr(0,parName.find("ReactionRate")-1) + "/CompatibleWithStepByStep") &&
+				!fPm->GetBooleanParameter(parName.substr(0,parName.find("ReactionRate")-1) + "/CompatibleWithStepByStep"))
+				continue;
+			
             G4String reactions = parName.substr(prefixLength, parName.find("ReactionRate")-prefixLength-1);
             G4String reactorA = reactions.substr(0, reactions.find("/"));
             G4String reactorB = reactions.substr(reactions.find("/") + 1);
@@ -165,23 +169,23 @@ void TsEmDNAChemistry::DefineParameters()
             reactorA.toLower();
             reactorB.toLower();
             if ( !MoleculeExists(reactorA) )
-                Quit(parName, ". Molecule: " + reactorA + " was not found in database");
+                Quit(parName, "\n--- Molecule: " + reactorA + " was not found in database");
             
             if ( !MoleculeExists(reactorB) )
-                Quit(parName, ". Molecule: " + reactorB + " was not found in database");
+                Quit(parName, "\n--- Molecule: " + reactorB + " was not found in database");
             
             reactors.push_back(fExistingMolecules[reactorA]);
             reactors.push_back(fExistingMolecules[reactorB]);
             
             for ( int j = 0; j < nbOfProduct; j++ ) {
                 product[j].toLower();
-                if ( product[j] == "noproduct" ) // Note on comparison of strings: See comment on ConstructReactionTable()
-                    products.push_back("noproduct");
+                if ( product[j] == "none" ) // Note on comparison of strings: See comment on ConstructReactionTable()
+                    products.push_back("none");
                 else if ( product[j] == "water") {
                     products.push_back("H2O");
                 } else {
                     if ( !MoleculeExists(product[j]) )
-                        Quit(parName, ". Molecule: " + product[j] + " was not found in database");
+                        Quit(parName, "\n--- Molecule: " + product[j] + " was not found in database");
                     else {
                         products.push_back(fExistingMolecules[product[j]]);
                     }
@@ -205,7 +209,7 @@ void TsEmDNAChemistry::DefineParameters()
             G4String aName = scavengedMolecules[i];
             aName.toLower();
             if ( !MoleculeExists(aName) )  {
-                Quit(GetFullParmName("Scavenger/Molecules"), "Molecule name " + aName + " was not found");
+                Quit(GetFullParmName("Scavenger/Molecules"), "\n--- Molecule name " + aName + " was not found");
             }
             fScavengedMolecules.push_back( fExistingMolecules[aName] );
             fScavengedCapacities.push_back( scavengerConcentrations[i] * scavengerReactionRates[i] );
@@ -219,7 +223,7 @@ void TsEmDNAChemistry::DefineParameters()
 		G4int nTheMaterials = fPm->GetVectorLength(GetFullParmName("RemoveInMaterialTheseMolecules"));
 		for ( int i = 0; i < nTheMaterials; i++ ) {
 			if ( !MoleculeExists(theMolecules[i]) )
-				Quit(GetFullParmName("RemoveInMaterialTheseMolecules"), ". Molecule: " + theMolecules[i] + " was not found in database");
+				Quit(GetFullParmName("RemoveInMaterialTheseMolecules"), "\n--- Molecule: " + theMolecules[i] + " was not found in database");
 			fRemoveInMaterialTheseMolecules.push_back(fExistingMolecules[theMolecules[i]]);
 		}
 	}
@@ -299,17 +303,17 @@ void TsEmDNAChemistry::ConstructMolecule()
     G4H2::Definition();
     TsScavengerProduct::Definition();
     
+    G4MoleculeTable::Instance()->CreateConfiguration("H", G4Hydrogen::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("OH", G4OH::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("H2O2", G4H2O2::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("H2", G4H2::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("e_aq", G4Electron_aq::Definition());
     G4MoleculeTable::Instance()->CreateConfiguration("H3Op", G4H3O::Definition());
     
     G4MolecularConfiguration* OHm =
     G4MoleculeTable::Instance()-> CreateConfiguration("OHm", G4OH::Definition(), -1, 5.0e-9 * (m2 / s));
     OHm->SetMass(17.0079 * g / Avogadro * c_squared);
     
-    G4MoleculeTable::Instance()->CreateConfiguration("OH", G4OH::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("e_aq", G4Electron_aq::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("H", G4Hydrogen::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("H2", G4H2::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("H2O2", G4H2O2::Definition());
     G4MoleculeTable::Instance()->CreateConfiguration("Product", TsScavengerProduct::Definition());
     
     if ( fSetWaterConfiguration )
@@ -574,7 +578,7 @@ void TsEmDNAChemistry::ConstructReactionTable(G4DNAMolecularReactionTable*
         reactionData->SetReactionID(reactionType);
         
         for ( size_t u = 0; u < fReactionProducts[t].size(); u++ ) {
-            if ( "noproduct" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "noproduct"
+            if ( "none" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "none"
                 reactionData->AddProduct(reactions[ fReactionProducts[t][u] ] );
         }
         std::cout << " Re-set reaction kobs to : " << fReactionRates[t]/(1e-3*m3/(mole*s)) << "/M/s" << std::endl;
@@ -673,7 +677,7 @@ void TsEmDNAChemistry::ConstructProcess()
 					G4MolecularConfiguration* mC = G4MoleculeTable::Instance()->
 												   GetConfiguration(fRemoveInMaterialTheseMolecules[u]);
 					if ( !G4Material::GetMaterial(fRemoveInMaterial) )
-						Quit("", "Material " + fRemoveInMaterial + " was not found " );
+						Quit("", "\n--- Material " + fRemoveInMaterial + " was not found " );
 					removeProcess->SetReaction(mC, G4Material::GetMaterial(fRemoveInMaterial));
 					moleculeDef->GetProcessManager()->AddDiscreteProcess(removeProcess);
 					G4cout << "-- Molecule " << mC->GetName() << " will be removed at contact of material " << fRemoveInMaterial << G4endl;
@@ -719,8 +723,8 @@ G4String TsEmDNAChemistry::GetFullParmName(G4String suffix ) {
 
 
 void TsEmDNAChemistry::Quit(G4String parName, G4String message) {
-    std::cerr << "TOPAS is exiting due to an error in Chemistry configuration." << std::endl;
-    std::cerr << "Parameter: " << parName << " " << message << std::endl;
-    exit(1);
+    G4cerr << "TOPAS is exiting due to an error in Chemistry configuration." << std::endl;
+    G4cerr << "--- Parameter: " << parName << " " << message << std::endl;
+    fPm->AbortSession(1);
 }
 

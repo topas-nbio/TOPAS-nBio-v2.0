@@ -13,7 +13,7 @@
 #define  TsChromosome_hh
 
 #include "G4UnitsTable.hh"
-#include "TsHitsRecord.hh"
+#include "TsHitInDNA.hh"
 
 class  TsChromosome 
 {
@@ -24,7 +24,7 @@ public:
     G4double GetTotalDNAContent_MBP() {return fTotalDNAContent;}
     std::vector<G4int> GetDNAcontentofEachChromosome_BP()  {return fDNAcontentofEachChromosome_BP;}
     std::vector<std::vector<G4int> > GetChromosomeMatrix() { return fChromosomeMatrix;}
-    std::vector<std::vector<G4int> > SplitChromosome(std::vector <std::pair < TsHitsRecord*,  TsHitsRecord*>> DSB_pairs);
+    std::vector<std::vector<G4int> > SplitChromosome(std::vector <std::pair < TsHitInDNA*,  TsHitInDNA*>> DSB_pairs);
     std::vector<std::vector<G4int> > SplitChromosome(std::map<G4int, std::map<std::pair<G4int, G4int>, G4int>> DSBPairs);
     G4int CountDNAFrangmentsWithSize(std::vector<std::vector<G4int> > DNAfragments, G4int LowerThreshold, G4int UpperThreshold);
     

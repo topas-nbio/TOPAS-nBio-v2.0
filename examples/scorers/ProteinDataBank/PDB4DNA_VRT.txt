@@ -1,0 +1,64 @@
+# This example shows how to setup the 
+# scoring of SSB and DSB based on overlayed 
+# geometries. The output is a tuple with 
+# SSB and DBS. It is required a PDB4DNA file. 
+# The scoring region was created by hand and 
+# matches the dimensions and translation of the 
+# PDB4DNA geometry.
+
+i:Ts/Seed = 1
+i:Ts/NumberOfThreads = 1
+
+b:Ts/ShowCPUTime = "True"
+
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+
+
+s:So/Demo/BeamParticle = "GenericIon(6,12)"
+d:So/Demo/BeamEnergy   = 12 MeV
+u:So/Demo/BeamEnergySpread = 0
+s:So/Demo/BeamPositionDistribution = "None"
+s:So/Demo/BeamAngularDistribution = "None"
+i:So/Demo/NumberOfHistoriesInRun = 50
+i:Ts/ShowHistoryCountAtInterval = 1
+
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ um
+d:Ge/BeamPosition/RotX = 0 deg
+
+d:Ge/World/HLX = 500 angstrom
+d:Ge/World/HLY = 500 angstrom
+d:Ge/World/HLZ = 500 angstrom
+s:Ge/World/Material = "G4_WATER"
+b:Ge/World/Invisible = "True"
+
+s:Ge/Detector/Parent = "World"
+s:Ge/Detector/Type   = "TsBox"
+s:Ge/Detector/Material = "G4_WATER"
+# The values of the following parameters
+# were set ad hoc with the 1ZBB.pdb file
+d:Ge/Detector/HLX = 48.525 angstrom 
+d:Ge/Detector/HLY = 76.0525 angstrom 
+d:Ge/Detector/HLZ = 126.305 angstrom
+d:Ge/Detector/TransX = 47.874 angstrom
+d:Ge/Detector/TransY = 0.3285 angstrom
+d:Ge/Detector/TransZ = 118.105 angstrom 
+s:Ge/Detector/AssignToRegionNamed = "detector"
+
+s:Sc/RootFileName = "PDB4DNA_VRT"
+
+s:Sc/DSB/Quantity = "pdb4dna"
+s:Sc/DSB/PDB4DNAFileName = "1ZBB.pdb"
+s:Sc/DSB/Component  = "Detector"
+s:Sc/DSB/OutputFile = "PDB4DNA"
+s:Sc/DSB/OutputType = "Root"
+b:Sc/DSB/OutputToConsole = "True"
+s:Sc/DSB/IfOutputFileAlreadyExists = "overwrite"
+# DSB configuration parameters
+i:Sc/DSB/MinimumDistanceForDSB       = 2       # Distance betwen SSB to form a DSB, in base-pair's factors
+d:Sc/DSB/LowerEnergyForSamplingSSB   = 8.22 eV # Hits are sampled from a ramp distribution between
+
+s:Gr/view/Type = "OpenGl"
+i:Gr/view/WindowSizeX = 900
+i:Gr/view/WindowSizeY = 700
+
+

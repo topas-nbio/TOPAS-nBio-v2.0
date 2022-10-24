@@ -1,0 +1,16 @@
+Number of Original Histories: 4
+Number of Scored Entries: 170
+
+Columns of data are as follows:
+ 1: Position X [nm]
+ 2: Position Y [nm]
+ 3: Position Z [nm]
+ 4: Energy [eV]
+ 5: Event ID
+ 6: Run ID
+ 7: Strand Num
+ 8: IsIonisation
+ 9: BP
+10: IsBack
+11: IsBase
+

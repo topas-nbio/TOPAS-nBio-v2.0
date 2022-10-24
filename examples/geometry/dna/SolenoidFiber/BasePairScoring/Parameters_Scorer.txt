@@ -36,6 +36,7 @@ d:MinEneThresh = 17.5 eV            #Min energy for damage threshold (Default = 
 s:BeamParticle = "proton"
 u:BeamEnergySpread = 0.0
 s:BeamEnergyDistribution = "Mono"
+d:BeamEnergy = 1.0 MeV
 
 b:StoreDamagesInMemory = "false"  #Set to true to store damages ready to pass to further models
 

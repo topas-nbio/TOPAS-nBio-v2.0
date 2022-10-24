@@ -1,0 +1,62 @@
+# Demonstrates scoring G-values with Chemistry process 
+# An electron point source of 750 keV is shooted from the
+# back side of  a slab of 2.5 um thickness.
+# The gvalue scorer is attached to the Target volume.
+# The user must to define the TimeToRecord, this is the 
+# time after the physics/chemistry process occurred. 
+#
+# Restrictions: 
+# *  Only one GValue scorer is allowed 
+# *  The time limit is up to 1 microsecond. 
+# *  The media must be G4_WATER 
+# *  NO PARALLEL volumes are supported.
+# *  Due to the name of the molecule is scored, BINARY output
+#    is not supported, only ROOT and ASCII 
+# 
+
+i:Ts/NumberOfThreads = 4
+sv:Ph/Default/Modules = 2 "g4em-dna" "g4em-dna-chemistry"
+b:Ch/Default/ChemicalStageTransportActive = "True"
+
+d:Ge/World/HLX= 5. um
+d:Ge/World/HLY= 5. um
+d:Ge/World/HLZ= 5. um
+s:Ge/World/Material ="G4_WATER"
+
+s:Ge/Target/Parent = "World"
+s:Ge/Target/Type = "TsBox"
+s:Ge/Target/Material = "G4_WATER"
+d:Ge/Target/HLX = Ge/World/HLX um
+d:Ge/Target/HLY = Ge/World/HLY um
+d:Ge/Target/HLZ = 1.25 um 
+
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/Target/HLZ um 
+d:Ge/BeamPosition/RotX = 0 deg
+
+d:So/Demo/BeamEnergy = 750 keV 
+u:So/Demo/BeamEnergySpread = 0
+s:So/Demo/BeamParticle = "e-"
+s:So/Demo/BeamPositionDistribution = "None"
+
+u:perCent = 1
+
+s:Sc/GValueInTarget/Quantity = "TsSBSGValue" 
+s:Sc/GValueInTarget/Component = "Target"
+s:Sc/GValueInTarget/IfOutputFileAlreadyExists = "Overwrite"
+b:Sc/GValueInTarget/OutputToConsole = "True"
+d:Sc/GValueInTarget/KillPrimaryIfEnergyLossExceeds = So/Demo/BeamEnergy keV * perCent
+d:Sc/GValueInTarget/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/GValueInTarget/KillPrimaryIfEnergyLossExceeds keV
+d:Sc/GValueInTarget/KillPrimaryBasedOnTrackLength = 5 um
+# Record time, do not confuse with Time features.
+s:Sc/GValueInTarget/OutputType = "ascii" # or root
+s:Sc/GValueInTarget/OutputFile = "Gvalue_e_750keV"
+dv:Sc/GValueInTarget/TimeToRecord = 20 1.00000e0 2.06913e0 4.28133e0 8.85866e0
+                                       1.83298e1 3.79268e1 7.84759e1 1.62377e2
+                                       3.35981e2 6.95192e2 1.43844e3 2.97634e3
+                                       6.15847e3 1.27427e4 2.63664e4 5.45559e4
+                                       1.12883e5 2.33571e5 4.83292e5 9.99999e5 ps
+
+i:So/Demo/NumberOfHistoriesInRun = 10
+i:Ts/ShowHistoryCountAtInterval = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 12345

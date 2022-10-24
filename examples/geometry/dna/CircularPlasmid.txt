@@ -21,16 +21,24 @@ s:Ge/MyDNA/Material="G4_WATER"
 #Define the number of base pairs in the ring
 i:Ge/MyDNA/NumberOfBasePairs=200
 
+# Material for volumes in strand 1
+s:Ma/G4_WATER_MODIFIED_1/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED_1/CloneWithDensity  = 1.0 g/cm3
+
+# Auxiliar material for volumes in strand 2
+s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
+d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
+
 s:Ge/MyDNA/Base/Material="G4_WATER"
-s:Ge/MyDNA/BasePair/Material="G4_WATER"
+s:Ge/MyDNA/BasePair/Material="G4_WATER_MODIFIED_1"
 s:Ge/MyDNA/BasePair/Color="yellow"
 s:Ge/MyDNA/BasePair/DrawingStyle="solid"
-s:Ge/MyDNA/Sugar1/Material="G4_WATER"
-s:Ge/MyDNA/Sugar1/Color="green"
-s:Ge/MyDNA/Sugar1/DrawingStyle="solid"
-s:Ge/MyDNA/Sugar2/Material="G4_WATER"
-s:Ge/MyDNA/Sugar2/Color="blue"
-s:Ge/MyDNA/Sugar2/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone1/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Backbone1/Color="green"
+s:Ge/MyDNA/Backbone1/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone2/Material="G4_WATER_MODIFIED_2"
+s:Ge/MyDNA/Backbone2/Color="blue"
+s:Ge/MyDNA/Backbone2/DrawingStyle="solid"
 
 sv:Ph/Default/Modules = 1 "g4em-dna"
 
@@ -52,13 +60,16 @@ d:So/Disk/BeamAngularSpreadX = 0.01 deg
 d:So/Disk/BeamAngularSpreadY = 0.01 deg
 i:So/Disk/NumberOfHistoriesInRun=500
 
-#Score energy deposition events in the geometry 
-#(please see example parameter in scorer section for scoring ssb and dsb in plasmids)
-s:Sc/BreakScorer/Quantity = "tsntupleforplasmid"
-s:Sc/BreakScorer/Component = "MyDNA"
-s:Sc/BreakScorer/IfOutputFileAlreadyExists = "Overwrite"  
-s:Sc/BreakScorer/OutputType = "ASCII" 
-s:Sc/BreakScorer/OutputFile = "HitsInPlasmid"
+# -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
+includeFile									= ../../scorers/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Component 				= "MyDNA"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Disk/NumberOfHistoriesInRun
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 1 "G4_WATER_MODIFIED_1"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 1 "G4_WATER_MODIFIED_2"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/Disk/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/Disk/BeamEnergy MeV
 
 #Visualization
 s:Gr/ViewA/Type="OpenGL"

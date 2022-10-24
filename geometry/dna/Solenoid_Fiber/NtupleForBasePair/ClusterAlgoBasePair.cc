@@ -68,7 +68,7 @@ void ClusterAlgoBasePair::RegionQuery(vector<HitPoint*> &Hits, int PtNum, int &N
         if (i!=PtNum){
             int BP2=Hits[i]->GetBP();
             int nBPGap=abs(BP1-BP2);
-            bool hasClustered=false;
+            //bool hasClustered=false;
             bool DiffStrand=false;
             if (Hits[PtNum]->GetStrand()!= Hits[i]->GetStrand()){
                 DiffStrand=true;
@@ -80,7 +80,7 @@ void ClusterAlgoBasePair::RegionQuery(vector<HitPoint*> &Hits, int PtNum, int &N
             if (nBPGap<=minSepBP && DiffStrand){
                 NumlocalPts++;
                 LocalPtsID.push_back(i);
-                hasClustered=true;
+            //    hasClustered=true;
             }
 
 
@@ -373,7 +373,7 @@ void ClusterAlgoBasePair::ClusterBases(vector<HitPoint *> &BaseHits)
             int nInClust=HitsInClust.size();
             int maxBP=0;
             int minBP=std::numeric_limits<int>::max();
-            bool hasClustered=false;
+            //bool hasClustered=false;
             for (int j=0;j<nInClust;j++){
                 int BackNum = HitsInClust[j]->GetBP();
                 int BackStrand = HitsInClust[j]->GetStrand();
@@ -389,7 +389,7 @@ void ClusterAlgoBasePair::ClusterBases(vector<HitPoint *> &BaseHits)
             //add the base if within 3bp of the extremities and not part of the damage backbone
             if (BaseNum<maxBP+BaseSep && BaseNum>minBP-BaseSep && AddBase){
                 clusters.second->AddPoint(BaseHits[i]);
-                hasClustered=true;
+            //    hasClustered=true;
             }
 
         }

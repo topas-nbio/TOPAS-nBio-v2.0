@@ -87,10 +87,10 @@ private:
 
     G4bool SingleTrack=true;
 
-    G4String Back_strand1_name="back1";
-    G4String Back_strand2_name="back2";
-    G4String Base_strand1_name="base1";
-    G4String Base_strand2_name="base2";
+    G4String Back_strand1_name="Backbone1";
+    G4String Back_strand2_name="Backbone2";
+    G4String Base_strand1_name="Base1";
+    G4String Base_strand2_name="Base2";
 
 };
 #endif

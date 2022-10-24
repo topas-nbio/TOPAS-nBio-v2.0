@@ -66,7 +66,7 @@ TsScoreSimpleSSBandDSBWithDBSCAN::TsScoreSimpleSSBandDSBWithDBSCAN(TsParameterMa
 
 	G4String strand2MaterialName = "G4_WATER";
 	if (fPm->ParameterExists(GetFullParmName("Strand2MaterialName")))
-		strand1MaterialName = fPm->GetStringParameter(GetFullParmName("Strand2MaterialName"));
+		strand2MaterialName = fPm->GetStringParameter(GetFullParmName("Strand2MaterialName"));
 	
 	fStrand1Material = GetMaterial(strand1MaterialName);
 	fStrand2Material = GetMaterial(strand2MaterialName);

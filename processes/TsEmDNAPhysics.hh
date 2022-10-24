@@ -30,6 +30,8 @@ public:
     virtual void ConstructProcess();
     
 private:
+    G4String fName;
+
     TsParameterManager* fPm;
     G4int  verbose;
 };

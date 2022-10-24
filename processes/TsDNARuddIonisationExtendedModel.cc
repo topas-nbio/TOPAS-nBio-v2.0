@@ -1,12 +1,26 @@
-// Extra Class for TsEmDNAChemistry
-//
+// Extra Class for TsEmDNAPhysics_stationary2
 // ********************************************************************
+// * License and Disclaimer                                           *
 // *                                                                  *
-// * This file is part of the TOPAS-nBio extensions to the            *
-// *   TOPAS Simulation Toolkit.                                      *
-// * The TOPAS-nBio extensions are freely available under the license *
-// *   agreement set forth at: https://topas-nbio.readthedocs.io/     *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
 // *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
 // $Id: TsDNARuddIonisationExtendedModel.cc 96060 2016-03-11 12:58:04Z gcosmo $
@@ -55,7 +69,7 @@ TsDNARuddIonisationExtendedModel::TsDNARuddIonisationExtendedModel(const G4Parti
     lowEnergyLimitForA[3] = 0 * eV;
     lowEnergyLimitOfModelForA[1] = 100 * eV;
     lowEnergyLimitOfModelForA[4] = 1 * keV;
-    lowEnergyLimitOfModelForA[5] = 0.0 * MeV; //1000 * MeV; //0.5 * MeV; // For A = 3 or above, limit is MeV/uma
+    lowEnergyLimitOfModelForA[5] = 100.0 * eV; //1000 * MeV; //0.5 * MeV; // For A = 3 or above, limit is MeV/uma
     killBelowEnergyForA[1] = lowEnergyLimitOfModelForA[1];
     killBelowEnergyForA[4] = lowEnergyLimitOfModelForA[4];
     killBelowEnergyForA[5] = lowEnergyLimitOfModelForA[5];
@@ -114,20 +128,19 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
         G4cout << "Calling TsDNARuddIonisationExtendedModel::Initialise()" << G4endl;
 
     // Energy limits
-
-    G4String fileProton("dna/sigma_ionisation_p_rudd");
-    G4String fileHydrogen("dna/sigma_ionisation_h_rudd");
-    G4String fileAlphaPlusPlus("dna/sigma_ionisation_alphaplusplus_rudd");
-    G4String fileAlphaPlus("dna/sigma_ionisation_alphaplus_rudd");
-    G4String fileHelium("dna/sigma_ionisation_he_rudd");
-    G4String fileLithium("dna/sigma_ionisation_li_rudd");
-    G4String fileBeryllium("dna/sigma_ionisation_be_rudd");
-    G4String fileBoron("dna/sigma_ionisation_b_rudd");
-    G4String fileCarbon("dna/sigma_ionisation_c_rudd");
-    G4String fileNitrogen("dna/sigma_ionisation_n_rudd");
-    G4String fileOxygen("dna/sigma_ionisation_o_rudd");
-    G4String fileSilicon("dna/sigma_ionisation_si_rudd");
-    G4String fileIron("dna/sigma_ionisation_fe_rudd");
+    G4String fileProton        = "dna/sigma_ionisation_p_rudd";
+    G4String fileHydrogen      = "dna/sigma_ionisation_h_rudd";
+    G4String fileAlphaPlusPlus = "dna/sigma_ionisation_alphaplusplus_rudd";
+    G4String fileAlphaPlus     = "dna/sigma_ionisation_alphaplus_rudd";
+    G4String fileHelium        = "dna/sigma_ionisation_he_rudd";
+    G4String fileLithium       = "dna/sigma_ionisation_li_rudd";
+    G4String fileBeryllium     = "dna/sigma_ionisation_be_rudd";
+    G4String fileBoron         = "dna/sigma_ionisation_b_rudd";
+    G4String fileCarbon        = "dna/sigma_ionisation_c_rudd";
+    G4String fileNitrogen      = "dna/sigma_ionisation_n_rudd";
+    G4String fileOxygen        = "dna/sigma_ionisation_o_rudd";
+    G4String fileSilicon       = "dna/sigma_ionisation_si_rudd";
+    G4String fileIron          = "dna/sigma_ionisation_fe_rudd";
 
     G4DNAGenericIonsManager *instance;
     instance = G4DNAGenericIonsManager::Instance();
@@ -151,6 +164,8 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     G4ParticleDefinition* oxygenDef =  G4IonTable::GetIonTable()->GetIon(8,16);
     G4ParticleDefinition* siliconDef = G4IonTable::GetIonTable()->GetIon(14,28);
     G4ParticleDefinition* ironDef =  G4IonTable::GetIonTable()->GetIon(26,56);
+    G4ParticleDefinition* argonDef = G4IonTable::GetIonTable()->GetIon(18,40);
+    G4ParticleDefinition* neonDef = G4IonTable::GetIonTable()->GetIon(10,20);
     //
 
     G4String proton;
@@ -166,6 +181,8 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     G4String oxygen;
     G4String silicon;
     G4String iron;
+    G4String argon;
+    G4String neon;
 
     G4double scaleFactor = 1 * m*m;
 
@@ -242,7 +259,7 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     tableFile[helium] = fileHelium;
 
     lowEnergyLimit[helium] = lowEnergyLimitForA[4];
-    highEnergyLimit[helium] = 4000 * MeV; //400. * MeV;
+    highEnergyLimit[helium] = 400 * MeV; //400. * MeV;
 
     // Cross section
 
@@ -255,13 +272,12 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     // **********************************************************************************************
     
     lithium = lithiumDef->GetParticleName();
-    G4cout << "#################################### " << lithium << G4endl;
     tableFile[lithium] = fileLithium;
 
     //SEB
     //lowEnergyLimit[carbon] = lowEnergyLimitForA[5] * particle->GetAtomicMass();
     //highEnergyLimit[carbon] = 1e6* particle->GetAtomicMass() * MeV;
-    lowEnergyLimit[lithium] = 0.0 * MeV; //0.5*7*MeV;
+    lowEnergyLimit[lithium] = 100 * 7 * eV; //0.5*7*MeV;
     highEnergyLimit[lithium] = 1e6*7*MeV;
     //
 
@@ -321,7 +337,7 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     //SEB
     //lowEnergyLimit[carbon] = lowEnergyLimitForA[5] * particle->GetAtomicMass();
     //highEnergyLimit[carbon] = 1e6* particle->GetAtomicMass() * MeV;
-    lowEnergyLimit[carbon] = 0.5*12*MeV;
+    lowEnergyLimit[carbon] = 100*12*eV;
     highEnergyLimit[carbon] = 1e6*12*MeV;
     //
 
@@ -411,9 +427,7 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
                                                                        scaleFactor );
     tableIron->LoadData(fileIron);
     tableData[iron] = tableIron;
-
-    // **********************************************************************************************
-
+    
     //SEB: not anymore
     // ZF Following lines can be replaced by:
     //SetLowEnergyLimit(lowEnergyLimit[particle->GetParticleName()]);
@@ -497,6 +511,18 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     SetLowEnergyLimit(lowEnergyLimit[iron]);
     SetHighEnergyLimit(highEnergyLimit[iron]);
   }
+    
+  if (particle==neonDef)
+  {
+      SetLowEnergyLimit(lowEnergyLimit[neon]);
+      SetHighEnergyLimit(highEnergyLimit[neon]);
+  }
+    
+  if (particle==argonDef)
+  {
+      SetLowEnergyLimit(lowEnergyLimit[argon]);
+      SetHighEnergyLimit(highEnergyLimit[argon]);
+  }
 
     //----------------------------------------------------------------------
 
@@ -576,6 +602,10 @@ G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Materia
             particleDefinition != G4IonTable::GetIonTable()->GetIon(14,28)
             &&
             particleDefinition != G4IonTable::GetIonTable()->GetIon(26,56)
+            &&
+            particleDefinition != G4IonTable::GetIonTable()->GetIon(10,20)
+            &&
+            particleDefinition != G4IonTable::GetIonTable()->GetIon(18,40)
             //
             )
 

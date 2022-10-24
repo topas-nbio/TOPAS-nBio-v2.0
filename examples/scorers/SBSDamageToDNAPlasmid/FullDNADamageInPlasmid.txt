@@ -1,0 +1,86 @@
+# TOPAS-nBio example : Circular DNA Plasmid
+# DNA plasmid is placed in a box and irradiated by alphas.
+# Energy deposited is scored in plasmid sugar volumes.
+# If the accumulated energy deposition exceeds 17.5 eV, then a 
+# SSB occurred. If at least two SSB occurred within 10 base pairs
+# distance, then a DSB occurred.
+
+b:Ge/QuitIfOverlapDetected="true"
+
+#World volume
+d:Ge/World/HLX = 150 nm
+d:Ge/World/HLY = 150 nm
+d:Ge/World/HLZ = 150 nm
+s:Ge/World/Material="G4_WATER"
+
+# Auxiliar material for volumes in strand 1
+s:Ma/G4_WATER_MODIFIED_1/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED_1/CloneWithDensity  = 1.0 g/cm3
+
+# Auxiliar material for volumes in strand 2
+s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
+d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
+
+#Circular DNA plasmid
+s:Ge/CircularPlasmid/Type               = "TsCircularPlasmid"
+s:Ge/CircularPlasmid/Parent             = "World"
+s:Ge/CircularPlasmid/Material           = "G4_WATER"
+b:Ge/CircularPlasmid/Invisible          = "True"
+i:Ge/CircularPlasmid/NumberOfBasePairs  = 2000
+s:Ge/CircularPlasmid/BasePair/Material      ="G4_WATER"
+s:Ge/CircularPlasmid/BasePair/Color         ="yellow"
+s:Ge/CircularPlasmid/BasePair/DrawingStyle  ="solid"
+b:Ge/CircularPlasmid/BasePair/Invisible     ="false"
+s:Ge/CircularPlasmid/Backbone1/Material    ="G4_WATER_MODIFIED_1"
+s:Ge/CircularPlasmid/Backbone1/Color       ="red"
+s:Ge/CircularPlasmid/Backbone1/DrawingStyle="solid"
+b:Ge/CircularPlasmid/Backbone1/Invisible   ="false"
+s:Ge/CircularPlasmid/Backbone2/Material    ="G4_WATER_MODIFIED_2"
+s:Ge/CircularPlasmid/Backbone2/Color       ="blue"
+s:Ge/CircularPlasmid/Backbone2/DrawingStyle="solid"
+b:Ge/CircularPlasmid/Backbone2/Invisible   ="false"
+d:Ge/CircularPlasmid/RotX               = 90 deg
+
+# -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
+includeFile									= ../DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Component 				= "CircularPlasmid"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Field/NumberOfHistoriesInRun
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 1 "G4_WATER_MODIFIED_1"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 1 "G4_WATER_MODIFIED_2"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/Field/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/Field/BeamEnergy MeV
+
+# physics list in the world
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+
+# Source
+s:So/Field/Type = "Beam"
+s:So/Field/BeamParticle             = "alpha" 
+d:So/Field/BeamEnergy               = 4 MeV
+u:So/Field/BeamEnergySpread         = 0 
+s:So/Field/Component                = "BeamPosition"
+s:So/Field/BeamPositionDistribution = "Flat"
+s:So/Field/BeamPositionCutoffShape  = "Rectangle"
+d:So/Field/BeamPositionCutOffX      = 120 nm
+d:So/Field/BeamPositionCutOffY      = 10  nm
+s:So/Field/BeamAngularDistribution  = "None"
+i:So/Field/NumberOfHistoriesInRun   = 50
+
+i:Ts/ShowHistoryCountAtInterval     = 5
+
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ nm
+d:Ge/BeamPosition/RotX   = 0 deg
+
+#Visualization
+s:Gr/ViewA/Type="OpenGL"
+i:Gr/ViewA/WindowSizeX = 900
+i:Gr/ViewA/WindowSizeY = 700
+d:Gr/ViewA/Theta = 55 deg
+d:Gr/ViewA/Phi = 20 deg
+u:Gr/ViewA/Zoom = 2.5
+
+b:Ts/ShowCPUTime = "True"
+

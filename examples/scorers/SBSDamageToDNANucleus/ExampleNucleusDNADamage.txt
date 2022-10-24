@@ -1,0 +1,112 @@
+# -- Geometry
+# World
+d:Ge/World/HLX                          = 7.0 um
+d:Ge/World/HLY                          = 7.0 um
+d:Ge/World/HLZ                          = 7.0 um
+b:Ge/World/Invisible                    = "true"
+s:Ge/World/Material                     = "G4_WATER"
+
+# Nucleus
+s:Ge/Nucleus/Type                       = "TsNucleus"
+s:Ge/Nucleus/Parent                     = "World"
+s:Ge/Nucleus/Material                   = "G4_WATER"
+s:Ge/Nucleus/Color                      = "White"
+s:Ge/Nucleus/DNAModel					= "Sphere"
+d:Ge/Nucleus/NucleusRadius              = 4.65 um
+i:Ge/Nucleus/HilbertCurveLayer          = 4
+i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
+s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
+s:Ge/Nucleus/Voxel/Material             = "G4_WATER"
+b:Ge/Nucleus/ShowDNAVoxels              = "false"
+s:Ge/Nucleus/ChromatinFiber/Material    = "G4_WATER"
+b:Ge/Nucleus/ShowChromatinCylinders     = "false"
+s:Ge/Nucleus/Histone/Material           = "G4_HistoneMaterial"
+b:Ge/Nucleus/OnlyBuildOneHistone        = "false"
+b:Ge/Nucleus/HistoneAsScavenger         = "true"
+b:Ge/Nucleus/AddBases                   = "true"
+s:Ge/Nucleus/Base1/Material             = "G4_BaseMaterial"
+s:Ge/Nucleus/Base2/Material             = "G4_BaseMaterial"
+b:Ge/Nucleus/AddBackbones               = "true"
+s:Ge/Nucleus/Backbone1/Material         = "G4_BackboneMaterial"
+s:Ge/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
+b:Ge/Nucleus/AddHydrationShell          = "true"
+s:Ge/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
+s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
+
+# -- Materials
+s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
+d:Ma/G4_HistoneMaterial/CloneWithDensity    = 1.407 g/cm3
+s:Ma/G4_BaseMaterial/CloneFromMaterial      = "G4_WATER"
+d:Ma/G4_BaseMaterial/CloneWithDensity       = 1.0 g/cm3
+s:Ma/G4_BackboneMaterial/CloneFromMaterial  = "G4_WATER"
+d:Ma/G4_BackboneMaterial/CloneWithDensity   = 1.0 g/cm3
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
+
+# -- Physics and Chemistry
+#sv:Ph/Default/Modules                      		= 1 "g4em-dna"
+sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
+includeFile											= supportFiles/TOPASDefaultReactions.txt
+s:Ch/ChemistryName									= "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+#i:Ph/Verbosity                          			= 0
+
+# -- Source and runs
+s:So/ParticleGun/Type                               = "Beam"
+s:So/ParticleGun/Component                          = "BeamPosition"
+d:Ge/BeamPosition/TransX                            = 0.05 um
+d:Ge/BeamPosition/TransY                            = 0.05 um
+d:Ge/BeamPosition/TransZ                            = 5.00 um
+s:So/ParticleGun/BeamParticle                       = "proton"
+#s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
+s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
+s:So/ParticleGun/BeamPositionCutoffShape			= "Ellipse"
+d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
+d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
+s:So/ParticleGun/BeamAngularDistribution            = "none"
+d:So/ParticleGun/BeamEnergy                         = 5 MeV
+i:So/ParticleGun/NumberOfHistoriesInRun             = 1
+b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
+# Producing separate runs instead of separate histories if rotation enabled
+#d:Tf/TimelineStart 			 					= 0. s
+#d:Tf/TimelineEnd   			 					= 10. s
+#i:Tf/NumberOfSequentialTimes 						= 5 # Number of runs
+
+# -- Scorer --
+includeFile									= ../DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Quantity				= "DNADamageNucleusStepByStep"
+s:Sc/DNADamageScorer/Component 				= "Nucleus"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/ParticleGun/NumberOfHistoriesInRun
+d:Sc/DNADamageScorer/ScoringRadius			= Ge/Nucleus/NucleusRadius um
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/ParticleGun/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/ParticleGun/BeamEnergy MeV
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 0.5 gray
+d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageYMaxPosition		= Ge/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageZMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageZMaxPosition		= Ge/Nucleus/NucleusRadius um
+
+# Geometry file for Nucleus scorer
+s:Sc/DNADamageScorer/GeometryInfo			= "supportFiles/Geoinfo.txt"
+s:Sc/DNADamageScorer/FileVoxelCopyNumbersInsideNucleus = "supportFiles/CopyNoTable.txt"
+s:Sc/DNADamageScorer/MapChromosomeVoxelsFile = "supportFiles/signedCHVoxel.txt"
+
+Ts/ShowHistoryCountAtInterval                       = 1
+
+# -- Visualization
+#s:Gr/view/Type                          = "OpenGL"
+#i:Gr/view/WindowSizeX                   = 800
+#i:Gr/view/WindowSizeY                   = 800
+#d:Gr/view/Theta                         = 45 deg
+#d:Gr/view/Phi                           = 30 deg
+#s:Gr/view/ColorBy                       = "ParticleType"
+#sv:Gr/view/ColorByParticleTypeNames     = 4 "e-" "alpha" "proton" "neutron"
+#sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
+#s:Gr/view/BackgroundColor               = "White"
+
+i:Ts/Seed = 2581

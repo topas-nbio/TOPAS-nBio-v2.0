@@ -73,7 +73,7 @@ private:
 
   // Parameters to run clustering algorithm
   G4double fEps;         // distance to merge SBPoints
-  G4int fMinPts;         // number of SBPoints to create a cluster
+  //G4int fMinPts;         // number of SBPoints to create a cluster
   G4double fSPointsProb; // probability for a point to be in the sensitive area
   G4double fEMinDamage;  // min energy to create a damage
   G4double fEMaxDamage;  // energy to have a probability to create a damage = 1

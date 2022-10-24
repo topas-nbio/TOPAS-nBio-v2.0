@@ -1,0 +1,104 @@
+#############################
+###### TOPAS Parameters #####
+#############################
+
+Ts/NumberOfThreads = 1
+i:Ts/Verbosity = 3
+Ts/ShowHistoryCountAtInterval  = 10000
+
+#############################
+#### Physics & Chemistry ####
+#############################
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+
+s:Ch/ChemistryName = "TOPASChemistry"
+
+includeFile = TOPASDNAReactions.txt 
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.00001 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+
+#############################
+#### Scavenger Molecules ####
+#############################
+
+s:Mo/DMSO/Symbol = "DMSO"
+d:Mo/DMSO/DiffusionCoefficient = 0 nm2/s
+u:Mo/DMSO/Charge = 0
+d:Mo/DMSO/Radius = 0.3 nm
+
+s:Mo/OHDMSOProduct/Symbol = "OHDMSOProduct"
+d:Mo/OHDMSOProduct/DiffusionCoefficient = 0 nm2/s
+u:Mo/OHDMSOProduct/Charge = 0
+d:Mo/OHDMSOProduct/Radius = 0.3 nm
+
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Deoxyribose/ReactionRate = 4.8689e9 /M/s
+
+sv:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/DMSO/Products = 1 "OHDMSOProduct"
+d:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/DMSO/ReactionRate = 7.1e9 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/DMSO/Concentration = 1e-1 M 
+s:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/DMSO/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/DMSO/CompatibleWithStepByStep = "False" 
+
+#############################
+######### Geometry ##########
+#############################
+
+Ge/World/HLX = 1.0 um
+Ge/World/HLY = 1.0 um
+Ge/World/HLZ = 1.0 um
+Ge/World/Material = "G4_WATER"
+
+includeFile = PlasmidGeometry.txt
+d:Ge/plasmid/R = 0.5 um
+i:Ge/plasmid/NumberOfPlasmids = 5
+s:Ge/plasmid/InputFile = "pUC19_20C_3Sigma_ALP_Corrected.fab2g4dna"
+s:Ge/plasmid/EnvelopeFileName = "Plasmid_50ugg_Sphere_1um_diameter_envelopes.xyz"
+
+#############################
+########## Scorer ###########
+#############################
+
+s:Sc/plasmid/Quantity       = "TsIRTStrandBreaks"
+s:Sc/plasmid/Component      = "plasmid"
+d:Sc/plasmid/PrescribedDose = 50 Gy
+s:Sc/plasmid/IfOutputFileAlreadyExists = "Overwrite"
+s:Sc/plasmid/OutputFile     = "TOPAS_IRT_StrandBreak"
+s:Sc/plasmid/InputFile      = "Plasmid_50ugg_Sphere_1um_diameter_plasmids.xyz"
+s:Sc/plasmid/OutputType     = "ASCII"
+b:Sc/plasmid/PropagateToChildren = "True"
+d:Sc/plasmid/TimeLower      = 1 ps
+d:Sc/plasmid/TimeUpper      = 100 us
+i:Sc/plasmid/TimeBins       = 200
+iv:Sc/plasmid/OnlyUseDNAMoleculesWithID = 1 104
+sv:Sc/plasmid/ReportMoleculesNamed = 7 "OH^0" "e_aq^-1" "H2O2^0" "H^0" "H_2^0" "DeoxyriboseDamaged" "Deoxyribose"
+b:Sc/plasmid/HighTimeScavenger = "True"
+
+#############################
+########## Source ###########
+#############################
+
+So/Demo/Type              = "Volumetric"
+So/Demo/Component         = "plasmid"
+sc:So/Demo/ActiveMaterial = “G4_WATER”
+s:So/Demo/BeamParticle    = "e-"
+s:So/Demo/BeamEnergySpectrumType = "Discrete"
+dv:So/Demo/BeamEnergySpectrumValues = 19 0.0144 0.0432 0.072  0.1008 
+                                         0.1296 0.1584 0.1872 0.216 
+                                         0.2448 0.2736 0.3024 0.3312 
+                                         0.36   0.3888 0.4176 0.4464 
+                                         0.4752 0.504  0.5328 MeV
+uv:So/Demo/BeamEnergySpectrumWeights = 19 0.030134946933679106 0.041924794698170294 0.04768765307592566
+                                          0.05258608269701772  0.05515535705710032  0.05568361907506123
+                                          0.05681217884070499  0.05722038130912933  0.0583729529846804
+                                          0.05604379772367094  0.05395476156173462  0.05229793977812995
+                                          0.04970465350814004  0.042861259184555536 0.03522547183402968
+                                          0.20890361619363204  0.045382509724823515 2.4011909907314027e-05
+                                          2.4011909907314027e-05 
+
+i:So/Demo/NumberOfHistoriesInRun = 100000
+
+###############################

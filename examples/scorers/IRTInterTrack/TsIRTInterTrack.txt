@@ -1,0 +1,74 @@
+#############################
+###### TOPAS Parameters #####
+#############################
+
+i:Ts/Verbosity = 1
+i:Ts/ShowHistoryCountAtInterval = 260
+Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1 
+
+#############################
+#### Physics & Chemistry ####
+#############################
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+
+s:Ch/ChemistryName = "TOPASChemistry"
+includeFile = TOPASDefaultReactions.txt
+
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.00001 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+
+#############################
+######### Geometry ##########
+#############################
+
+d:Ge/World/HLX= 50 um 
+d:Ge/World/HLY= 50 um 
+d:Ge/World/HLZ= 1.25 um 
+s:Ge/World/Material ="G4_WATER"
+
+s:Ge/target/Parent   = "World"
+s:Ge/target/Material = "G4_WATER"
+s:Ge/target/Type     = "TsBox"
+d:Ge/target/HLX      = 50 um
+d:Ge/target/HLY      = 50 um
+d:Ge/target/HLZ      = 1.25 um
+
+#############################
+########## Source ###########
+#############################
+
+s:So/Demo/Type                     = "PhaseSpace"
+s:So/Demo/Component                = "World"
+s:So/Demo/PhaseSpaceFileName       = "twoAlphas"
+i:So/Demo/PhaseSpaceMultipleUse    = 1
+
+#############################
+########## Scorer ###########
+#############################
+
+s:Sc/gvalue/Quantity   = "TsIRTInterTrack" 
+s:Sc/gvalue/Component  = "target"
+s:Sc/gvalue/OutputFile = "Intertrack"
+s:Sc/gvalue/IfOutputFileAlreadyExists = "Overwrite"
+b:Sc/gvalue/UseMultipleTracks = "True"
+s:Sc/gvalue/OutputType = "ascii"
+i:Sc/gvalue/TimeBins   = 500
+d:Sc/gvalue/TimeLower  = 1.0e0 ps
+d:Sc/gvalue/TimeUpper  = 1.0e6 ps 
+i:Sc/gvalue/NumberOfTracks = 2
+dv:Sc/gvalue/SpatialOffsetX = 2 0.5 -0.5 nm
+dv:Sc/gvalue/SpatialOffsetY = 2 0 0 um
+dv:Sc/gvalue/SpatialOffsetZ = 2 -1.25 -1.25 um
+dv:Sc/gvalue/TimeDelay = 2 0.0 1e4 ps
+
+b:Sc/gvalue/TestForContactReactions              = "False"
+d:Sc/gvalue/KillPrimaryBasedOnTrackLength        = 2.5 cm 
+d:Sc/gvalue/KillPrimaryIfEnergyLossExceeds       = 100 GeV
+d:Sc/gvalue/AbortEventIfPrimaryEnergyLossExceeds = 100 GeV
+
+#############################

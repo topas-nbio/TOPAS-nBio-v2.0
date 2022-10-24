@@ -1,0 +1,67 @@
+# Demonstrate scoring the number of molecules created 
+# at specific time with the Chemistry process.
+# Score the energy deposit per separated 
+# to the G-value in a post-simulation step
+
+# An electron isotropic source of 750 keV is shooted from the
+# center of a slab of 2.5 um thickness.
+# The NumberOfMoleculesAtTime scorer is attached to the Target volume.
+# The user must to define the TimeToRecord, this is the 
+# time after the physics/chemistry process occurred. 
+#
+# Restrictions: 
+# *  Only one NumberOfMoleculesAtTime scorer is allowed 
+# *  The time limit is up to 1 microsecond. 
+# *  The media must be G4_WATER 
+# *  NO PARALLEL volumes are supported.
+# *  Due to the name of the molecule is scored, BINARY output
+#    is not supported, only ROOT and ASCII 
+# 
+
+i:Ts/NumberOfThreads = 4
+sv:Ph/Default/Modules = 2 "g4em-dna" "g4em-dna-chemistry"
+# This gives access of the hits with the scoring manager
+b:Ch/Default/ChemicalStageTransportActive = "True"
+
+d:Ge/World/HLX= 5. um
+d:Ge/World/HLY= 5. um
+d:Ge/World/HLZ= 5. um
+s:Ge/World/Material ="G4_WATER"
+
+s:Ge/Target/Parent = "World"
+s:Ge/Target/Type = "TsBox"
+s:Ge/Target/Material = "G4_WATER"
+d:Ge/Target/HLX = Ge/World/HLX um
+d:Ge/Target/HLY = Ge/World/HLY um
+d:Ge/Target/HLZ = 1.25 um 
+
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/Target/HLZ um 
+d:Ge/BeamPosition/RotX = 0 deg
+
+d:So/Demo/BeamEnergy = 750 keV 
+u:So/Demo/BeamEnergySpread = 0
+s:So/Demo/BeamParticle = "e-"
+s:So/Demo/BeamPositionDistribution = "None"
+
+s:Sc/EnergyDeposit/Quantity    = "EnergyDeposit"
+s:Sc/EnergyDeposit/Component   = "Target"
+s:Sc/EnergyDeposit/OutputFile  = "Edep"
+sv:Sc/EnergyDeposit/Report     = 2 "Sum" "Standard_Deviation"
+s:Sc/EnergyDeposit/IfOutputFileAlreadyExists = "overwrite"
+
+s:Sc/NumberOfMoleculesAtTime/Quantity   = "TsSBSMoleculesAtTime" 
+s:Sc/NumberOfMoleculesAtTime/Component   = "Target"
+b:Sc/NumberOfMoleculesAtTime/OutputToConsole = "True"
+s:Sc/NumberOfMoleculesAtTime/IfOutputFileAlreadyExists = "Overwrite"
+# Record time, do not confuse with Time features.
+i:Sc/NumberOfMoleculesAtTime/TimeBins   = 20
+d:Sc/NumberOfMoleculesAtTime/TimeBinMin = 1.0 ps
+d:Sc/NumberOfMoleculesAtTime/TimeBinMax = 999999 ps
+b:Sc/NumberOfMoleculesAtTime/TimeBinLog = "True"
+s:Sc/NumberOfMoleculesAtTime/OutputType = "ascii" # or root
+s:Sc/NumberOfMoleculesAtTime/OutputFile = "NumberOfMoleculesAtTime_e_750keV"
+
+i:So/Demo/NumberOfHistoriesInRun = 4
+i:Ts/ShowHistoryCountAtInterval = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 12345

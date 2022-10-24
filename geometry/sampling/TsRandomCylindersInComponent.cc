@@ -66,17 +66,17 @@ TsVGeometryComponent(pM, eM, mM, gM, parentComponent, parentVolume, name)
 		fRMax = fPm->GetDoubleParameter(GetFullParmName("RMax"), "Length");
 		fHL = fPm->GetDoubleParameter(GetFullParmName("HL"), "Length");
 	} else {
-		G4cerr << "TOPAS is exiting due to an error in parameter " << GetFullParmName("EnvelopeShape") <<
-		". Envelope shape " << fEnvelopeType << " is not found or not supported." <<
+		G4cerr << "TOPAS is exiting due to an error in parameter " << GetFullParmName("EnvelopeShape") << G4endl;
+		G4cerr << ". Envelope shape " << fEnvelopeType << " is not found or not supported." <<
 		"Only TsSphere, TsCylinder (full filled, not RMin) and TsBox are supported." << G4endl;
-		exit(1);
+		   fPm->AbortSession(1);
 	}
 	
 	if ( fCreate && fPm->GetIntegerParameter("Ts/NumberOfThreads") > 1 ) {
-		G4cerr << "TOPAS is exiting due to an error. Conflict between component TsRandomCylindersInComponent "
-		<< "and Ts/NumberOfThreads. " << GetFullParmName("GenerateCylinders") << " is set to true. Then "
+		G4cerr << "TOPAS is exiting due to an error. Conflict between component TsRandomCylindersInComponent " << G4endl;
+		G4cerr << "and Ts/NumberOfThreads. " << GetFullParmName("GenerateCylinders") << " is set to true. Then "
 		<< "Ts/NumberOfThredas must be set to 1." << G4endl;
-		exit(1);
+	    fPm->AbortSession(1);
 	}
 }
 

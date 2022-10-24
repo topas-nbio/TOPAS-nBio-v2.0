@@ -40,7 +40,7 @@ void TsFilterByInteractionProcess::ResolveParameters() {
 		G4ProcessTable* theProcessTable = G4ProcessTable::GetProcessTable();
 		G4ProcessVector* oneVector = theProcessTable->FindProcesses(processNames[i]);
 
-		for (G4int j=0; j < oneVector->size(); j++)
+		for (unsigned int j=0; j < oneVector->size(); j++)
 			fProcesses->insert((*oneVector)[j]);
 
 		if (fProcesses->size()==0) {
@@ -57,7 +57,7 @@ void TsFilterByInteractionProcess::ResolveParameters() {
 G4bool TsFilterByInteractionProcess::Accept(const G4Step* aStep) const {
 	if (fParentFilter && !fParentFilter->Accept(aStep)) return false;
 
-	for (G4int i=0; i < fProcesses->size(); i++)
+	for (unsigned int i=0; i < fProcesses->size(); i++)
 		if (aStep->GetPostStepPoint()->GetProcessDefinedStep() == (*fProcesses)[i]) {
 			if (fInvert) return false;
 			else return true;

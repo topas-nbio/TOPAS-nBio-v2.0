@@ -19,7 +19,6 @@
 
 #include "G4Orb.hh"
 #include "G4Ellipsoid.hh"
-#include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 #include "Randomize.hh"
@@ -84,7 +83,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
             if (transNucX > NuclRadius) {
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
-                exit(1);
+                fPm->AbortSession(1);
             }
         }
         
@@ -94,7 +93,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
             if (transNucY > NuclRadius) {
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
-                exit(1);
+                fPm->AbortSession(1);
             }
         }
         
@@ -104,7 +103,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
             if (transNucZ > NuclRadius) {
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
-                exit(1);
+                fPm->AbortSession(1);
             }
             
         }
@@ -121,7 +120,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
         if (OverlapCheck == true){
             G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
             G4cerr << "Nucleus overlaps with the cell." << G4endl;
-            exit(1);
+            fPm->AbortSession(1);
         }
         
     }
@@ -157,9 +156,10 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
         
         //Randomly distribute mitochondria throughout cell volume
         for (int j = 0; j < NbOfMito; j++){
-            auto OverlapCheck = true;
-            while (OverlapCheck)
-            {
+                
+            G4bool Overlap = true;
+            while (Overlap == true){
+                    
                 G4double u = G4UniformRand()*2*pi;
                 G4double v = std::acos(2*G4UniformRand()-1);
                 G4double dr = G4UniformRand()*(CellRadius - NuclRadius);
@@ -168,11 +168,11 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
                 G4double x = 0.0;
                 G4double y = 0.0;
                 G4double z = 0.0;
-                
+                    
                 x = (NuclRadius + dr)* std::cos(u) * std::sin(v);
                 y = (NuclRadius + dr)* std::sin(u) * std::sin(v);
                 z = (NuclRadius + dr)* std::cos(v);
-                
+                    
                 G4ThreeVector* position = new G4ThreeVector(x,y,z);
                 
                 G4RotationMatrix* rotm = new G4RotationMatrix();
@@ -182,10 +182,10 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
                 
                 G4VPhysicalVolume* pMito = CreatePhysicalVolume(subComponentName2, j, true, lMito, rotm, position, fEnvelopePhys);
                 
-                OverlapCheck = pMito->CheckOverlaps();
+                G4bool OverlapCheck = pMito->CheckOverlaps();
                 
-                if (OverlapCheck == true) {
-                    fEnvelopePhys->GetLogicalVolume()->RemoveDaughter(pMito);
+                if (OverlapCheck == false){break;}
+                if (OverlapCheck == true){
                     pMito = NULL;
                     G4cout << "**** Finding new position for volume " << subComponentName2 << ":" << j <<  " ****" << G4endl;
                 }

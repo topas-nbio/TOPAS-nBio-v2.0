@@ -15,8 +15,9 @@
 //
 #include "DrReportMSD.hh"
 #include "DrDefinitions.hh"
+#include "TsParameterManager.hh"
 #include "DrClock.hh"
-#include "DrBreakTable.hh"
+#include "DrBreakMolecule.hh"
 #include <G4Scheduler.hh>
 #include <G4UnitsTable.hh>
 #include <G4SystemOfUnits.hh>
@@ -114,7 +115,7 @@ G4double DrReportMSD::PostStepGetPhysicalInteractionLength(
   if (value < 0) {
     G4cerr << "ERROR: Post step interaction length returned by"
            << "DrReportMSD cannot be negative!" << G4endl;
-    exit(EXIT_FAILURE);
+      DrDefinitions::Instance()->GetParameterManager()->AbortSession(1);
   }
 
   //@@@@ negative lets the stepper know we are returning a time
@@ -148,7 +149,7 @@ G4VParticleChange *DrReportMSD::RecordMSD(const G4Track &thisTrack) {
   //--------------------------------------------------------------------------
 
   //@@@@ Get track list for checks below
-  DrBreakTable *bTable = DrBreakTable::Instance();
+  DrDefinitions* definitions = DrDefinitions::Instance();
 
   if(fVerbose > 1){
     G4cout<<"Storing displacement for "<<G4BestUnit(time,"Time") <<G4endl;
@@ -164,7 +165,7 @@ G4VParticleChange *DrReportMSD::RecordMSD(const G4Track &thisTrack) {
     G4String name = moleculeDefinition->GetName();
     if (name.substr(0, 3) == "DSB") {
 
-      DrBreakMolecule *breakMolecule = bTable->GetBreakMolecule(*track, "UserPTSA");
+        DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
 
       //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       //@@@@ This calculates the displacement of every particle.
@@ -188,7 +189,7 @@ G4VParticleChange *DrReportMSD::RecordMSD(const G4Track &thisTrack) {
                     <<"Displacement("<<displacement1<<")"
                     <<G4endl;
           }
-          bTable->fMSDTrackingStore[round(time/s)].push_back(displacement1);
+            definitions->fMSDTrackingStore[round(time/s)].push_back(displacement1);
         }
         else if (moleculeDefinition->GetName().substr(0, 6) == "DSBSyn" || moleculeDefinition->GetName().substr(0, 6) == "DSB_Fi") {
           startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
@@ -207,8 +208,8 @@ G4VParticleChange *DrReportMSD::RecordMSD(const G4Track &thisTrack) {
                     <<"Displacement2("<<displacement2<<")"
                     <<G4endl;
           }
-          bTable->fMSDTrackingStore[round(time/s)].push_back(displacement1);
-          bTable->fMSDTrackingStore[round(time/s)].push_back(displacement2);
+            definitions->fMSDTrackingStore[round(time/s)].push_back(displacement1);
+            definitions->fMSDTrackingStore[round(time/s)].push_back(displacement2);
         }
       }
     }

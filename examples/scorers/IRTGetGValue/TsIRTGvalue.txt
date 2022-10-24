@@ -1,0 +1,76 @@
+##########################
+#### TOPAS Parameters ####
+##########################
+
+i:Ts/Verbosity = 0
+i:Ts/ShowHistoryCountAtInterval = 300
+i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
+Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"
+
+##########################
+### Physics & Chemistry ##
+##########################
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA" 
+s:Ph/Default/SolvatedElectronThermalizationModel =  "Ritchie"
+
+includeFile = TOPASDefaultReactions.txt 
+
+s:Ch/ChemistryName = "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.00001 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+
+##########################
+######## Geometry ########
+##########################
+
+Ge/World/HLX= 1 cm
+Ge/World/HLY= 1 cm 
+Ge/World/HLZ= 1 cm 
+Ge/World/Material ="G4_WATER"
+
+d:Ge/sWorld/HLX= 1 cm 
+d:Ge/sWorld/HLY= 1 cm 
+d:Ge/sWorld/HLZ= 1 cm 
+s:Ge/sWorld/Material ="G4_WATER"
+s:Ge/sWorld/Type = "TsBox"
+s:Ge/sWorld/Parent = "World"
+
+##########################
+######### Source #########
+##########################
+
+Ge/BeamPosition/TransZ = -0.0 * Ge/World/HLZ um
+Ge/BeamPosition/RotX = 0 deg
+
+So/Demo/BeamPositionDistribution = "None"
+So/Demo/BeamEnergySpread = 0
+So/Demo/BeamParticle = "e-"
+So/Demo/BeamEnergy = 999.999 keV
+i:So/Demo/NumberOfHistoriesInRun = 3000
+
+##########################
+######### Scorer #########
+##########################
+
+u:perCent = 0.01 
+
+s:Sc/nbOfMol/Quantity = "TsIRTGvalue"
+s:Sc/nbOfMol/Component = "sWorld"
+s:Sc/nbOfMol/OutputFile = "electron_Gvalue"
+s:Sc/nbOfMol/IfOutputFileAlreadyExists = "Overwrite"
+s:Sc/nbOfMol/OutputType                           = "ASCII"
+d:Sc/nbOfMol/KillPrimaryIfEnergyLossExceeds       = So/Demo/BeamEnergy keV * perCent
+d:Sc/nbOfMol/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/nbOfMol/KillPrimaryIfEnergyLossExceeds keV
+d:Sc/nbOfMol/KillPrimaryBasedOnTrackLength        = 100 um
+i:Sc/nbOfMol/OutputBufferSize = 1
+d:Sc/nbOfMol/CutOffTime = 1 ps
+d:Sc/nbOfMol/TimeLower = 1.0 ps
+d:Sc/nbOfMol/TimeUpper = 1e6 ps 
+i:Sc/nbOfMol/TimeBins  = 100
+
+##########################

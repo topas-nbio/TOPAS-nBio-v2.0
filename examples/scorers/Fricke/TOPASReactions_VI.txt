@@ -1,0 +1,103 @@
+# e_aq^-1 + None -> H^0 + OH^-1 + None
+sv:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/none/Products = 2 "hydrogen" "hydroxide"
+d:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/none/ScavengingCapacity = 1.58e1  /s
+i:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/none/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/none/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/none/CompatibleWithStepByStep = "False" 
+# O^-1 + None -> OH^0 + OH^-1 + None
+sv:Ch/TOPASChemistry/BackgroundReaction/oxyde/none/Products = 2 "hydroxyl" "hydroxide"
+d:Ch/TOPASChemistry/BackgroundReaction/oxyde/none/ScavengingCapacity = 1.36e6  /s
+i:Ch/TOPASChemistry/BackgroundReaction/oxyde/none/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/oxyde/none/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/oxyde/none/CompatibleWithStepByStep = "False" 
+# HO2^-1 + None -> H2O2^0 + OH^-1 + None
+sv:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/none/Products = 2 "hydrogenperoxide" "hydroxide"
+d:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/none/ScavengingCapacity = 1.36e6  /s
+i:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/none/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/none/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/none/CompatibleWithStepByStep = "False" 
+# e_aq^-1 + H3O^1 -> H^0 
+sv:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/hydronium/Products = 1 "hydrogen"
+d:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/hydronium/ScavengingCapacity = 2.09e3  /s
+i:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/hydronium/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/hydronium/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/solvatedelectron/hydronium/CompatibleWithStepByStep = "False" 
+# HO2^-1 + H3O^1 -> H2O2^0 
+sv:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/hydronium/Products = 1 "hydrogenperoxide"
+d:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/hydronium/ScavengingCapacity = 4.95e3  /s
+i:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/hydronium/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/hydronium/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/dioxidanide/hydronium/CompatibleWithStepByStep = "False" 
+# OH^-1 + H3O^1 -> None 
+sv:Ch/TOPASChemistry/BackgroundReaction/hydroxide/hydronium/Products = 1 "None"
+d:Ch/TOPASChemistry/BackgroundReaction/hydroxide/hydronium/ScavengingCapacity = 1.12e4  /s
+i:Ch/TOPASChemistry/BackgroundReaction/hydroxide/hydronium/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/hydroxide/hydronium/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydroxide/hydronium/CompatibleWithStepByStep = "False" 
+# O^-1 + H3O^1 -> OH^0 
+sv:Ch/TOPASChemistry/BackgroundReaction/oxyde/hydronium/Products = 1 "hydroxyl"
+d:Ch/TOPASChemistry/BackgroundReaction/oxyde/hydronium/ScavengingCapacity = 4.73e3  /s
+i:Ch/TOPASChemistry/BackgroundReaction/oxyde/hydronium/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/oxyde/hydronium/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/oxyde/hydronium/CompatibleWithStepByStep = "False" 
+# H^0 + OH^-1 -> e_aq^-1 
+sv:Ch/TOPASChemistry/BackgroundReaction/hydrogen/hydroxide/Products = 1 "solvatedelectron"
+d:Ch/TOPASChemistry/BackgroundReaction/hydrogen/hydroxide/ScavengingCapacity = 2.48e0  /s
+i:Ch/TOPASChemistry/BackgroundReaction/hydrogen/hydroxide/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/hydrogen/hydroxide/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydrogen/hydroxide/CompatibleWithStepByStep = "False" 
+# OH^0 + OH^-1 -> O^-1 
+sv:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/hydroxide/Products = 1 "oxyde"
+d:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/hydroxide/ScavengingCapacity = 6.24e2  /s
+i:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/hydroxide/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/hydroxide/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydroxyl/hydroxide/CompatibleWithStepByStep = "False" 
+# H3O^1 + OH^-1 -> None 
+sv:Ch/TOPASChemistry/BackgroundReaction/hydronium/hydroxide/Products = 1 "None"
+d:Ch/TOPASChemistry/BackgroundReaction/hydronium/hydroxide/ScavengingCapacity = 1.12e4  /s
+i:Ch/TOPASChemistry/BackgroundReaction/hydronium/hydroxide/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/hydronium/hydroxide/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydronium/hydroxide/CompatibleWithStepByStep = "False" 
+# O2^-1 + None -> HO2^0 + OH^-1 + None
+sv:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/none/Products = 2 "hydroperoxy" "hydroxide"
+d:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/none/ScavengingCapacity = 1.50e-1  /s
+i:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/none/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/none/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/none/CompatibleWithStepByStep = "False" 
+# O3^-1 + None -> O^-1 + O2^0 + None
+sv:Ch/TOPASChemistry/BackgroundReaction/trioxide/none/Products = 2 "oxyde" "oxygen"
+d:Ch/TOPASChemistry/BackgroundReaction/trioxide/none/ScavengingCapacity = 2.66e3  /s
+i:Ch/TOPASChemistry/BackgroundReaction/trioxide/none/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/trioxide/none/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/trioxide/none/CompatibleWithStepByStep = "False" 
+# O2^-1 + H3O^1 -> HO2^0 
+sv:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/hydronium/Products = 1 "hydroperoxy"
+d:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/hydronium/ScavengingCapacity = 4.73e3  /s
+i:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/hydronium/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/hydronium/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/superoxideanion/hydronium/CompatibleWithStepByStep = "False" 
+# O3^-1 + H3O^1 -> OH^0 + O2^0 + None
+sv:Ch/TOPASChemistry/BackgroundReaction/trioxide/hydronium/Products = 2 "hydroxyl" "oxygen"
+d:Ch/TOPASChemistry/BackgroundReaction/trioxide/hydronium/ScavengingCapacity = 8.91e3  /s
+i:Ch/TOPASChemistry/BackgroundReaction/trioxide/hydronium/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/trioxide/hydronium/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/trioxide/hydronium/CompatibleWithStepByStep = "False" 
+# H2O2^0 + OH^-1 -> HO2^-1 
+sv:Ch/TOPASChemistry/BackgroundReaction/hydrogenperoxide/hydroxide/Products = 1 "dioxidanide"
+d:Ch/TOPASChemistry/BackgroundReaction/hydrogenperoxide/hydroxide/ScavengingCapacity = 4.66e1  /s
+i:Ch/TOPASChemistry/BackgroundReaction/hydrogenperoxide/hydroxide/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/hydrogenperoxide/hydroxide/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydrogenperoxide/hydroxide/CompatibleWithStepByStep = "False" 
+# HO2^0 + OH^-1 -> O2^-1 
+sv:Ch/TOPASChemistry/BackgroundReaction/hydroperoxy/hydroxide/Products = 1 "superoxideanion"
+d:Ch/TOPASChemistry/BackgroundReaction/hydroperoxy/hydroxide/ScavengingCapacity = 6.24e2  /s
+i:Ch/TOPASChemistry/BackgroundReaction/hydroperoxy/hydroxide/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/hydroperoxy/hydroxide/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/hydroperoxy/hydroxide/CompatibleWithStepByStep = "False" 
+# O3P^0 + OH^-1 -> HO2^-1 
+sv:Ch/TOPASChemistry/BackgroundReaction/atomicoxygen/hydroxide/Products = 1 "dioxidanide"
+d:Ch/TOPASChemistry/BackgroundReaction/atomicoxygen/hydroxide/ScavengingCapacity = 4.16e1  /s
+i:Ch/TOPASChemistry/BackgroundReaction/atomicoxygen/hydroxide/ReactionType = 6 
+s:Ch/TOPASChemistry/BackgroundReaction/atomicoxygen/hydroxide/ScavengingModel = "ExponentialSingleFactor" 
+b:Ch/TOPASChemistry/BackgroundReaction/atomicoxygen/hydroxide/CompatibleWithStepByStep = "False" 
+

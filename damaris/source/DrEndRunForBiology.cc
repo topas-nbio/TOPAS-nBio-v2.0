@@ -15,7 +15,6 @@
 //
 #include "DrEndRunForBiology.hh"
 #include "DrDefinitions.hh"
-#include "DrBreakTable.hh"
 #include "DrDSBGun.hh"
 #include "DrBiologyTimeStepAction.hh"
 #include "DrCheckBreaks.hh"
@@ -71,7 +70,7 @@ DrEndRunForBiology::DrEndRunForBiology(TsParameterManager* fPm) {
 
                 G4cout << "Placing DNA break molecules..." << G4endl;
 
-                DrBreakTable::Instance()->fCurrentBiologyRepeatNumber = i + 1;
+                DrDefinitions::Instance()->fCurrentBiologyRepeatNumber = i + 1;
                 auto *placeDSBMolecules = new DrDSBGun();
                 auto *definitions = DrDefinitions::Instance();
                 G4int goAhead{0};
@@ -87,19 +86,19 @@ DrEndRunForBiology::DrEndRunForBiology(TsParameterManager* fPm) {
                 G4int checkPlacements = origin + offset + column + separation + fromFile;
 
                 if(checkPlacements > 1){
-                    G4cout << "ERROR: Only one DSB placement method may be used" << G4endl
+                    G4cerr << "ERROR: Only one DSB placement method may be used" << G4endl
                             << "Origin = " << origin << G4endl
                             << "Offset = " << offset << G4endl
                             << "Column = " << column << G4endl
                             << "Separation = " << separation << G4endl
                             << "From File = " << fromFile << G4endl << G4endl;
-                    exit(EXIT_FAILURE);
+                    fPm->AbortSession(1);
                 }
                 else if (checkPlacements == 0 && !damageStore){
-                    G4cout << "ERROR: No DSB placement method specified therefore expecting" << G4endl
+                    G4cerr << "ERROR: No DSB placement method specified therefore expecting" << G4endl
                             << "DamagePhaseSpaceStore to be populated by another simulation." << G4endl
                             << "However, DamagePhaseSPaceStore was empty." << G4endl << G4endl;
-                    exit(EXIT_FAILURE);
+                    fPm->AbortSession(1);
                 }
 
                 if (definitions->GetDSBOriginNumber() >= 0) {
@@ -199,14 +198,6 @@ DrEndRunForBiology::DrEndRunForBiology(TsParameterManager* fPm) {
                     //@@@@ checking if the correct partner ends have been joined
                     //@@@@ will output a file as well as write to screen a summary
                     DrUtils utilities = DrUtils();
-                    DrCheckBreaks checkIt = DrCheckBreaks();
-
-                    checkIt.CheckRepairFidelity();
-                    checkIt.CheckNumberMoleculesLeft();
-
-                    if(definitions->GetDSBSeparation() >= 0.0){
-                        checkIt.StoreMisrepair();
-                    }
 
                     utilities.PrintPerRepBiologicallyRelevantParameters();
                     utilities.PrintToScreenBioParam();
@@ -237,10 +228,10 @@ DrEndRunForBiology::DrEndRunForBiology(TsParameterManager* fPm) {
 
             std::ofstream debugFile("debugProcesses.out", std::ios_base::app);
 
-            for(auto procMap: DrBreakTable::Instance()->debugProcMap){
+            for(auto procMap: DrDefinitions::Instance()->debugProcMap){
                 G4String name = procMap.first;
                 std::vector<std::pair<G4double, G4double>> outList;
-                std::vector<G4double> inList = DrBreakTable::Instance()->debugProcMap[name];
+                std::vector<G4double> inList = DrDefinitions::Instance()->debugProcMap[name];
                 outList = utilities->BinDoubleList(inList,100,0,0);
                 debugFile << name << G4endl;
                 for (auto read: outList){
@@ -251,21 +242,21 @@ DrEndRunForBiology::DrEndRunForBiology(TsParameterManager* fPm) {
 
             debugFile << G4endl << G4endl << "DEBUG_SpaceSteps" << G4endl;
             utilities->PrintBinList("debugProcesses.out",
-                                    DrBreakTable::Instance()->spaceStepStore, 1 * nm,
+                                    DrDefinitions::Instance()->spaceStepStore, 1 * nm,
                                     100000, 0, 10000 * nm, true);
 
             debugFile << G4endl << G4endl << "DEBUG_ActualReactionRange" << G4endl;
             utilities->PrintBinList("debugProcesses.out",
-                                    DrBreakTable::Instance()->actualReactionRangeStore, 1 * nm,
+                                    DrDefinitions::Instance()->actualReactionRangeStore, 1 * nm,
                                     1000, 0, 1000 * nm, true);
 
             debugFile << G4endl << G4endl << "DEBUG_SuggestedReactionRange" << G4endl;
             utilities->PrintBinList("debugProcesses.out",
-                                    DrBreakTable::Instance()->suggestedReactionRangeStore,
+                                    DrDefinitions::Instance()->suggestedReactionRangeStore,
                                     1*nm, 1000, 0, 1000 * nm, true);
             debugFile << G4endl << G4endl << "DEBUG_DiffusionTime" << G4endl;
             utilities->PrintBinList("debugProcesses.out",
-                                    DrBreakTable::Instance()->diffTimeStore,
+                                    DrDefinitions::Instance()->diffTimeStore,
                                     1*s, 1000, 0, 1000 * s, true);
 
         #endif /*DEBUG_DAMARIS*/

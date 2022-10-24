@@ -370,16 +370,15 @@ void WriteDamageSpecSpatial::WriteEvents(map<int, map<int,Clusters*>> &ClusterMa
                 for (int i=0;i<nSSB;i++){
                     int nBack=0, nBase=0;
 
-                    int strand = SSBs[i]->GetStrand();
-
                     if (SSBs[i]->GetIsBase()){nBase=1;}
                     if (SSBs[i]->GetIsBack()){nBack=1;}
 
-                    int PosDelim=0;
-                    if (strand==1 && nBack==1){PosDelim=1;}
-                    if (strand==1 && nBase==1){PosDelim=2;}
-                    if (strand==2 && nBase==1){PosDelim=3;}
-                    if (strand==2 && nBack==1){PosDelim=4;}
+                    //int strand = SSBs[i]->GetStrand();
+                    //int PosDelim=0;
+                    //if (strand==1 && nBack==1){PosDelim=1;}
+                    //if (strand==1 && nBase==1){PosDelim=2;}
+                    //if (strand==2 && nBase==1){PosDelim=3;}
+                    //if (strand==2 && nBack==1){PosDelim=4;}
 
                     if (SSBs[i]->GetIsPhys()){Cause=0;}
                     if (SSBs[i]->GetIsChem()){Cause=1;}

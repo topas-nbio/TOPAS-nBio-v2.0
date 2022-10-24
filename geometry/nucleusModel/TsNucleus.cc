@@ -9,7 +9,8 @@
 // *																  *
 // ********************************************************************
 //
-// Authors: Hongyu Zhu, Nicholas Henthorn, Alexander Klapproth, Jan Schuemann
+// Authors: Hongyu Zhu, Nicholas Henthorn, Alexander Klapproth, Jan Schuemann, Alejandro Bertolet
+
 
 // This class creates either single histones, chromatin fibers, voxels filled with DNA 
 // or even a whole nucleus. The DNA is arranged in:
@@ -32,6 +33,8 @@
 // the general path is segmented in 0.34 nm steps
 // the DNA position and rotation is created and DNA placed
 
+// Jun-2021. This version includes the possibility of rotating the nucleus after each run.
+// Addition by Alejandro Bertolet
 
 #include "TsNucleus.hh"
 #include "TsParameterManager.hh"
@@ -46,10 +49,13 @@
 #include "G4CutTubs.hh"
 #include "G4UnionSolid.hh"
 #include "G4LogicalVolume.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4IntersectionSolid.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
 #include "G4VisAttributes.hh"
 #include "G4UIcommand.hh"
+#include "G4RandomDirection.hh"
 
 #include <fstream>
 #include <sstream>
@@ -76,7 +82,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 
 	// Specify how many chromatin fiber loops (Hilbert Curve) to put in a voxel
 	fHilbertCurveLayer = fPm->GetIntegerParameter(GetFullParmName("HilbertCurveLayer"));
-  
 	// Specify how many voxels to put in X/Y/Z directions
 	fHilbertCurve3DRepeat = fPm->GetIntegerParameter(GetFullParmName("HilbertCurve3DRepeat"));
 
@@ -136,30 +141,26 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	if (fPm->ParameterExists(GetFullParmName("HydrationShellThickness")))
 	  fHydrationShellThickness = fPm->GetDoubleParameter(GetFullParmName("fHydrationShellThickness"),"Length");
 	
-	fDNAModel = "QuarterCylinder";
+	fDNAModel = "Sphere";
 	if (fPm->ParameterExists(GetFullParmName("DNAModel")))
 	  fDNAModel = fPm->GetStringParameter(GetFullParmName("DNAModel"));
 	if (!(fDNAModel=="HalfCylinder" || fDNAModel=="Sphere" || fDNAModel=="QuarterCylinder"))
-		G4cerr << "Trying to build DNA with undefined value" << fDNAModel << G4endl;
+	{
+        G4cerr << "TOPAS is exiting due to a serious error in Geometry setup." << G4endl;
+		G4cerr << "Trying to build DNA with undefined value: " << fDNAModel << G4endl;
+	}
+	fRotateNucleusForEachRun = false;
+	if (fPm->ParameterExists(GetFullParmName("RotateNucleusForEachRun")))
+		fRotateNucleusForEachRun = fPm->GetBooleanParameter(GetFullParmName("RotateNucleusForEachRun"));
 
-
-	// Not using this feature anymore
-	/*fScoreOnBases = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnBases")) && fPm->ParameterExists(GetFullParmName("AddBases")))
-		fScoreOnBases = fPm->GetBooleanParameter(GetFullParmName("ScoreOnBases"));
-
-	fScoreOnBackbones = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnBackbones")) && fPm->ParameterExists(GetFullParmName("AddBackbone")))
-		fScoreOnBackbones = fPm->GetBooleanParameter(GetFullParmName("ScoreOnBackbones"));
-
-	fScoreOnHydrationShell = false;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnHydrationShell")) && fPm->ParameterExists(GetFullParmName("AddHydrationShell")))
-		fScoreOnHydrationShell = fPm->GetBooleanParameter(GetFullParmName("ScoreOnHydrationShell"));
-
-	fScoreOnHistones = false;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnHistones")))
-		fScoreOnHistones = fPm->GetBooleanParameter(GetFullParmName("ScoreOnHistones"));*/
-
+	// Nucleus Orb
+	G4Orb * Nucleus_solid = new G4Orb("Nucleus", fNucleusRadius);
+	fEnvelopeLog		   = CreateLogicalVolume(Nucleus_solid);
+	fEnvelopePhys		  = CreatePhysicalVolume(fEnvelopeLog);
+	G4Colour blue (0.0, 0.0, 1.0) ;
+	G4VisAttributes* Vis   = new G4VisAttributes( blue );
+	Vis->SetVisibility(fShowNucleus);
+	fEnvelopeLog->SetVisAttributes(Vis);
 
 	//****************************************************************************
 	//					 Read  Hilbert space filling  data					//
@@ -177,7 +178,7 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	}
 	else {
 		G4cout << "ERROR: Unable to open file " << HilbertCurveFileName << G4endl;
-		exit(1);
+    	fPm->AbortSession(1);
 	}
 
 	G4int TotalPoints = fiberPosX.size();
@@ -197,8 +198,9 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	else if(TotalPoints==512) HilbertFold = 7;
 	else if(TotalPoints==4096) HilbertFold = 15;
 	else {
+        G4cerr << "TOPAS is exiting due to a serious error in Geometry setup." << G4endl;
 		G4cerr << "Hilbert folding does not match number available folds." << G4endl;
-		exit(1);
+    	fPm->AbortSession(1);
 	}
 
 	fVoxelLength = HilbertPointDistance*HilbertFold + fHilbertCurveLayer*FiberEnvelopeRadius*2 +0.001*um; //add tolerance 0.001 um
@@ -210,16 +212,16 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	G4cout<<"Voxel size :"<< fVoxelLength/um << " um " <<G4endl;
 	G4cout<<"Voxel container size :"<< ParaContainerHalfSize*2/um<<" um "<<G4endl;
 	G4cout<<"Reuse the Hilbert curve "<<fHilbertCurveLayer<<" times to fill each subdomain(voxels)."<<G4endl;
-	G4cout<<"HiberterPointDistance = "<<HilbertPointDistance/um<<" um"<<G4endl;
+	G4cout<<"HilbertPointDistance = "<<HilbertPointDistance/um<<" um"<<G4endl;
 	G4cout<<"*********************************************************************************"<<G4endl;
 
 	//****************************************************************************
-	//								Parameterise							  //
+	//								Parameterize							  //
 	//****************************************************************************
 	SetBasicInfo();
 
-	////----- Create parameterisation and set
-	param = new TsVoxelParameterisation();
+	////----- Create parameterization and set
+	param = new TsVoxelParameterisation(fPm);
 	param->SetVoxelDimensions( fVoxelLength/2, fVoxelLength/2, fVoxelLength/2 ); 
 	param->SetNoVoxel( fHilbertCurve3DRepeat, fHilbertCurve3DRepeat, fHilbertCurve3DRepeat ); 
 	param->SetContainerDimensions(ParaContainerHalfSize, ParaContainerHalfSize, ParaContainerHalfSize);
@@ -227,16 +229,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	//****************************************************************************
 	//							 Build basic geometry						 //
 	//****************************************************************************
-	// Nucleaus box 
-	G4Orb * Nucleaus_solid = new G4Orb("Nucleus", fNucleusRadius);
-	fEnvelopeLog		   = CreateLogicalVolume(Nucleaus_solid);
-	fEnvelopePhys		  = CreatePhysicalVolume(fEnvelopeLog);
-	G4Colour blue (0.0, 0.0, 1.0) ;
-	G4VisAttributes* Vis   = new G4VisAttributes( blue );
-	Vis->SetVisibility(fShowNucleus);
-	fEnvelopeLog->SetVisAttributes(Vis);
-
-	
 	// Fiber Envelope
 	G4double length = std::sqrt( pow(fiberPosX[2]-fiberPosX[1],2) + pow(fiberPosY[2]-fiberPosY[1],2) + pow(fiberPosZ[2]-fiberPosZ[1],2));
 	G4double scaleFactor = HilbertPointDistance/length; // scaleFactor used to get fiber lengths
@@ -259,8 +251,8 @@ G4VPhysicalVolume* TsNucleus::Construct()
 
 	//----- Define voxel logical volume
 	G4String voxName = "Voxel";
-	G4Box		   * voxel_solid = new G4Box( voxName, fVoxelHalfDimX, fVoxelHalfDimY, fVoxelHalfDimZ);
-	G4LogicalVolume * voxel_logic = CreateLogicalVolume(voxel_solid); 
+	G4Box		   * voxel_solid = new G4Box(voxName, fVoxelHalfDimX, fVoxelHalfDimY, fVoxelHalfDimZ);
+	G4LogicalVolume * voxel_logic = CreateLogicalVolume(voxel_solid);
 	G4Colour  yellow  (1.0, 1.0, 0.0) ;
 	G4VisAttributes* voxelVis = new G4VisAttributes( yellow ); //
 	voxelVis->SetVisibility(fShowDNAVoxels);
@@ -274,17 +266,17 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	G4double zshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
 
 	for (G4int jj = 0; jj < fHilbertCurveLayer; jj++)
-	{		
+	{
 		G4int max_loopthelayer = fiberPosX.size();
 		if (fOnlyBuildOneHistone)
 			max_loopthelayer = 2;
-		for (G4int loopthelayer = 1; loopthelayer < max_loopthelayer; loopthelayer++) 
+		for (G4int loopthelayer = 1; loopthelayer < max_loopthelayer; loopthelayer++)
 		{
 			G4double layershift = FiberEnvelopeRadius*2.01;
 			G4int i=0;
 			if(jj%2==0) i= loopthelayer;
-			if(jj%2==1) i= max_loopthelayer-loopthelayer; 
-	
+			if(jj%2==1) i= max_loopthelayer-loopthelayer;
+
 			G4double midpoint_x = jj*layershift + xshift + (fiberPosX[i]+fiberPosX[i-1])/2*scaleFactor;
 			G4double midpoint_y = jj*layershift + yshift + (fiberPosY[i]+fiberPosY[i-1])/2*scaleFactor;
 			G4double midpoint_z = jj*layershift + zshift + (fiberPosZ[i]+fiberPosZ[i-1])/2*scaleFactor;
@@ -304,31 +296,45 @@ G4VPhysicalVolume* TsNucleus::Construct()
 														true,		   //use logical volume multiple times many
 														fFiberLogic,	 //logical volume
 														rotLoop,		// rotation
-														midpoint,	   //translation 
+														midpoint,	   //translation
 														voxel_logic);   // mother logical volume
-			
+
 			if(fCheckOverlap)
 			{
 				G4cout<<"checking CountFibers="<<CountFibers<<G4endl;
-				if( fFiberPhysVolLoop[CountFibers]->CheckOverlaps(1000, 0, false)) 
+				if( fFiberPhysVolLoop[CountFibers]->CheckOverlaps(1000, 0, false))
 				{
 					ofstream outfile;
 					outfile.open("overlap.txt",std::ios::out|std::ios::app);
 					outfile<<"In "<<" th subdomain "<<jj+1<<" th layer "<<CountFibers<<" th volume detected overlap\n";
-					outfile.close(); 
+					outfile.close();
 					G4cout << "Detected Overlap, see file overlap.txt for more details." << G4endl;
 				}
 			}
-			CountFibers++;	 
+			CountFibers++;
 		}
 	}
 
 	G4double basePairsInVoxel = fNumberOfBasePairs * CountFibers;
-	CreatePhysicalVolume("DNAContent", voxel_logic, fEnvelopePhys, kXAxis, fnVoxels, param);  
+	CreatePhysicalVolume("DNAContent", voxel_logic, fEnvelopePhys, kXAxis, fnVoxels, param);
 	InstantiateChildren(fEnvelopePhys);
+
 	G4cout << "Number of fibers: " << CountFibers <<  " - Number of base pairs in a voxel: " << basePairsInVoxel << " - Number of voxels: " << fnVoxels << G4endl;
 	fNumberOfBasePairs = basePairsInVoxel * fnVoxels;
 	G4cout << "DNA Construction done. Number of total base pairs: " << fNumberOfBasePairs << G4endl;
+
+	if (fRotateNucleusForEachRun)
+	{
+		// Generate random numbers to rotate the nucleus for each run
+		G4RotationMatrix* newRotation = new G4RotationMatrix();
+		G4double rotX = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotY = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotZ = G4UniformRand() * 2 * CLHEP::pi;
+		newRotation->rotateX(rotX);
+		newRotation->rotateX(rotY);
+		newRotation->rotateX(rotZ);
+		fEnvelopePhys->SetRotation(newRotation);
+	}
 	return fEnvelopePhys;
 }
 
@@ -398,7 +404,10 @@ G4LogicalVolume* TsNucleus::ConstructFiberLogicalVolume(){
 
 void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 							G4double ChromatinRadius,
-							G4double ChromatinLength){
+							G4double ChromatinLength,
+							G4VPhysicalVolume* physVol)
+{
+
 
 	//****************************************************************************
 	//							  Histones
@@ -464,12 +473,18 @@ void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &Hi
 		HistoneDetails.push_back(Details);
 
 		if (fAddHistones)
-			CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, fFiberLogic);
+		{
+			if (physVol == NULL)
+				CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, fFiberLogic);
+			else
+				CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, physVol);
+		}
+
 		built++;
 	}
 
 	if (fAddHistones){
-		G4VisAttributes* HistoneVis = new G4VisAttributes(G4Colour(0.,0.,1.));
+		G4VisAttributes* HistoneVis = new G4VisAttributes(G4Colour(0.9,0.9,1., 0.75));
 		HistoneVis->SetVisibility(true);
 		HistoneVis->SetForceSolid(true);
 		lHistone->SetVisAttributes(HistoneVis);
@@ -521,53 +536,35 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	//sphere DNA
 	if (BuildSphere){
 		if (fAddBases){
-			G4Sphere* gDNA_base1 = new G4Sphere("DNA_base1",
-											0*nm,
-											0.208*nm,
-											0*deg,
-											360*deg,
-											0*deg,
-											180*deg);
-			G4Sphere* gDNA_base2 = new G4Sphere("DNA_base2",
-											0*nm,
-											0.208*nm,
-											0*deg,
-											360*deg,
-											0*deg,
-											180*deg);
-			
-			lBase1 = CreateLogicalVolume("Base1", gDNA_base1);
-			lBase2 = CreateLogicalVolume("Base2", gDNA_base2);
+			G4Ellipsoid* gDNA_base = new G4Ellipsoid("DNA_base", 0.328*nm, 0.328*nm, 0.185*nm);
+			lBase1 = CreateLogicalVolume("Base1", gDNA_base);
+			lBase2 = CreateLogicalVolume("Base2", gDNA_base);
 		 }
 		 if (fAddBackbones){
-			 G4Sphere* gDNA_backbone = new G4Sphere("DNA_backbone",
-													0.208*nm,
-													0.24*nm,
-													0*deg,
-													360*deg,
-													0*deg,
-													180*deg);
-
+			 G4Orb* gDNA_backbone = new G4Orb("DNA_backbone", 0.271*nm);
 			 lBack1 = CreateLogicalVolume("Backbone1", gDNA_backbone);
 			 lBack2 = CreateLogicalVolume("Backbone2", gDNA_backbone);
 		 }
-
-		// ************************** build hydration shell layer **************************
-		if (fAddHydrationShell){
-			G4Sphere* gWater = new G4Sphere("DNA_WaterLayer",
-											   0.24*nm,
-											   0.24*nm+fHydrationShellThickness,
-											   0*deg,
-											   360*deg,
-											   0*deg,
-											   180*deg);
-
-			lHydrationShell1 = CreateLogicalVolume("HydrationShell1", gWater);
-			lHydrationShell2 = CreateLogicalVolume("HydrationShell2", gWater);
-
-		}
+		 // ************************** build hydration shell layer **************************
+		 if (fAddHydrationShell){
+			G4Sphere* gWater1 = new G4Sphere("DNA_WaterLayer1",
+														   0.271*nm,
+														   0.271*nm+fHydrationShellThickness,
+														   24*deg,
+														   132*deg,
+														   0*deg,
+														   180*deg);
+			G4Sphere* gWater2 = new G4Sphere("DNA_WaterLayer2",
+															0.271*nm,
+															0.271*nm+fHydrationShellThickness,
+															204*deg,
+															132*deg,
+															0*deg,
+															180*deg);
+			lHydrationShell1 = CreateLogicalVolume("HydrationShell1", gWater1);
+			lHydrationShell2 = CreateLogicalVolume("HydrationShell2", gWater2);
+		 }
 	}
-
 	//half cylinder
 	else if (BuildHalfCyl){
 		G4double CylinderWidth = (0.34-0.05)/2.0 * nm;
@@ -722,20 +719,19 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	}
 	
 	if(fAddHydrationShell)	{
-		G4VisAttributes * Water1Vis = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
+		G4VisAttributes * Water1Vis = new G4VisAttributes(G4Colour(0.2, 0.8, 1.0, 0.35));
 		Water1Vis->SetVisibility(true);
 		Water1Vis->SetForceSolid(true);
 		lHydrationShell1 -> SetVisAttributes(Water1Vis);
 
-		G4VisAttributes * Water2Vis = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
+		G4VisAttributes * Water2Vis = new G4VisAttributes(G4Colour(0.00, 1.0, 1.0, 0.35));
 		Water2Vis->SetVisibility(true);
 		Water2Vis->SetForceSolid(true);
 		lHydrationShell2 -> SetVisAttributes(Water2Vis);
 	}
 }
 
-
-//generate a path for DNA around the histones
+// Generate a path for DNA around the histones
 void TsNucleus::GenerateDNAPath(vector<pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 							  vector<G4ThreeVector> &path)
 {
@@ -821,8 +817,7 @@ void TsNucleus::GenerateDNAPath(vector<pair<G4ThreeVector, G4RotationMatrix*>> &
 	}
 }
 
-
-//Bezier curve to smoothly join 2 points (bending through 2 other points)
+// Bezier curve to smoothly join 2 points (bending through 2 other points)
 void TsNucleus::Bezier(G4ThreeVector &start,
 					 G4ThreeVector &MidPoint1,
 					 G4ThreeVector &MidPoint2,
@@ -839,8 +834,7 @@ void TsNucleus::Bezier(G4ThreeVector &start,
 	}
 }
 
-
-//split the DNA path into 0.34nm steps
+// Split the DNA path into 0.34nm steps
 void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 {
 	std::vector<G4ThreeVector> newPath;
@@ -862,15 +856,14 @@ void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 	}
 }
 
-
-//use DNA path to place sphere DNA volumes
-void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath)
+// Use DNA path to place sphere DNA volumes
+void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* physVol)
 {
-	G4double helixRadius = 1.0*nm;
+	G4double helixRadius = 1.2*nm;
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
 	G4int nBP=newPath.size();
-	G4double rBack=helixRadius - 0.24*nm;
-	G4double rBase=rBack - 0.24*nm - 0.208*nm;
+	G4double rBack=helixRadius - 0.2715*nm;
+	G4double rBase=rBack - 0.271*nm - 0.3285*nm;
 
 	for (int bp=0; bp<nBP-1; bp++){
 		fNumberOfBasePairs++;
@@ -891,64 +884,110 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath)
 		G4ThreeVector cross = (vecNext.cross(norm)).unit(); //vector perp to vecnext and norm
 
 		//set up new 3Vectors for rotated pos
-		G4ThreeVector back1(0.,0.,0.), back2(0.,0.,0.), base1(0.,0.,0.), base2(0.,0.,0.), hydration1(0.,0.,0.), hydration2(0.,0.,0.);
+		G4ThreeVector back1(0.,0.,0.), back2(0.,0.,0.), base1(0.,0.,0.), base2(0.,0.,0.);
 
-		//Apply rotation
 		G4RotationMatrix *rot = new G4RotationMatrix;
-		rot->rotate(AngBetween, cross);
-
-		ApplyRotation(back1, back1temp, rot);
-		ApplyRotation(back2, back2temp, rot);
-		ApplyRotation(base1, base1temp, rot);
-		ApplyRotation(base2, base2temp, rot);
-		delete rot;
-
+		if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+		{
+			//Apply rotation
+			rot->rotate(AngBetween, cross);
+			ApplyRotation(back1, back1temp, rot);
+			ApplyRotation(back2, back2temp, rot);
+			ApplyRotation(base1, base1temp, rot);
+			ApplyRotation(base2, base2temp, rot);
+		}
+		else
+		{
+			base1 = base1temp;
+			base2 = base2temp;
+			back1 = back1temp;
+			back2 = back2temp;
+		}
 		//Translate
 		base1+=newPath[bp];
 		base2+=newPath[bp];
 		back1+=newPath[bp];
 		back2+=newPath[bp];
-		hydration1+=newPath[bp];
-		hydration2+=newPath[bp];
 
 		G4int bpID=bp+1;
 
 		if(fAddBases) {
 			G4ThreeVector *posBase1 = &base1;
-			CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot, posBase1, fFiberLogic);
 			G4ThreeVector *posBase2 = &base2;
-			CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot, posBase2, fFiberLogic);
+			//Apply rotation
+			G4RotationMatrix *rot1 = new G4RotationMatrix();
+			if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+				rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
+			rot1->rotateZ(-angle1+pi/2);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, fFiberLogic);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, physVol);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, physVol);
+			}
 		}
 
 		if(fAddBackbones) {
 			G4ThreeVector *posBack1 = &back1;
-			CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot, posBack1, fFiberLogic);  // ???? false?
 			G4ThreeVector *posBack2 = &back2;
-			CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot, posBack2, fFiberLogic);
+			//Apply rotation
+			G4RotationMatrix *rot1 = new G4RotationMatrix();
+			if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+				rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, fFiberLogic);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, physVol);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, physVol);
+			}
 		}
 
 		if(fAddHydrationShell) {
-			G4ThreeVector *posHydration1 = &hydration1;
-			G4ThreeVector *posHydration2 = &hydration2;
-			CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot, posHydration1, fFiberLogic);
-			CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot, posHydration2, fFiberLogic);
+			G4ThreeVector *posHyd1 = &back1;
+			G4ThreeVector *posHyd2 = &back2;
+			//Apply rotation
+			G4RotationMatrix *rot1 = new G4RotationMatrix();
+			G4RotationMatrix *rot2 = new G4RotationMatrix();
+			if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+			{
+				rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
+				rot2->rotate(AngBetween, cross);
+			}
+			rot1->rotateZ(-angle1+pi/2);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHyd1, fFiberLogic);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHyd2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHyd1, physVol);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHyd2, physVol);
+			}
 		}
 	}
 	G4cout<<G4endl<<"Spherical DNA BUILT: "<<(G4double)nBP/1000.0<<" kbp"<<G4endl<<G4endl;
 	fFiberDNAContent = (G4double)nBP;
 }
 
-//rotate a 3vector by a rot matrix and return new coordinates
+// Rotate a 3vector by a rot matrix and return new coordinates
 void TsNucleus::ApplyRotation(G4ThreeVector &rotated, G4ThreeVector &vector, G4RotationMatrix *rot)
 {
 	rotated[0] = vector[0]*rot->xx() + vector[1]*rot->yx() + vector[2]*rot->zx();
 	rotated[1] = vector[0]*rot->xy() + vector[1]*rot->yy() + vector[2]*rot->zy();
 	rotated[2] = vector[0]*rot->xz() + vector[1]*rot->yz() + vector[2]*rot->zz();
-
 }
 
-//Use DNA path to place halfCyl or quartCyl DNA volumes
-void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
+// Use DNA path to place halfCyl or quartCyl DNA volumes
+void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* physVol)
 {
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
 	G4int nBP=newPath.size();
@@ -971,7 +1010,8 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
 
 		//Apply rotation
 		G4RotationMatrix *rot1 = new G4RotationMatrix(); 
-		rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
+		if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+			rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
 		rot1->rotateZ(angle1);
 
 		//Translate
@@ -986,23 +1026,47 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
 
 		if(fAddBases){
 			G4ThreeVector *posBase1 = &base1;
-			CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, fFiberLogic);
 			G4ThreeVector *posBase2 = &base2;
-			CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, fFiberLogic);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, physVol);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, physVol);
+			}
 		}
 
 		if(fAddBackbones){
 			G4ThreeVector *posBack1 = &back1;
-			CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, fFiberLogic);  // ???? false?
 			G4ThreeVector *posBack2 = &back2;
-			CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, fFiberLogic);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, physVol);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, physVol);
+			}
 		}
 
 		if(fAddHydrationShell) {
 			G4ThreeVector *posHydration1 = &hydration1;
 			G4ThreeVector *posHydration2 = &hydration2;
-			CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHydration1, fFiberLogic);
-			CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHydration2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHydration1, fFiberLogic);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHydration2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHydration1, physVol);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHydration2, physVol);
+			}
 		}
 	}
 
@@ -1010,3 +1074,22 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
 	fFiberDNAContent = (G4double)nBP;
 }
 
+void TsNucleus::UpdateForNewRun(G4bool force = true)
+{
+	if (force == false) 
+		return;
+
+	if (fRotateNucleusForEachRun)
+	{
+		G4cout << "TsVGeometryComponent::UpdateForNewRun called for component: " << GetNameWithCopyId() << " - nucleus rotated." << G4endl;
+		// Generate random numbers to rotate the nucleus for each run
+		G4RotationMatrix* newRotation = new G4RotationMatrix();
+		G4double rotX = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotY = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotZ = G4UniformRand() * 2 * CLHEP::pi;
+		newRotation->rotateX(rotX);
+		newRotation->rotateX(rotY);
+		newRotation->rotateX(rotZ);
+		fEnvelopePhys->SetRotation(newRotation);
+	}
+}

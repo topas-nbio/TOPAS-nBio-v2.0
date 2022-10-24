@@ -100,7 +100,7 @@ private:
 
     // Create the solid and logical volumes required to build DNA around one histone.
     // Return a map as:
-    // Key: name of the volume (sugar1, sugar2, base1, base2)
+    // Key: name of the volume (backbone1, backbone2, base1, base2)
     // Content: vector of corresponding logical volumes
     std::map<G4String, std::vector<G4LogicalVolume *> >* CreateNucleosomeCuttedSolidsAndLogicals(std::vector<DNAPlacementData> *nucleosomeVolumePositions,
                                                                                                  std::map<G4ThreeVector, G4double> *posAndRadiusMap,

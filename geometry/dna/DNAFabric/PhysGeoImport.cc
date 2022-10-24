@@ -161,8 +161,9 @@ void PhysGeoImport::ParseFile(const std::string& fileName)
     if(!file.is_open())
     {
         // Geant4 exception
-        G4String msg = fileName+" could not be opened";
-        G4Exception("PhysGeoImport::ParseFile()", "Geo_InputFileNotOpened", FatalException, msg);
+        G4cerr << "TOPAS is exiting due to a serious error in Geometry setup." << G4endl;
+        G4cerr << "Could not open file " << fileName << G4endl;
+        exit(1);
     }
 
     // Define the line string variable
@@ -259,8 +260,9 @@ void PhysGeoImport::ParseFile(const std::string& fileName)
         else
         {
             // Geant4 exception
-            G4String msg = firstItem+" is not defined in the parser. Check the input file: "+fileName+".";
-            G4Exception("PhysGeoImport::ParseFile()", "Geo_WrongParse", FatalException, msg);
+            G4cerr << "TOPAS is exiting due to a serious error in Geometry setup." << G4endl;
+            G4cerr << firstItem << " is not defined in the parser. Check the input file: " << fileName  << G4endl;
+            exit(1);
         }
     }
 

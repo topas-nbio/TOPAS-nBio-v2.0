@@ -33,9 +33,9 @@ using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ClusteringAlgo::ClusteringAlgo(G4double pEps,G4int pMinPts,
+ClusteringAlgo::ClusteringAlgo(G4double pEps,G4int ,
     G4double pSPointsProb,G4double pEMinDamage, G4double pEMaxDamage, G4bool sample)
-:fEps(pEps),fMinPts(pMinPts),
+:fEps(pEps),
  fSPointsProb(pSPointsProb),fEMinDamage(pEMinDamage),fEMaxDamage(pEMaxDamage), fSampleEdep(sample)
 {
   fNextSBPointID = 0;

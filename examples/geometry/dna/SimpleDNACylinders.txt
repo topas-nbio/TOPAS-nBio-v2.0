@@ -60,6 +60,20 @@ b:Sc/ChromatinScorer/OutputToConsole = "TRUE"
 b:Sc/ChromatinScorer/PropagateToChildren = "true"
 s:Sc/ChromatinScorer/IfOutputFileAlreadyExists = "overwrite"
 
+# Set a source
+s:So/Example/Type                     = "Beam"
+s:So/Example/Component                = "BeamPosition"
+s:So/Example/BeamParticle             = "proton"
+d:So/Example/BeamEnergy               = 5 MeV
+u:So/Example/BeamEnergySpread         = 0.757504
+s:So/Example/BeamPositionDistribution = "None"
+s:So/Example/BeamAngularDistribution  = "Gaussian"
+d:So/Example/BeamAngularCutoffX       = 90. deg
+d:So/Example/BeamAngularCutoffY       = 90. deg
+d:So/Example/BeamAngularSpreadX       = 0.0032 rad
+d:So/Example/BeamAngularSpreadY       = 0.0032 rad
+i:So/Example/NumberOfHistoriesInRun   = 10
+
 s:Gr/ViewA/Type = "OpenGL"
 i:Gr/ViewA/WindowSizeX = 900
 i:Gr/ViewA/WindowSizeY = 700

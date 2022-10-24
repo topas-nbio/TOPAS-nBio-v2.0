@@ -73,7 +73,7 @@ G4VPhysicalVolume* TsCharltonDNA::Construct()
     
     G4Tubs* gBasePair = new G4Tubs(subComponentName1, 0, 0.5*nm, BasePairLength, 0.0*deg, 360.0*deg);
     G4LogicalVolume* lBasePair = CreateLogicalVolume(subComponentName1, gBasePair);
-    G4VPhysicalVolume* pBasePair = CreatePhysicalVolume(subComponentName1, lBasePair, fEnvelopePhys);
+    CreatePhysicalVolume(subComponentName1, lBasePair, fEnvelopePhys);
     
     //****************************************************************************
     //              Subcomponent 2: DNA sugar-phosphate backbone strands
@@ -81,14 +81,14 @@ G4VPhysicalVolume* TsCharltonDNA::Construct()
     
     //Strand 1
     
-    G4String subComponentName2 = "Sugar1";
+    G4String subComponentName2 = "Backbone1";
     G4Tubs* gSugar1 = new G4Tubs(subComponentName2, 0.5*nm, 1.15*nm, 0.17*nm, 0*deg, 180*deg);
     G4LogicalVolume* lSugar1 = CreateLogicalVolume(subComponentName2, gSugar1);
     
     
     //Strand 2
     
-    G4String subComponentName3 = "Sugar2";
+    G4String subComponentName3 = "Backbone2";
     G4Tubs* gSugar2 = new G4Tubs(subComponentName3, 0.5*nm, 1.15*nm, 0.17*nm, 180*deg, 180*deg);
     G4LogicalVolume* lSugar2 = CreateLogicalVolume(subComponentName3, gSugar2);
     
@@ -109,8 +109,8 @@ G4VPhysicalVolume* TsCharltonDNA::Construct()
         G4RotationMatrix* rot = new G4RotationMatrix();
         rot ->rotateZ(theta);
         
-        G4VPhysicalVolume* pSugar1 = CreatePhysicalVolume(subComponentName2, j, true, lSugar1, rot, position, fEnvelopePhys);
-        G4VPhysicalVolume* pSugar2 = CreatePhysicalVolume(subComponentName3, j, true, lSugar2, rot, position, fEnvelopePhys);
+        CreatePhysicalVolume(subComponentName2, j, true, lSugar1, rot, position, fEnvelopePhys);
+        CreatePhysicalVolume(subComponentName3, j, true, lSugar2, rot, position, fEnvelopePhys);
     }
     
     

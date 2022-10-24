@@ -1,0 +1,119 @@
+includeFile = TOPASDefaultReactions.txt
+
+#############################
+# DNA Molecules Declaration #
+#############################
+
+s:Mo/Deoxyribose/Symbol = "Deoxyribose"
+d:Mo/Deoxyribose/DiffusionCoefficient = 0.0 nm2/s
+u:Mo/Deoxyribose/Charge = 0
+d:Mo/Deoxyribose/Radius = 0.3 nm
+i:Mo/Deoxyribose/AssignMoleculeID = 104
+
+s:Mo/Guanine/Symbol = "Guanine"
+d:Mo/Guanine/DiffusionCoefficient = 0.0 nm2/s
+u:Mo/Guanine/Charge = 0
+d:Mo/Guanine/Radius = 0.3 nm
+i:Mo/Guanine/AssignMoleculeID = 100
+
+s:Mo/Cytosine/Symbol = "Cytosine"
+d:Mo/Cytosine/DiffusionCoefficient = 0.0 nm2/s
+u:Mo/Cytosine/Charge = 0
+d:Mo/Cytosine/Radius = 0.3 nm
+i:Mo/Cytosine/AssignMoleculeID = 101
+
+s:Mo/Adenine/Symbol = "Adenine"
+d:Mo/Adenine/DiffusionCoefficient = 0.0 nm2/s
+u:Mo/Adenine/Charge = 0
+d:Mo/Adenine/Radius = 0.3 nm
+i:Mo/Adenine/AssignMoleculeID = 102
+
+s:Mo/Thymine/Symbol = "Thymine"
+d:Mo/Thymine/DiffusionCoefficient = 0.0 nm2/s
+u:Mo/Thymine/Charge = 0
+d:Mo/Thymine/Radius = 0.3 nm
+i:Mo/Thymine/AssignMoleculeID = 103
+
+s:Mo/DeoxyriboseDamaged/Symbol = "DeoxyriboseDamaged"
+d:Mo/DeoxyriboseDamaged/DiffusionCoefficient = 0.0 nm2/s
+u:Mo/DeoxyriboseDamaged/Charge = 0
+d:Mo/DeoxyriboseDamaged/Radius = 0.3 nm
+i:Mo/DeoxyriboseDamaged/AssignMoleculeID = 105
+
+#############################
+# DNA Reactions Declaration #
+#############################
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Deoxyribose/Products = 1 "DeoxyriboseDamaged"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Deoxyribose/ReactionRate = 1.8e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Deoxyribose/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Deoxyribose/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Adenine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Adenine/ReactionRate = 6.1e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Adenine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Adenine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Thymine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Thymine/ReactionRate = 6.4e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Thymine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Thymine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Guanine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Guanine/ReactionRate = 9.2e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Guanine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Guanine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Cytosine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Cytosine/ReactionRate = 6.1e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Cytosine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Cytosine/CompatibleWithStepByStep = "False"
+
+# H + DNA
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Deoxyribose/Products = 1 "DeoxyriboseDamaged"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Deoxyribose/ReactionRate = 0.03e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/Deoxyribose/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/Deoxyribose/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Adenine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Adenine/ReactionRate = 0.09e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/Adenine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/Adenine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Thymine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Thymine/ReactionRate = 0.57e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/Thymine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/Thymine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Cytosine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Cytosine/ReactionRate = 0.092e9 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/Cytosine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/Cytosine/CompatibleWithStepByStep = "False"
+
+# eaq + DNA
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Deoxyribose/Products = 1 "DeoxyriboseDamaged"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Deoxyribose/ReactionRate = 0.01e9 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Deoxyribose/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Deoxyribose/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Adenine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Adenine/ReactionRate = 9.0e9 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Adenine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Adenine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Thymine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Thymine/ReactionRate = 18.0e9 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Thymine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Thymine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Guanine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Guanine/ReactionRate = 14.0e9 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Guanine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Guanine/CompatibleWithStepByStep = "False"
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Cytosine/Products = 1 "None"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Cytosine/ReactionRate = 13.0e9 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Cytosine/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Cytosine/CompatibleWithStepByStep = "False"
+
+#############################

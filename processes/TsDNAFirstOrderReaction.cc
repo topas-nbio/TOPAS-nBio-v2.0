@@ -1,14 +1,4 @@
 // Extra Class for TsEmDNAChemistry
-//
-// ********************************************************************
-// *                                                                  *
-// * This file is part of the TOPAS-nBio extensions to the            *
-// *   TOPAS Simulation Toolkit.                                      *
-// * The TOPAS-nBio extensions are freely available under the license *
-// *   agreement set forth at: https://topas-nbio.readthedocs.io/     *
-// *                                                                  *
-// ********************************************************************
-//
 
 #include "TsDNAFirstOrderReaction.hh"
 
@@ -202,7 +192,6 @@ G4VParticleChange* TsDNAFirstOrderReaction::PostStepDoIt(const G4Track& track,co
             //                                                  track.GetGlobalTime(),&(track.GetPosition()));
         }
     }
-    std::cout << (G4EventManager::GetEventManager())->GetConstCurrentEvent()->GetEventID() << "  " << track.GetGlobalTime()/ps << std::endl;
     fParticleChange.ProposeTrackStatus(fStopAndKill);
     State(fPreviousTimeAtPreStepPoint) = -1;
     return &fParticleChange;

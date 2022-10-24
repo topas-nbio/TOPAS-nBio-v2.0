@@ -159,24 +159,23 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
     //Check number of soma components. This is usually 1, but in some cases can be more:
     
     SomaNumber = 0;
-    G4int i;
     
-    for (i = 0; i < TotalParts; i++){
+    for (G4int i = 0; i < TotalParts; i++){
         if (fPartID[i] == 1) {SomaNumber++;}
     }
     
     AxonNumber = 0;
-    for (i = 0; i < TotalParts; i++){
+    for (G4int i = 0; i < TotalParts; i++){
         if (fPartID[i] == 2) {AxonNumber++;}
     }
     
     BasalDendriteNumber = 0;
-    for (i = 0; i < TotalParts; i++){
+    for (G4int i = 0; i < TotalParts; i++){
         if (fPartID[i] == 3) {BasalDendriteNumber++;}
     }
     
     ApicalDendriteNumber = 0;
-    for (i = 0; i < TotalParts; i++){
+    for (G4int i = 0; i < TotalParts; i++){
         if (fPartID[i] == 4) {ApicalDendriteNumber++;}
     }
     
@@ -215,7 +214,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
         // Soma is a sphere:
         G4Orb* Soma = new G4Orb("Soma", somaRadius);
         G4LogicalVolume* SomaLog = CreateLogicalVolume("Soma", Soma);
-        G4VPhysicalVolume* SomaPhys = CreatePhysicalVolume("Soma", SomaLog, rotSoma, fPositions[0], fEnvelopePhys);
+        //G4VPhysicalVolume* SomaPhys = 
+        CreatePhysicalVolume("Soma", SomaLog, rotSoma, fPositions[0], fEnvelopePhys);
         }
     else if (SomaNumber > 1){
         //Soma consists of more than one component - unionize the components (combine spheres):
@@ -246,7 +246,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
         }
         
         G4LogicalVolume* SomaUnionLog = CreateLogicalVolume("SomaUnion", SomaUnion);
-        G4VPhysicalVolume* SomaUnionPhys = CreatePhysicalVolume("SomaUnion", SomaUnionLog, rotSoma, fPositions[0], fEnvelopePhys);
+        //G4VPhysicalVolume* SomaUnionPhys = 
+        CreatePhysicalVolume("SomaUnion", SomaUnionLog, rotSoma, fPositions[0], fEnvelopePhys);
     }
 
     //***************************************************
@@ -261,12 +262,11 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
     G4int j = 0;
     G4int k = 0;
     G4int l = 0;
-    G4int jp = 0;
    
     G4int a = 0;
     G4int b = 0;
     
-    for (i = 0; i <= TotalParts-(SomaNumber); i++){
+    for (G4int i = 0; i <= TotalParts-(SomaNumber); i++){
         
         //The first component is always part of the soma, in very rare cases,
         //a soma is not defined, we currently do not support these rare neuron types.
@@ -349,7 +349,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
             G4ThreeVector colX = G4ThreeVector(mxx, myx, mzx);
             G4ThreeVector colY = G4ThreeVector(mxy, myy, mzy);
             G4ThreeVector colZ = G4ThreeVector(mxz, myz, mzz);
-            G4RotationMatrix* rotDend = new G4RotationMatrix(colX, colY, colZ);
+            G4RotationMatrix rotDend = G4RotationMatrix(colX, colY, colZ);
+            G4RotationMatrix* rotDendInv = new G4RotationMatrix(rotDend.inverse());
             
             //Check if component is in the soma volume
             
@@ -361,7 +362,7 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
             }
             
             if (SomaNumber > 1){
-                for (jp = 0; jp < fSomaRadii.size(); jp++){
+                for (unsigned int jp = 0; jp < fSomaRadii.size(); jp++){
                     if ((mx-x0)*(mx-x0) + (my-y0)*(my-y0) + (mz-z0)*(mz-z0) < somaRadius*somaRadius){InsideSoma = true;}
                 }
             }
@@ -376,7 +377,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
                 
                     G4Tubs* Axon = new G4Tubs("Axon", 0, fRadius[i], r/2, 0*deg, 360*deg);
                     G4LogicalVolume* AxonLog = CreateLogicalVolume("Axon", Axon);
-                    G4VPhysicalVolume* AxonPhys = CreatePhysicalVolume("Axon", j, false, AxonLog, rotDend, CylPos, fEnvelopePhys);
+                    //G4VPhysicalVolume* AxonPhys = 
+                    CreatePhysicalVolume("Axon", j, false, AxonLog, rotDendInv, CylPos, fEnvelopePhys);
                     j++;
                 }
           
@@ -388,7 +390,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
 
                     G4Tubs* BDend = new G4Tubs("BasalDendrite", 0, fRadius[i], r/2, 0*deg, 360*deg);
                     G4LogicalVolume* BDendLog = CreateLogicalVolume("BasalDendrite", BDend);
-                    G4VPhysicalVolume* BDendPhys = CreatePhysicalVolume("BasalDendrite", k, false, BDendLog, rotDend, CylPos, fEnvelopePhys);
+                    //G4VPhysicalVolume* BDendPhys = 
+                    CreatePhysicalVolume("BasalDendrite", k, false, BDendLog, rotDendInv, CylPos, fEnvelopePhys);
                     k++;
                 }
         
@@ -399,7 +402,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
                   
                     G4Tubs* ADend = new G4Tubs("ApicalDendrite", 0, fRadius[i], r/2, 0*deg, 360*deg);
                     G4LogicalVolume* ADendLog = CreateLogicalVolume("ApicalDendrite", ADend);
-                    G4VPhysicalVolume* ADendPhys = CreatePhysicalVolume("ApicalDendrite", l, false, ADendLog, rotDend, CylPos, fEnvelopePhys);
+                    //G4VPhysicalVolume* ADendPhys = 
+                    CreatePhysicalVolume("ApicalDendrite", l, false, ADendLog, rotDendInv, CylPos, fEnvelopePhys);
                     l++;
                   
             

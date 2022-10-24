@@ -26,12 +26,14 @@ public:
 	
 	G4VPhysicalVolume* Construct();
 	void SetBasicInfo();
+	void UpdateForNewRun(G4bool force);
 	
 private:
 	G4LogicalVolume* ConstructFiberLogicalVolume();
 	void BuildHistones(std::vector<std::pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 					   G4double ChromatinRadius,
-					   G4double ChromatinLength);
+					   G4double ChromatinLength,
+					   G4VPhysicalVolume* vol = NULL);
 
 	void BuildDNA(std::vector<std::pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails);
 	void SetDNAVolumes(G4bool BuildHalfCyl,
@@ -40,8 +42,8 @@ private:
 	void GenerateDNAPath(std::vector<std::pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 						 std::vector<G4ThreeVector> &path);
 	void SegmentDNAPath(std::vector<G4ThreeVector> &path);
-	void PlaceDNASphere(std::vector<G4ThreeVector> &path);
-	void PlaceDNA(std::vector<G4ThreeVector> &path);
+	void PlaceDNASphere(std::vector<G4ThreeVector> &path, G4VPhysicalVolume* vol = NULL);
+	void PlaceDNA(std::vector<G4ThreeVector> &path, G4VPhysicalVolume* vol = NULL);
 	G4double GetFiberDNAContent() {return fFiberDNAContent;}
 	void ApplyRotation(G4ThreeVector &Rotated,
 					   G4ThreeVector &Position,
@@ -52,7 +54,6 @@ private:
 				G4ThreeVector &end,
 				std::vector<G4ThreeVector> &path,
 				G4int nSteps);
-
 
 	G4LogicalVolume * fFiberLogic;
 	std::vector<G4VPhysicalVolume*> fFiberPhysVolLoop;
@@ -81,7 +82,8 @@ private:
 	G4double fHydrationShellThickness; 
 	G4String fDNAModel;
 	G4bool fShowNucleus, fShowDNAVoxels, fShowChromatinCylinders;
-	G4int fNumberOfBasePairs;
+	G4double fNumberOfBasePairs;
+	G4bool fRotateNucleusForEachRun;
 
 	//ParameterisationInfo
 	TsVoxelParameterisation* param;
@@ -95,16 +97,7 @@ private:
 	G4String fHistoneMaterialName;
 
 	// Selecting Scoring components
-	G4bool fScoreOnBases, fScoreOnBackbones, fScoreOnHydrationShell, fScoreOnHistones;
-	
-//	G4double fBaseMaterialDensity;
-//	G4double fBackboneMaterialDensity;
-//	G4double fHistoneMaterialDensity;
-
-//	G4Material* fBaseMaterial;
-//	G4Material* fBackboneMaterial;
-//	G4Material* fHistoneMaterial;
-
+	//G4bool fScoreOnBases, fScoreOnBackbones, fScoreOnHydrationShell, fScoreOnHistones;
 };
 
 #endif

@@ -104,7 +104,11 @@ G4VPhysicalVolume* TsCellCulture::Construct()
         
             G4bool OverlapCheck = pCell->CheckOverlaps();
 
-            if (OverlapCheck == false){break;}
+            if (OverlapCheck == false){
+                OverlapCheck = pNucleus->CheckOverlaps();
+                if (OverlapCheck == false)
+                    break;
+            }
             if (OverlapCheck == true){
                 pCell = NULL;
                 pNucleus = NULL;

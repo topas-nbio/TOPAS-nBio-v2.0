@@ -1,0 +1,77 @@
+iv:Gr/Color/transparentlightblue = 4 175 255 255 70
+iv:Gr/Color/transparentblue = 4 0 0 255 100
+
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity = 1 g/cm3
+
+s:Ge/plasmid/Parent = "World"
+s:Ge/plasmid/Type   = "TsPlasmidSupercoiledSetup"
+s:Ge/plasmid/Material = "G4_WATER"
+s:Ge/plasmid/Color = "transparentlightblue"
+s:Ge/plasmid/DrawingStyle = "Solid"
+s:Ge/plasmid/VoxelStraight_logic/Material = "G4_WATER"
+b:Ge/plasmid/VoxelStraight_logic/Invisible = "True"
+
+s:Ge/plasmid/Plasmid/Material = "G4_WATER"
+
+s:Ge/plasmid/phosphate1_waterShell/Material     = "G4_WATER_MODIFIED"
+s:Ge/plasmid/phosphate1_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/phosphate1_waterShell/Color        = "red"
+s:Ge/plasmid/phosphate1/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/phosphate1/DrawingStyle = "Solid"
+s:Ge/plasmid/phosphate1/Color        = "grass"
+s:Ge/plasmid/deoxyribose1_waterShell/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/deoxyribose1_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/deoxyribose1_waterShell/Color        = "transparentblue"
+s:Ge/plasmid/deoxyribose1/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/deoxyribose1/DrawingStyle = "Solid"
+s:Ge/plasmid/deoxyribose1/Color        = "yellow"
+
+s:Ge/plasmid/phosphate2_waterShell/Material     = "G4_WATER_MODIFIED"
+s:Ge/plasmid/phosphate2_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/phosphate2_waterShell/Color        = "red"
+s:Ge/plasmid/phosphate2/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/phosphate2/DrawingStyle = "Solid"
+s:Ge/plasmid/phosphate2/Color        = "grass"
+s:Ge/plasmid/deoxyribose2_waterShell/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/deoxyribose2_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/deoxyribose2_waterShell/Color        = "transparentblue"
+s:Ge/plasmid/deoxyribose2/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/deoxyribose2/DrawingStyle = "Solid"
+s:Ge/plasmid/deoxyribose2/Color        = "yellow"
+
+s:Ge/plasmid/base_adenine_waterShell/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_adenine_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/base_adenine_waterShell/Color        = "transparentblue"
+s:Ge/plasmid/base_adenine/Material           = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_adenine/DrawingStyle       = "Solid"
+s:Ge/plasmid/base_adenine/Color              = "red" 
+
+s:Ge/plasmid/base_thymine_waterShell/Material     = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_thymine_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/base_thymine_waterShell/Color        = "transparentblue"
+s:Ge/plasmid/base_thymine/Material     = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_thymine/DrawingStyle = "Solid"
+s:Ge/plasmid/base_thymine/Color        = "red"
+
+s:Ge/plasmid/base_guanine_waterShell/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_guanine_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/base_guanine_waterShell/Color  = "transparentblue"
+s:Ge/plasmid/base_guanine/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_guanine/DrawingStyle = "Solid"
+s:Ge/plasmid/base_guanine/Color  = "red"
+
+s:Ge/plasmid/base_cytosine_waterShell/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_cytosine_waterShell/DrawingStyle = "Solid"
+s:Ge/plasmid/base_cytosine_waterShell/Color  = "transparentblue"
+s:Ge/plasmid/base_cytosine/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/base_cytosine/DrawingStyle = "Solid"
+s:Ge/plasmid/base_cytosine/Color  = "red"
+
+s:Ge/plasmid/histone/Material = "G4_WATER_MODIFIED"
+s:Ge/plasmid/histone/DrawingStyle = "Solid"
+s:Ge/plasmid/histone/Color = "magenta"
+
+d:Ge/plasmid/R = 50 nm 
+i:Ge/plasmid/NumberOfPlasmids = 1
+s:Ge/plasmid/InputFile = "pUC19_20C_3_10.fab2g4dna"

@@ -58,7 +58,7 @@ void NtupleForHiC_ClusterAlgo::RunDBSCAN(std::vector<NtupleForHiC_HitPoint*> &Hi
     NtupleForHiC_Clusters*clust=new NtupleForHiC_Clusters();
     clust->SetIsSSB(true);
     clustermap[0]=clust;
-    for (G4int i=0;i<Hits.size();i++){
+    for (unsigned int i=0;i<Hits.size();i++){
         if (Hits[i]->GetClusterID()<=0){
             clustermap[0]->AddPoint(Hits[i]);
         }

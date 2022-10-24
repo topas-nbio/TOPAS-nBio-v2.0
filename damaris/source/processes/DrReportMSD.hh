@@ -14,7 +14,7 @@
 //
 #pragma once
 
-#include "G4VITDiscreteProcess.hh"
+#include <G4VITDiscreteProcess.hh>
 
 class DrReportMSD : public G4VITDiscreteProcess {
 public:

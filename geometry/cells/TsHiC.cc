@@ -221,11 +221,11 @@ void TsHiC::BuildChromosomes(G4VPhysicalVolume* pMother,
         Vis->SetForceSolid(true);
         RegisterVisAtt(Vis);
         
-        for (G4int i=0; i<chrom.second.size(); i++){
+        for (unsigned int i=0; i<chrom.second.size(); i++){
             G4ThreeVector* pos = new G4ThreeVector(chrom.second[i].Pos);
             G4Orb* gChromosome = new G4Orb("gChromosome", chrom.second[i].Radius);
             G4LogicalVolume* lChromosome = CreateLogicalVolume(SubCompName, Material, gChromosome);
-            G4VPhysicalVolume* pChromosome = CreatePhysicalVolume(SubCompName, chrom.second[i].VolumeCopyNum, false, lChromosome, 0, pos, pMother);
+            CreatePhysicalVolume(SubCompName, chrom.second[i].VolumeCopyNum, false, lChromosome, 0, pos, pMother);
             lChromosome->SetVisAttributes(Vis);
         }
     }

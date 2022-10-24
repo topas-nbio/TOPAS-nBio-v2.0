@@ -1,0 +1,64 @@
+# Setup to help to reproduce time-dependent G-values 
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel   = "CPA100"
+
+s:Ch/ChemistryName = "TOPASChemistry"
+
+includeFile = TOPASDefaultReactions.txt
+
+b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 1 us
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 7 0.1 1.0  3.0   10.0   100  100 100 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 7 1.0 10.0 100.0 1000.0 10000.0 100000.0 999999 ps
+
+d:Ge/World/HLX= 10 cm
+d:Ge/World/HLY= 10 cm
+d:Ge/World/HLZ= 10 cm
+s:Ge/World/Material ="G4_WATER"
+
+d:Ge/Target/HLX= Ge/World/HLX cm 
+d:Ge/Target/HLY= Ge/World/HLY cm
+d:Ge/Target/HLZ= Ge/World/HLZ cm 
+s:Ge/Target/Material = "G4_WATER"
+s:Ge/Target/Type     = "TsBox"
+s:Ge/Target/Parent   = "World"
+
+d:Ge/BeamPosition/TransZ = 0.0 um
+d:Ge/BeamPosition/RotX = 0 deg
+
+s:So/Demo/BeamPositionDistribution = "None"
+u:So/Demo/BeamEnergySpread = 0
+s:So/Demo/BeamParticle = "e-"
+d:So/Demo/BeamEnergy = 999.999 keV  
+
+u:perCent = 0.01
+
+s:Sc/Gvalue/Quantity   = "TsSBSGvalue"
+s:Sc/Gvalue/Component  = "Target"
+s:Sc/Gvalue/OutputFile = "Gvalue"
+s:Sc/Gvalue/IfOutputFileAlreadyExists = "Overwrite"
+s:Sc/Gvalue/OutputType = "ascii"
+#b:Sc/Gvalue/OutputToConsole = "True"
+#i:Sc/Gvalue/OutputBufferSize = 1
+d:Sc/Gvalue/KillPrimaryIfEnergyLossExceeds = So/Demo/BeamEnergy keV * perCent
+d:Sc/Gvalue/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/Gvalue/KillPrimaryIfEnergyLossExceeds keV
+d:Sc/Gvalue/KillPrimaryBasedOnTrackLength = 1 um
+# G-value scoring bins
+dv:Sc/Gvalue/TimeToRecord = 30 1.000e0 1.610e0 2.592e0 4.175e0 6.723e0 
+                               1.082e1 1.743e1 2.807e1 4.520e1 7.278e1 
+                               1.172e2 1.887e2 3.039e2 4.893e2 7.880e2 
+                               1.268e3 2.043e3 3.290e3 5.298e3 8.531e3
+                               1.373e4 2.212e4 3.562e4 5.736e4 9.236e4 
+                               1.487e5 2.395e5 3.856e5 6.210e5 0.999999e6 ps
+
+i:So/Demo/NumberOfHistoriesInRun = 10
+i:Ts/ShowHistoryCountAtInterval  = 1
+
+i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
+
+Ts/NumberOfThreads = 0
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1
+
+

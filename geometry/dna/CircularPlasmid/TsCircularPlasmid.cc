@@ -82,11 +82,11 @@ G4VPhysicalVolume* TsCircularPlasmid::Construct()
     //**************************************************************************
     //Phosphodiester group - two sugars each consisting of quarter cylinders
     //The sugars are wrapped around the base pair
-    G4String subComponent2 = "Sugar1";
+    G4String subComponent2 = "Backbone1";
     G4Tubs* gSugarPhosphate1 = new G4Tubs(subComponent2, 0.5*nm, 1.185*nm, 0.17*nm, 0*deg, 90*deg);
     G4LogicalVolume* lSugarPhosphate1 = CreateLogicalVolume(subComponent2, gSugarPhosphate1);
 	
-    G4String subComponent3 = "Sugar2";
+    G4String subComponent3 = "Backbone2";
     G4Tubs* gSugarPhosphate2 = new G4Tubs(subComponent3, 0.5*nm, 1.185*nm, 0.17*nm, 180*deg, 90*deg);
     G4LogicalVolume* lSugarPhosphate2 = CreateLogicalVolume(subComponent3, gSugarPhosphate2);
 	
@@ -114,8 +114,8 @@ G4VPhysicalVolume* TsCircularPlasmid::Construct()
 															fEnvelopePhys);
 		if ( j == 0 ) {
 		  CreatePhysicalVolume("BasePair", lBp1, pBasePair);
-		  CreatePhysicalVolume("Sugar1", lSugarPhosphate1, pBasePair);
-		  CreatePhysicalVolume("Sugar2", lSugarPhosphate2, pBasePair);
+		  CreatePhysicalVolume("Backbone1", lSugarPhosphate1, pBasePair);
+		  CreatePhysicalVolume("Backbone2", lSugarPhosphate2, pBasePair);
 		}
     }
     

@@ -22,7 +22,6 @@
 #include "G4ExtrudedSolid.hh"
 #include "G4Orb.hh"
 #include "G4Ellipsoid.hh"
-#include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 #include "Randomize.hh"
@@ -122,7 +121,7 @@ G4VPhysicalVolume* TsHexagonCell::Construct()
         if (OverlapCheck == true){
             G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
             G4cerr << "Nucleus overlaps with the cell." << G4endl;
-            exit(1);
+            fPm->AbortSession(1);
         }
         
     }
@@ -152,15 +151,17 @@ G4VPhysicalVolume* TsHexagonCell::Construct()
         name=GetFullParmName("Mitochondria/c");
         if (fPm->ParameterExists(name)){EllC = fPm->GetDoubleParameter(GetFullParmName("Mitochondria/c"), "Length" );}
         
+        
         G4String subComponentName2 = "Mitochondria";
         G4Ellipsoid* gMito = new G4Ellipsoid("gMito", EllA, EllB, EllC);
         G4LogicalVolume* lMito = CreateLogicalVolume(subComponentName2, gMito);
         
         //Randomly distribute mitochondria throughout cell volume
         for (int j = 0; j < NbOfMito; j++){
-            auto OverlapCheck = true;
-            while (OverlapCheck)
-            {
+            
+            G4bool Overlap = true;
+            while (Overlap == true){
+                
                 G4double u = G4UniformRand()*2*pi;
                 G4double v = std::acos(2*G4UniformRand()-1);
                 G4double dr = G4UniformRand()*(CellRadius - NuclRadius);
@@ -183,10 +184,10 @@ G4VPhysicalVolume* TsHexagonCell::Construct()
                 
                 G4VPhysicalVolume* pMito = CreatePhysicalVolume(subComponentName2, j, true, lMito, rotm, position, fEnvelopePhys);
                 
-                OverlapCheck = pMito->CheckOverlaps();
+                G4bool OverlapCheck = pMito->CheckOverlaps();
                 
-                if (OverlapCheck == true) {
-                    fEnvelopePhys->GetLogicalVolume()->RemoveDaughter(pMito);
+                if (OverlapCheck == false){break;}
+                if (OverlapCheck == true){
                     pMito = NULL;
                     G4cout << "**** Finding new position for volume " << subComponentName2 << ":" << j <<  " ****" << G4endl;
                 }

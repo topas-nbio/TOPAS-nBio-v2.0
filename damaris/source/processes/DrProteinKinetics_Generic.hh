@@ -16,7 +16,8 @@
 
 #pragma once
 
-#include "G4VITDiscreteProcess.hh"
+#include <G4VITDiscreteProcess.hh>
+#include "DrBreakMolecule.hh"
 
 class G4MoleculeDefinition;
 

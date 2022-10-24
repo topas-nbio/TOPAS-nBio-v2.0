@@ -111,7 +111,7 @@ G4VPhysicalVolume* TsOsteoblast::Construct()
         if (OverlapCheck == true){
             G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
             G4cerr << "Nucleus overlaps with the cell." << G4endl;
-            exit(1);
+            fPm->AbortSession(1);
         }
         
     }

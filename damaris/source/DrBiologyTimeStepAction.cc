@@ -18,8 +18,11 @@
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@JWW_DaMaRiS
-#include "DrBreakTable.hh"
 #include "DrPrecompiler.hh"
+#include "DrCheckBreaks.hh"
+#include "DrDSBMoleculeManager.hh"
+#include "DrDefinitions.hh"
+#include "DrDSBMoleculeManager.hh"
 #include <G4Molecule.hh>
 #include <G4SystemOfUnits.hh>
 #include <TsParameterManager.hh>
@@ -54,19 +57,46 @@ operator=(const DrBiologyTimeStepAction &rhs) {
 }
 
 void DrBiologyTimeStepAction::UserPreTimeStepAction(){
+
     G4double globalTime = G4Scheduler::Instance()->GetGlobalTime();
-    if(globalTime == 0.0) DrBreakTable::Instance()->SetUpTypeTrackingTable();
+    if(globalTime == 0.0) DrDSBMoleculeManager().SetUpTypeTrackingTable();
+
 }
 
 void DrBiologyTimeStepAction::UserPostTimeStepAction() {
 
-    //@@@@ Get track list for checks below
-    DrBreakTable *bTable = DrBreakTable::Instance();
+#ifdef DEBUG_DAMARIS
+    DebugPositions();
+#endif /*DEBUG_DAMARIS*/
+
+#ifdef PLOT_MOTION
+    PlotPositions();
+#endif /*PLOT_MOTION*/
+
+    auto globalTime = G4Scheduler::Instance()->GetGlobalTime();
+    auto endTime = G4Scheduler::Instance()->GetEndTime();
+
+    if (globalTime == endTime){
+        ExtractDisplacements();
+        RunFinalCheckBreaks();
+    }
+}
+
+void DrBiologyTimeStepAction::UserReactionAction(
+        const G4Track &trackA, const G4Track &trackB,
+        const std::vector<G4Track *> *productsVector) {
+
+    G4Track *secondary = (*productsVector)[0];
+    if (GetMolecule(trackA)->GetDefinition()->GetName().substr(0, 3) == "DSB") {
+        DrDSBMoleculeManager().JoinBreakMolecule(trackA, trackB, secondary);
+    }
+}
+
+void DrBiologyTimeStepAction::DebugPositions() {
     G4TrackManyList *mainList = G4ITTrackHolder::Instance()->GetMainList();
     G4TrackManyList::iterator it = mainList->begin();
     G4TrackManyList::iterator end = mainList->end();
 
-#ifdef DEBUG_DAMARIS
     std::ofstream file("debug_positions.out",std::ios_base::app);
     it = mainList->begin();
     end = mainList->end();
@@ -81,10 +111,14 @@ void DrBiologyTimeStepAction::UserPostTimeStepAction() {
                 <<G4endl;
         }
     }
-#endif /*DEBUG_DAMARIS*/
+}
 
-#ifdef PLOT_MOTION
-     {
+void DrBiologyTimeStepAction::PlotPositions() {
+
+    G4TrackManyList *mainList = G4ITTrackHolder::Instance()->GetMainList();
+    G4TrackManyList::iterator it = mainList->begin();
+    G4TrackManyList::iterator end = mainList->end();
+
         it = mainList->begin();
         end = mainList->end();
         for (; it != end; ++it) {
@@ -93,12 +127,10 @@ void DrBiologyTimeStepAction::UserPostTimeStepAction() {
 
             if( molName.substr(0,5) != "Clock"){
 
-                G4int IDA = bTable->GetBreakMolecule(*track)
-                        ->sBreakEndA->fOriginalBreakMoleculeID;
-                G4int IDACorr = bTable->GetBreakMolecule(*track)
-                        ->sBreakEndA->fCorrectPartnerBreakMoleculeID;
-                G4int IDB = bTable->GetBreakMolecule(*track)
-                        ->sBreakEndB->fOriginalBreakMoleculeID;
+                DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+                G4int IDA = breakMolecule->sBreakEndA->fOriginalBreakMoleculeID;
+                G4int IDACorr = breakMolecule->sBreakEndA->fCorrectPartnerBreakMoleculeID;
+                G4int IDB = breakMolecule->sBreakEndB->fOriginalBreakMoleculeID;
 
                 G4String fileName;
 
@@ -131,80 +163,70 @@ void DrBiologyTimeStepAction::UserPostTimeStepAction() {
                         << G4endl;
             }
         }
-    }
-#endif /*PLOT_MOTION*/
 
-    if (G4Scheduler::Instance()->GetGlobalTime() ==
-        G4Scheduler::Instance()->GetEndTime()) {
+}
 
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //@@@@ This calculates the displacement of every particle left in
-        //@@@@ the simulation at the end and pushes it onto a static list
-        //@@@@ contained in DrBreakTable to be binned and plotted at
-        //@@@@ the end of the whole run.
-        it = mainList->begin();
-        end = mainList->end();
+void DrBiologyTimeStepAction::ExtractDisplacements(){
+    //@@@@ Get track list for checks below
+    DrDefinitions* definitions = DrDefinitions::Instance();
+    G4TrackManyList *mainList = G4ITTrackHolder::Instance()->GetMainList();
+    G4TrackManyList::iterator it = mainList->begin();
+    G4TrackManyList::iterator end = mainList->end();
 
-        for (; it != end; ++it) {
-            G4Track *track = *it; //^^^^^^^
-            G4Molecule *molecule = GetMolecule(track);
-            const G4MoleculeDefinition *moleculeDefinition =
-                    molecule->GetDefinition();
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //@@@@ This calculates the displacement of every particle left in
+    //@@@@ the simulation at the end and pushes it onto a static list
+    //@@@@ contained in DrBreakTable to be binned and plotted at
+    //@@@@ the end of the whole run.
+    for (; it != end; ++it) {
+        G4Track *track = *it; //^^^^^^^
+        G4Molecule *molecule = GetMolecule(track);
+        const G4MoleculeDefinition *moleculeDefinition =
+                molecule->GetDefinition();
 
-            if (moleculeDefinition->GetName().substr(0, 3) == "DSB") {
-                DrBreakMolecule *breakMolecule =
-                        bTable->GetBreakMolecule(*track, "UserPTSA");
+        if (moleculeDefinition->GetName().substr(0, 3) == "DSB") {
 
-                G4ThreeVector startPosition1;
-                G4ThreeVector startPosition2;
-                G4double displacement1;
-                G4double displacement2;
+            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
 
-                if (moleculeDefinition->GetName().substr(0, 6) == "DSBEnd") {
-                    startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
-                    displacement1 = (startPosition1 - track->GetPosition()).mag();
-                    bTable->fDisplacementTrackingStore.push_back(displacement1);
-                    bTable->fResidualEndDisplacementStore.push_back(displacement1);
-                } else if (moleculeDefinition->GetName().substr(0, 12) == "DSB_Fixed_HR"){
-                    startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
-                    displacement1 = (startPosition1 - track->GetPosition()).mag();
-                    bTable->fDisplacementTrackingStore.push_back(displacement1);
-                } else if (moleculeDefinition->GetName().substr(0, 6) == "DSBSyn") {
-                    startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
-                    startPosition2 = breakMolecule->sBreakEndB->fOriginalPosition;
-                    displacement1 = (startPosition1 - track->GetPosition()).mag();
-                    displacement2 = (startPosition2 - track->GetPosition()).mag();
-                    bTable->fDisplacementTrackingStore.push_back(displacement1);
-                    bTable->fDisplacementTrackingStore.push_back(displacement2);
-                    bTable->fResidualSynDisplacementStore.push_back(displacement1);
-                    bTable->fResidualSynDisplacementStore.push_back(displacement2);
-                } else if (moleculeDefinition->GetName().substr(0, 6) == "DSB_Fi") {
-                    startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
-                    startPosition2 = breakMolecule->sBreakEndB->fOriginalPosition;
-                    displacement1 = (startPosition1 - track->GetPosition()).mag();
-                    displacement2 = (startPosition2 - track->GetPosition()).mag();
-                    bTable->fDisplacementTrackingStore.push_back(displacement1);
-                    bTable->fDisplacementTrackingStore.push_back(displacement2);
-                }
+            G4ThreeVector startPosition1;
+            G4ThreeVector startPosition2;
+            G4double displacement1;
+            G4double displacement2;
+
+            if (moleculeDefinition->GetName().substr(0, 6) == "DSBEnd") {
+                startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
+                displacement1 = (startPosition1 - track->GetPosition()).mag();
+                definitions->fDisplacementTrackingStore.push_back(displacement1);
+                definitions->fResidualEndDisplacementStore.push_back(displacement1);
+            } else if (moleculeDefinition->GetName().substr(0, 12) == "DSB_Fixed_HR"){
+                startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
+                displacement1 = (startPosition1 - track->GetPosition()).mag();
+                definitions->fDisplacementTrackingStore.push_back(displacement1);
+            } else if (moleculeDefinition->GetName().substr(0, 6) == "DSBSyn") {
+                startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
+                startPosition2 = breakMolecule->sBreakEndB->fOriginalPosition;
+                displacement1 = (startPosition1 - track->GetPosition()).mag();
+                displacement2 = (startPosition2 - track->GetPosition()).mag();
+                definitions->fDisplacementTrackingStore.push_back(displacement1);
+                definitions->fDisplacementTrackingStore.push_back(displacement2);
+                definitions->fResidualSynDisplacementStore.push_back(displacement1);
+                definitions->fResidualSynDisplacementStore.push_back(displacement2);
+            } else if (moleculeDefinition->GetName().substr(0, 6) == "DSB_Fi") {
+                startPosition1 = breakMolecule->sBreakEndA->fOriginalPosition;
+                startPosition2 = breakMolecule->sBreakEndB->fOriginalPosition;
+                displacement1 = (startPosition1 - track->GetPosition()).mag();
+                displacement2 = (startPosition2 - track->GetPosition()).mag();
+                definitions->fDisplacementTrackingStore.push_back(displacement1);
+                definitions->fDisplacementTrackingStore.push_back(displacement2);
             }
         }
     }
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 }
 
-void DrBiologyTimeStepAction::UserReactionAction(
-        const G4Track &trackA, const G4Track &trackB,
-        const std::vector<G4Track *> *productsVector) {
-
-#ifdef DEBUG_DAMARIS
-  G4ThreeVector tAPosition = trackA.GetPosition();
-  G4ThreeVector tBPosition = trackB.GetPosition();
-  G4double seperation = (tAPosition-tBPosition).mag();
-  DrBreakTable::Instance()->actualReactionRangeStore.push_back(seperation);
-#endif /*DEBUG_DAMARIS*/
-
-    G4Track *secondary = (*productsVector)[0];
-    if (GetMolecule(trackA)->GetDefinition()->GetName().substr(0, 3) == "DSB") {
-        DrBreakTable::Instance()->JoinBreakMolecule(trackA, trackB, secondary);
-    }
+void DrBiologyTimeStepAction::RunFinalCheckBreaks() {
+    auto definitions = DrDefinitions::Instance();
+    DrCheckBreaks checkIt = DrCheckBreaks();
+    checkIt.CheckRepairFidelity();
+    checkIt.CheckNumberMoleculesLeft();
+    if(definitions->GetDSBSeparation() >= 0.0) checkIt.StoreMisrepair();
 }

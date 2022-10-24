@@ -39,7 +39,7 @@ TsNtupleForPlasmid::TsNtupleForPlasmid(TsParameterManager* pM, TsMaterialManager
     fNtuple->RegisterColumnF(&fPosY, "Position Y", "cm");
     fNtuple->RegisterColumnF(&fPosZ, "Position Z", "cm");
     fNtuple->RegisterColumnF(&fEnergy, "Energy", "MeV");
-    fNtuple->RegisterColumnI(&fVolume, "Volume 1=BP, 2=Sugar1, 3=Sugar2");
+    fNtuple->RegisterColumnI(&fVolume, "Volume 1=BP, 2=Backbone1, 3=Backbone2");
     fNtuple->RegisterColumnI(&fRepNum, "BasePair Replication Number");
     fNtuple->RegisterColumnF(&fEnergyDep, "Energy Deposited", "MeV");
     fNtuple->RegisterColumnI(&fParticleType, "Particle Type (in PDG Format)");
@@ -71,8 +71,8 @@ G4bool TsNtupleForPlasmid::ProcessHits(G4Step* aStep,G4TouchableHistory*)
     G4int VolNum;
 
     if (volumeName == "MyDNA/BasePair") VolNum = 1;
-    if (volumeName == "MyDNA/Sugar1") VolNum = 2;
-    if (volumeName == "MyDNA/Sugar2") VolNum = 3;
+    if (volumeName == "MyDNA/Backbone1") VolNum = 2;
+    if (volumeName == "MyDNA/Backbone2") VolNum = 3;
     
 
     if ((fEnergyDep > 0) && ((VolNum == 1) || (VolNum == 2) || (VolNum == 3))) {

@@ -33,8 +33,8 @@ s:Ge/HiC/Nucleus/DrawingStyle = "Wireframe"
 s:Ge/HiC/VerticesFile="HiC_Vertices/4umIMR90_noLADs.vert.txt"
 
 ## ---------------- Scoring ----------------  ##
+b:Sc/HiCScorer/Active   = "True"
 s:Sc/HiCScorer/Quantity = "NtupleForHiC"
-b:Sc/HiCScorer/Active = "True"
 s:Sc/HiCScorer/Component = "HiC"
 s:Sc/HiCScorer/OutputFile = "Output"
 s:Sc/HiCScorer/OutputType = "ASCII"

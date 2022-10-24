@@ -11,7 +11,13 @@
 
 NtupleForHiC_EndOfSession::NtupleForHiC_EndOfSession(TsParameterManager* pM)
 {
-    Start(pM);
+    G4bool ActiveHiCScorer = false;
+
+    if (pM->ParameterExists("Sc/HiCScorer/Active"))
+        ActiveHiCScorer = pM->GetBooleanParameter("Sc/HiCScorer/Active");
+
+    if (ActiveHiCScorer)
+        Start(pM);
 }
 
 NtupleForHiC_EndOfSession::~NtupleForHiC_EndOfSession(){}
@@ -198,7 +204,7 @@ void NtupleForHiC_EndOfSession::AddChromosomeFractions(G4String HiCVerticesFile,
     
     std::map<G4int,std::map<G4int,ChromObj>> SortedBeadDetails;
     for (auto bead:BeadDetails){
-        for (G4int i=0;i<bead.second.size();i++){
+        for (unsigned int i=0;i<bead.second.size();i++){
             SortedBeadDetails[bead.first][bead.second[i].VolumeCopyNum]=bead.second[i];
         }
     }
@@ -298,7 +304,7 @@ G4bool NtupleForHiC_EndOfSession::SetChromosomeArm(G4int ChromID,
 }
 
 
-TsDamagePhaseSpaceStore* NtupleForHiC_EndOfSession::FillPhaseSpaceStore(std::map<G4int,G4int> ChromosomeSize,
+TsDamagePhaseSpaceStore* NtupleForHiC_EndOfSession::FillPhaseSpaceStore(std::map<G4int,G4int> ,
                                                                         std::map<G4int,std::map<G4int,NtupleForHiC_Clusters*>> &ExposureClusters,
                                                                         G4int &DamageEntries)
 {
@@ -311,7 +317,7 @@ TsDamagePhaseSpaceStore* NtupleForHiC_EndOfSession::FillPhaseSpaceStore(std::map
     TsDamagePhaseSpaceStore::dmgstore *DamageStore=&PSStore->GetDamageEventStore();
     for (auto exposure:ExposureClusters){
         G4bool NewExposure=true;
-        G4int ExposureID=exposure.first;
+        //G4int ExposureID=exposure.first;
         //run over clusters in this exposure and sort by primary ID
         std::map<G4int,std::vector<NtupleForHiC_Clusters*>> PrimaryClusters;
         std::vector<std::vector<DrDamageEvent*>> PrimaryDamages;
@@ -323,7 +329,7 @@ TsDamagePhaseSpaceStore* NtupleForHiC_EndOfSession::FillPhaseSpaceStore(std::map
         for (auto data:PrimaryClusters){
             std::vector<DrDamageEvent*> Damages;
             G4bool NewPrimary=true;
-            for (int i=0;i<data.second.size();i++){
+            for (unsigned int i=0;i<data.second.size();i++){
                 
                 //If not writing SSB, skip adding to PS store
                 G4bool brea=false;
@@ -519,9 +525,9 @@ void NtupleForHiC_EndOfSession::WriteSDD(G4String Filename,
     }
     
     //Print Damage Entries
-    for (int i=0;i<PSStore->GetDamageEventStore().size();i++){
-        for (int j=0;j<PSStore->GetDamageEventStore()[i].size();j++){
-            for (int k=0;k<PSStore->GetDamageEventStore()[i][j].size();k++){
+    for (unsigned int i=0;i<PSStore->GetDamageEventStore().size();i++){
+        for (unsigned int j=0;j<PSStore->GetDamageEventStore()[i].size();j++){
+            for (unsigned int k=0;k<PSStore->GetDamageEventStore()[i][j].size();k++){
                 PSStore->GetDamageEventStore()[i][j][k]->PrintToFileEvent(Filename);
             }
         }

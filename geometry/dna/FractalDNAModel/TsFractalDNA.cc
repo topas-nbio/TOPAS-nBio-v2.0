@@ -63,7 +63,7 @@ void TsFractalDNA::ResolveParameters(){
     if (!fPm->ParameterExists(name)) {
         G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
         G4cerr << "Parameter " << name << " has to be specified for this scorer." << G4endl;
-        exit(1);
+        fPm->AbortSession(1);
     }
     G4String FileName = fPm->GetStringParameter(name);
     
@@ -94,8 +94,9 @@ void TsFractalDNA::ResolveParameters(){
     }
     else
     {
+        G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
         G4cout << "ERROR: Unable to open file " << FileName << G4endl;
-        exit(1);
+        fPm->AbortSession(1);
     }
     f.close();
     
@@ -141,7 +142,8 @@ G4VPhysicalVolume* TsFractalDNA::Construct()
     pLoop.resize(TP);
 
     G4cout << "Number of Fibers " << TP << G4endl;
-    G4double xshift = 0, yshift = 0, zshift = 0;
+    //G4double xshift = 0, yshift = 0;
+    G4double zshift = 0;
     
     // Full genome model of 172032 fibers with ~6 billion BPs
 
@@ -529,7 +531,7 @@ G4VPhysicalVolume* TsFractalDNA::Construct()
             
                 G4LogicalVolume* lFiber = fGeoManager->BuildLogicFiber(true);
             
-                G4VPhysicalVolume* pFiber = CreatePhysicalVolume("Fiber", lFiber, pLoop[i]);
+                CreatePhysicalVolume("Fiber", lFiber, pLoop[i]);
             }
         
         }

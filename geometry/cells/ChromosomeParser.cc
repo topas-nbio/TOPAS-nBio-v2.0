@@ -71,13 +71,12 @@ void ChromosomeParser::ReadBeads(G4String filename){
     //work out fraction of chromosome covered by each bead
     //and set the ID of the volume
     for (auto data:Beads){
-        G4double sum=0.0;
         G4double MinFract=0.0;
         G4double MaxFract = 0.0;
         G4int MinBP=1;
         G4int MaxBP=0;
         
-        for (G4int i=0;i<data.second.size();i++){
+        for (unsigned int i=0;i<data.second.size();i++){
             G4double FractOfChrom = data.second[i].GenomeLength/(G4double)ChromSize[data.first];
             G4int CopyNum = i;
             MaxFract=MinFract+FractOfChrom;
@@ -108,7 +107,7 @@ void ChromosomeParser::RecentreBeads(){
     G4double MaxX=std::numeric_limits<G4double>::min(), MaxY=std::numeric_limits<G4double>::min(), MaxZ=std::numeric_limits<G4double>::min();
     G4double MinX=std::numeric_limits<G4double>::max(), MinY=std::numeric_limits<G4double>::max(), MinZ=std::numeric_limits<G4double>::max();
     for (auto data:Beads){
-        for (int i=0;i<data.second.size();i++){
+        for (unsigned int i=0;i<data.second.size();i++){
             G4double radius=data.second[i].Radius;
             G4double CurrX=data.second[i].Pos.x();
             G4double CurrY=data.second[i].Pos.y();
@@ -143,7 +142,7 @@ void ChromosomeParser::RecentreBeads(){
     
     //Translate beads in XYZ by pos-centre
     for (auto data:Beads){
-        for (G4int i=0;i<data.second.size();i++){
+        for (unsigned int i=0;i<data.second.size();i++){
             data.second[i].Pos=(data.second[i].Pos-Centre);
             G4double CurrX=data.second[i].Pos.x();
             G4double CurrY=data.second[i].Pos.y();
@@ -177,7 +176,7 @@ void ChromosomeParser::ResizeNucleus(){
     G4double NegExtY=std::numeric_limits<G4double>::max();
     double NegExtZ=std::numeric_limits<G4double>::max();
     for (auto data:Beads){
-        for (G4int i=0;i<data.second.size();i++){
+        for (unsigned int i=0;i<data.second.size();i++){
             G4double x=data.second[i].Pos.x();
             G4double y=data.second[i].Pos.y();
             G4double z=data.second[i].Pos.z();

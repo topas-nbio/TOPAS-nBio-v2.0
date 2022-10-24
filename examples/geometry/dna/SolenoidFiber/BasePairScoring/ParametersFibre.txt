@@ -39,10 +39,10 @@ s:Ge/Fiber/Parent = "World"
 
 s:Ge/Fiber/Histone/Material = "G4_WATER"
 
-s:Ge/Fiber/base1/Material = "G4_WATER"
-s:Ge/Fiber/base2/Material = "G4_WATER"
-s:Ge/Fiber/back1/Material = "G4_WATER"
-s:Ge/Fiber/back2/Material = "G4_WATER"
+s:Ge/Fiber/Base1/Material = "G4_WATER"
+s:Ge/Fiber/Base2/Material = "G4_WATER"
+s:Ge/Fiber/Backbone1/Material = "G4_WATER"
+s:Ge/Fiber/Backbone2/Material = "G4_WATER"
 
 b:Ge/CheckForOverlaps = "False"
 
@@ -59,6 +59,7 @@ s:Ge/Fiber/DNA_Model = "QuarterCylinder"   # or "HalfCylinder" or "Sphere"
 ## ---------------- Beam ----------------  ##
 #position
 s:BeamParticle = "proton"
+d:BeamEnergy = So/Demo/BeamEnergy MeV
 u:BeamEnergySpread = 0.0
 s:BeamEnergyDistribution = "Gaussian"
 
@@ -109,8 +110,12 @@ s:DamageMode = "Range"  #"Range"=energy range, "Threshold"=energy threshold, "Io
 d:MinEneRange = 5.0 eV
 d:MaxEneRange = 37.5 eV
 d:MinEneThresh = 17.5 eV
-
+s:SensitiveVolumeName = "Fiber"
 b:WriteHeader = "true"
+i:Shape = 1
+d:HLX = Ge/World/HLX nm
+d:HLY = Ge/World/HLX nm
+d:HLZ = Ge/World/HLX nm
 
 
 s:Sc/MyScorer/BeamParticle = So/Demo/BeamParticle

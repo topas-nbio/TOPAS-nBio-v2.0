@@ -1,0 +1,80 @@
+############################
+## Diffusion coefficients ##
+############################
+sv:Ch/Plante/DiffusionCoefficients/Molecules = 7 "SolvatedElectron" "Hydroxyl"  "Hydrogen" "Hydronium"
+                                                 "DyHydrogen"       "Hydroxide" "HydrogenPeroxide"
+dv:Ch/Plante/DiffusionCoefficients/Values    = 7  4.9e9 2.2e9 7e9 9.46e9 4.8e9 5.3e9 2.3e9 nm2/s
+b:Ch/Plante/SetWaterMolecularConfiguration = "False"
+
+############################
+###### Reaction Rates ######
+############################
+
+# Type II reactions
+
+sv:Ch/Plante/Reaction/SolvatedElectron/HydrogenPeroxide/Products                = 2 "Hydroxide" "Hydroxyl"
+d:Ch/Plante/Reaction/SolvatedElectron/HydrogenPeroxide/ReactionRate             = 1.1e10 /M/s
+i:Ch/Plante/Reaction/SolvatedElectron/HydrogenPeroxide/ReactionType             = 2
+b:Ch/Plante/Reaction/SolvatedElectron/HydrogenPeroxide/CompatibleWithStepByStep = "True"
+
+sv:Ch/Plante/Reaction/Hydroxyl/Hydroxyl/Products                = 1 "HydrogenPeroxide"
+d:Ch/Plante/Reaction/Hydroxyl/Hydroxyl/ReactionRate             = 5.50e9 /M/s
+i:Ch/Plante/Reaction/Hydroxyl/Hydroxyl/ReactionType             = 2
+b:Ch/Plante/Reaction/Hydroxyl/Hydroxyl/CompatibleWithStepByStep = "True"
+
+sv:Ch/Plante/Reaction/Hydroxyl/Hydrogen/Products                = 1 "None"
+d:Ch/Plante/Reaction/Hydroxyl/Hydrogen/ReactionRate             = 1.55e10 /M/s
+i:Ch/Plante/Reaction/Hydroxyl/Hydrogen/ReactionType             = 2
+b:Ch/Plante/Reaction/Hydroxyl/Hydrogen/CompatibleWithStepByStep = "True"
+
+# Type III reactions
+
+sv:Ch/Plante/Reaction/SolvatedElectron/SolvatedElectron/Products                = 3 "Hydroxide" "Hydroxide" "Dyhydrogen"
+d:Ch/Plante/Reaction/SolvatedElectron/SolvatedElectron/ReactionRate             = 6.36e9 /M/s
+i:Ch/Plante/Reaction/SolvatedElectron/SolvatedElectron/ReactionType             = 3
+b:Ch/Plante/Reaction/SolvatedElectron/SolvatedElectron/CompatibleWithStepByStep = "True"
+
+sv:Ch/Plante/Reaction/SolvatedElectron/Hydroxyl/Products                = 1 "Hydroxide"
+d:Ch/Plante/Reaction/SolvatedElectron/Hydroxyl/ReactionRate             = 2.95e10 /M/s
+i:Ch/Plante/Reaction/SolvatedElectron/Hydroxyl/ReactionType             = 3
+b:Ch/Plante/Reaction/SolvatedElectron/Hydroxyl/CompatibleWithStepByStep = "True"
+
+sv:Ch/Plante/Reaction/Hydronium/Hydroxide/Products                = 1 "None"
+d:Ch/Plante/Reaction/Hydronium/Hydroxide/ReactionRate             = 1.13e11 /M/s 
+i:Ch/Plante/Reaction/Hydronium/Hydroxide/ReactionType             = 3
+b:Ch/Plante/Reaction/Hydronium/Hydroxide/CompatibleWithStepByStep = "True"
+
+# Type IV reactions
+
+sv:Ch/Plante/Reaction/SolvatedElectron/Hydronium/Products                = 1 "Hydrogen"
+d:Ch/Plante/Reaction/SolvatedElectron/Hydronium/ReactionRate             = 2.11e10 /M/s
+i:Ch/Plante/Reaction/SolvatedElectron/Hydronium/ReactionType             = 4
+b:Ch/Plante/Reaction/SolvatedElectron/Hydronium/CompatibleWithStepByStep = "True"
+
+# Type V reactions
+
+sv:Ch/Plante/Reaction/SolvatedElectron/Hydrogen/Products                = 2 "Hydroxide" "Dyhydrogen"
+d:Ch/Plante/Reaction/SolvatedElectron/Hydrogen/ReactionRate             = 2.5e10 /M/s 
+i:Ch/Plante/Reaction/SolvatedElectron/Hydrogen/ReactionType             = 5 
+b:Ch/Plante/Reaction/SolvatedElectron/Hydrogen/CompatibleWithStepByStep = "True"
+
+sv:Ch/Plante/Reaction/Hydrogen/Hydrogen/Products                = 1 "Dyhydrogen"
+d:Ch/Plante/Reaction/Hydrogen/Hydrogen/ReactionRate             = 5.03e9 /M/s
+i:Ch/Plante/Reaction/Hydrogen/Hydrogen/ReactionType             =  5
+b:Ch/Plante/Reaction/Hydrogen/Hydrogen/CompatibleWithStepByStep =  "True"
+
+# Type VI reactions
+
+sv:Ch/Plante/BackgroundReaction/SolvatedElectron/Oxygen/Products        = 1 "Superoxideanion"
+d:Ch/Plante/BackgroundReaction/SolvatedElectron/Oxygen/ReactionRate     = 1.74e10 /M/s
+d:Ch/Plante/BackgroundReaction/SolvatedElectron/Oxygen/Concentration    = 25e-6 M
+s:Ch/Plante/BackgroundReaction/SolvatedElectron/Oxygen/ScavengingModel  = "ExponentialSingleFactor"
+b:Ch/Plante/BackgroundReaction/SolvatedElectron/Oxygen/CompatibleWithStepByStep = "False"
+
+sv:Ch/Plante/BackgroundReaction/Hydrogen/Oxygen/Products        = 1 "Hydroperoxy"
+d:Ch/Plante/BackgroundReaction/Hydrogen/Oxygen/ReactionRate     = 2.1e10 /M/s
+d:Ch/Plante/BackgroundReaction/Hydrogen/Oxygen/Concentration    = 25e-6 M
+s:Ch/Plante/BackgroundReaction/Hydrogen/Oxygen/ScavengingModel  = "ExponentialSingleFactor"
+b:Ch/Plante/BackgroundReaction/Hydrogen/Oxygen/CompatibleWithStepByStep  = "False"
+
+############################

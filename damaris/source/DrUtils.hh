@@ -46,7 +46,6 @@ public:
     std::vector<std::pair<G4double,G4double>> BinDoubleList(std::vector<G4double>,G4int,G4double,G4double);
 
 private:
-    unsigned fVerbose;
     void NormaliseMoleculeStore();
 
     G4double StdErrMeanMultiColumn(G4double, std::vector<std::vector<G4double> >,G4int);
