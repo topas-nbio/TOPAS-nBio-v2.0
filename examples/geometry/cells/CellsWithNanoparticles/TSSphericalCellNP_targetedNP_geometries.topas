@@ -1,5 +1,9 @@
 
 #### The cell model is described in detail in https://doi.org/10.1038/s41598-021-85964-2 ####
+#
+#### This is the geometry definition file of TSSphericalCellNP_minimal_example.topas.
+#### To run use:
+#### topas TSSphericalCellNP_minimal_example.topas
 
 #### CELL ####
 s:Ge/MyCell/Type="TsSphericalCellSphericalNP"
