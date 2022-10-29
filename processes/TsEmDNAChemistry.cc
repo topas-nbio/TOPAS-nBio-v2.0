@@ -609,7 +609,7 @@ void TsEmDNAChemistry::ConstructProcess()
     }
     
     process = G4ProcessTable::GetProcessTable()->FindProcess("e-_G4DNAElectronSolvation", "e-");
-    if ( process == nullptr ) {
+    if ( process != nullptr ) {
         G4DNAElectronSolvation* solvation = (G4DNAElectronSolvation*)process;
         G4VEmModel* solvationModel = new G4DNAOneStepThermalizationModel();
         solvation->SetEmModel(solvationModel, 0);
